@@ -61,6 +61,7 @@ public class CodeManager : MonoBehaviour
         if (currentInput == respuesta)
         {
             panelCorrecto.SetActive(true);
+            panelClave.SetActive(false);
         }
         else
         {
@@ -80,6 +81,7 @@ public class CodeManager : MonoBehaviour
             
         }
     }
+
 
     private void UpdateDisplay()
     {
