@@ -1,33 +1,58 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
+using UnityEngine.UI;
 
 public class MainMenuController : MonoBehaviour
 {
+    [SerializeField] private GameObject panelMenuPrincipal;
     [SerializeField] private GameObject panelInstrucciones;
     [SerializeField] private GameObject panelTopMejores;
-    [SerializeField] private GameObject panelMenuPrincipal;
+    [SerializeField] private TMP_InputField nameInputField;
+    [SerializeField] private TMP_Dropdown opcionDropdown;
 
+    public static string playerName { get; private set; } = "Player";
+    public static int opcionSeleccionada { get; private set; } = 0;
+
+    void Start()
+    {
+        MostrarMenuPrincipal();
+    }
     public void StartGame()
     {
-        SceneManager.LoadScene("MainModel"); 
+        string nombre = nameInputField.text.Trim();
+        if (string.IsNullOrEmpty(nombre))
+        {
+            Debug.LogWarning("Por favor ingresa un nombre antes de comenzar.");
+            return;
+        }
+        playerName = nombre;
+        opcionSeleccionada = opcionDropdown.value;
+        SceneManager.LoadScene("MainModel");
     }
-    public void IngresaNombre()
+
+    public void MostrarMenuPrincipal()
     {
-        panelMenuPrincipal.SetActive(true);
-        panelInstrucciones.SetActive(false);
-        panelTopMejores.SetActive(false);
+        ActivarSolo(panelMenuPrincipal);
     }
-    public void Instructions()
+
+    public void MostrarInstrucciones()
     {
-    
-        panelMenuPrincipal.SetActive(false);
-        panelInstrucciones.SetActive(true);
-        panelTopMejores.SetActive(false);
+        ActivarSolo(panelInstrucciones);
     }
-    public void TopMejores()
+
+    public void MostrarTopMejores()
     {
-        panelMenuPrincipal.SetActive(false);
-        panelInstrucciones.SetActive(false);
-        panelTopMejores.SetActive(true);
+        ActivarSolo(panelTopMejores);
+    }
+    public void MostrarPanel(GameObject panel)
+    {
+        ActivarSolo(panel);
+    }
+    private void ActivarSolo(GameObject panelActivo)
+    {
+        panelMenuPrincipal.SetActive(panelActivo == panelMenuPrincipal);
+        panelInstrucciones.SetActive(panelActivo == panelInstrucciones);
+        panelTopMejores.SetActive(panelActivo == panelTopMejores);
     }
 }

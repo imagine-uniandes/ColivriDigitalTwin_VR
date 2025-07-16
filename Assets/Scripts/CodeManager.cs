@@ -32,6 +32,19 @@ public class CodeManager : MonoBehaviour
             respuesta = retoLoader.reto.respuesta;
         }
     }
+    /*
+    private void MostrarPistas()
+    {
+        if (retoLoader.reto != null && pistasUI.Length >= 5)
+        {
+            pistasUI[0].text = retoLoader.reto.pista1;
+            pistasUI[1].text = retoLoader.reto.pista2;
+            pistasUI[2].text = retoLoader.reto.pista3;
+            pistasUI[3].text = retoLoader.reto.pista4;
+            pistasUI[4].text = retoLoader.reto.pista5;
+        }
+    }
+    */
     public void IncreaseDigit(int index)
     {
         panelCorrecto.SetActive(false);
@@ -85,8 +98,8 @@ public class CodeManager : MonoBehaviour
         if (currentInput == respuesta)
         {
             panelCorrecto.SetActive(true);
-            panelVolverMenu.SetActive(true);
             panelClave.SetActive(false);
+            panelVolverMenu.SetActive(true);
             
         }
         else

@@ -12,3 +12,4 @@ public class RetoLoader : MonoBehaviour
         reto = JsonUtility.FromJson<Reto>(ta.text);
     }
 }
+
