@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 
 
+
 public class GameManager : MonoBehaviour
 {
     [Header("UI Panel References")]
@@ -15,7 +16,7 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverPanel;
     public GameObject topTiemposPanel;
     [Header("Menu Principal UI")]
-    public InputField playerNameInput;
+    public TMP_InputField playerNameInput;
     public Button jugarButton;
     [Header("Modo Juego UI")]
     public Button facilButton;

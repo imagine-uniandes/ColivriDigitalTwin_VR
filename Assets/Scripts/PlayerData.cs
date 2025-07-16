@@ -8,7 +8,7 @@ public class PlayerData
 {
     public string playerName;
     public DifficultyLevel difficultyLevel;
-    public List<float> topTimes;
+    public List<float> topTimes = new List<float>();
     public float bestTime;
 
     public PlayerData()
