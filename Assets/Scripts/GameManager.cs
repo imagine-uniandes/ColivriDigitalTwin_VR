@@ -5,8 +5,6 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-
-
 public class GameManager : MonoBehaviour
 {
     [Header("UI Panel References")]
