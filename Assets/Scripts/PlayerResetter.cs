@@ -7,7 +7,8 @@ public class PlayerResetter : MonoBehaviour
 {
     public static PlayerResetter Instance { get; private set; }
 
-    [Tooltip("Asigna aquí el Transform de tu rig/jugador")]
+    [Tooltip("Transform jugadorcito" +
+        "")]
     public Transform playerRig;
 
     private Vector3 initialPos;

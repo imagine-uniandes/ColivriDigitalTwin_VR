@@ -52,8 +52,8 @@ public class Top10Manager : MonoBehaviour
     private void SaveRecords()
     {
         var dict = new Dictionary<string, TimeRecord>();
-        for (int i = 0; i < records.Count; i++)
-            dict[(i + 1).ToString()] = records[i];
+        for (int i = 0; i< records.Count; i++)
+            dict[(i +1).ToString()] = records[i];
         string json = JsonConvert.SerializeObject(dict, Formatting.Indented);
         File.WriteAllText(path, json);
     }

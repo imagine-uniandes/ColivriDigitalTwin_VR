@@ -10,9 +10,8 @@ public class GameManager : MonoBehaviour
 {
     
 
-    [Header("Ayudas TP (nivel 1)")]
+    [Header("Ayudas TP")]
     public GameObject[] helpHighlights;
-
     [Header("UI Juego")]
     public TextMeshProUGUI txtPlayerName;
     public TextMeshProUGUI txtDifficulty;
@@ -20,21 +19,16 @@ public class GameManager : MonoBehaviour
     public GameObject panelTimeUp;
     public Image imgSenecaSad;
     public Button btnRetry;
-
     [Header("UI Top 10")]
     public GameObject top10Panel;              
     public LeaderboardManager leaderboardManager;
-
     private int difficulty;
     private float countdownTime;
 
     void Start()
     {
-        
-
         string playerName = PlayerPrefs.GetString("PlayerName", "Player");
         difficulty = PlayerPrefs.GetInt("DifficultyLevel", 1);
-
         txtPlayerName.text = playerName;
         txtDifficulty.text = $"Nivel {difficulty}";
         panelTimeUp.SetActive(false);
@@ -48,7 +42,6 @@ public class GameManager : MonoBehaviour
         }
 
         btnRetry.onClick.AddListener(OnRetry);
-
         List<float> topTimes = new List<float>();
         foreach (var rec in Top10Manager.Instance.GetAll())
             topTimes.Add(rec.tiempoRecord);
