@@ -1,6 +1,7 @@
 using System.Linq;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class CodeManager : MonoBehaviour
 {
@@ -18,13 +19,34 @@ public class CodeManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txtPosiciones;
     [SerializeField] private TextMeshProUGUI txtWrongPos;
 
+    private float startTime;
+    public static event Action<float> OnCodeSuccessEvent;
+    
+
     void Start()
+    {
+        InitializeAnswer();
+        ResetSession();
+        
+    }
+  
+    public void ResetSession()
     {
         InitializeAnswer();
         for (int i = 0; i < digitValues.Length; i++)
             digitValues[i] = 0;
         UpdateDisplay();
+        panelCorrecto.SetActive(false);
+        panelCerca.SetActive(false);
+        panelClave.SetActive(true);
+        panelVolverMenu.SetActive(false);
+        startTime = Time.time;
+
     }
+    
+
+
+
     private void InitializeAnswer()
     {
         if (retoLoader != null && retoLoader.reto != null)
@@ -82,12 +104,12 @@ public class CodeManager : MonoBehaviour
         }
         if (string.IsNullOrEmpty(respuesta))
         {
-            Debug.LogWarning("No se puede validar: respuesta no está inicializada");
+            Debug.LogWarning("No se puede validar: respuesta no estï¿½ inicializada");
             return;
         }
         if (panelCorrecto == null || panelCerca == null || panelClave == null)
         {
-            Debug.LogWarning("Paneles no están asignados en el inspector");
+            Debug.LogWarning("Paneles no estï¿½n asignados en el inspector");
             return;
         }
         panelCorrecto.SetActive(false);
@@ -100,7 +122,14 @@ public class CodeManager : MonoBehaviour
             panelCorrecto.SetActive(true);
             panelClave.SetActive(false);
             panelVolverMenu.SetActive(true);
-            
+            float elapsed = Time.time - startTime;
+            string playerName = PlayerPrefs.GetString("PlayerName", "Jugador");
+            LeaderboardManager.Instance.AddEntry(playerName, elapsed);
+            GameFlowManager.Instance.OnCodeSuccess(elapsed);
+            OnCodeSuccessEvent?.Invoke(elapsed);
+            Debug.Log($"CÃ³digo correcto ingresado por {playerName} en {elapsed} segundos.");
+            PlayerDataManager.Instance.RecordSessionTime(elapsed);
+
         }
         else
         {

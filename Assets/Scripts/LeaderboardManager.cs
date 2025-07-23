@@ -1,54 +1,83 @@
-
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using System.Linq;
+using System.IO;
+using Newtonsoft.Json; 
 
 public class LeaderboardManager : MonoBehaviour
 {
-    public static LeaderboardManager Instance { get; private set; }
+    public static LeaderboardManager Instance;
 
-    [Header("Referencias UI")]
-    public List<TMP_Text> nombreTexts;  
-    public List<TMP_Text> tiempoTexts;  
-
-    [Header("Colores")]
-    public Color defaultColor = Color.white;
-    public Color highlightColor = Color.yellow;
-
+    [Header("UI Top 10 (arrays de 10)")]
+    public TMP_Text[] nameTexts;
+    public TMP_Text[] timeTexts;
+    string fileName = "top10.json";
+    List<LeaderEntry> entries = new List<LeaderEntry>();
+    [System.Serializable]
+    public class LeaderEntry
+    {
+        public string nombre;
+        public float tiempoRecord;
+    }
     void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
-
-   
-    public void MostrarTop10(string playerName, List<float> topTimes)
+    void Start()
     {
-        int rows = Mathf.Min(10, Mathf.Min(nombreTexts.Count, tiempoTexts.Count));
-        for (int i = 0; i < rows; i++)
+        LoadLeaderboard();
+        DisplayLeaderboard();
+    }
+    void LoadLeaderboard()
+    {
+        string path = Path.Combine(Application.persistentDataPath, fileName);
+        if (File.Exists(path))
         {
-            if (i < topTimes.Count)
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, LeaderEntry>>(File.ReadAllText(path));
+            entries = dict.Values.OrderBy(e => e.tiempoRecord).Take(10).ToList();
+        }
+    }
+
+    public void DisplayLeaderboard()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            if (i < entries.Count)
             {
-                nombreTexts[i].text = $"{i + 1}. {playerName}";
-                tiempoTexts[i].text = $"{topTimes[i]:F2} s";
-                bool isMe = nombreTexts[i].text.Contains(playerName);
-                nombreTexts[i].color = isMe ? highlightColor : defaultColor;
-                tiempoTexts[i].color = isMe ? highlightColor : defaultColor;
+                nameTexts[i].text = entries[i].nombre;
+                timeTexts[i].text = entries[i].tiempoRecord.ToString("F2");
             }
             else
             {
-                nombreTexts[i].text = $"{i + 1}. -";
-                tiempoTexts[i].text = "--";
-                nombreTexts[i].color = defaultColor;
-                tiempoTexts[i].color = defaultColor;
+                nameTexts[i].text = "---";
+                timeTexts[i].text = "--:--";
             }
         }
     }
 
- 
-    public void HighlightPlayer()
+    public float GetBestTime()
     {
-        // Si guardas internamente el playerName y topTimes, podrías
-        // volver a llamar a MostrarTop10 aquí. O simplemente no lo uses.
+        return entries.Any() ? entries[0].tiempoRecord : 60f;
+    }
+
+    public void AddEntry(string nombre, float tiempo)
+    {
+        entries.Add(new LeaderEntry { nombre = nombre, tiempoRecord = tiempo });
+        entries = entries.OrderBy(e => e.tiempoRecord).Take(10).ToList();
+        SaveLeaderboard();
+    }
+
+    void SaveLeaderboard()
+    {
+        var dict = new Dictionary<string, LeaderEntry>();
+        for (int i = 0; i < entries.Count; i++)
+            dict[(i + 1).ToString()] = entries[i];
+
+        File.WriteAllText(
+            Path.Combine(Application.persistentDataPath, fileName),
+            JsonConvert.SerializeObject(dict, Formatting.Indented)
+        );
     }
 }
