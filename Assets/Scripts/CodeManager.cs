@@ -103,12 +103,12 @@ public class CodeManager : MonoBehaviour
         }
         if (string.IsNullOrEmpty(respuesta))
         {
-            Debug.LogWarning("No se puede validar: respuesta no est� inicializada");
+            Debug.LogWarning("No se puede validar: respuesta no esta inicializada");
             return;
         }
         if (panelCorrecto == null || panelCerca == null || panelClave == null)
         {
-            Debug.LogWarning("Paneles no est�n asignados en el inspector");
+            Debug.LogWarning("Paneles no estan asignados en el inspector");
             return;
         }
         panelCorrecto.SetActive(false);
@@ -119,20 +119,31 @@ public class CodeManager : MonoBehaviour
         if (currentInput == respuesta)
         {
             panelCorrecto.SetActive(true);
-            panelClave.SetActive(false);
-            float elapsed = Time.time - startTime;
-            string playerName = PlayerPrefs.GetString("PlayerName", "Jugador");
-            LeaderboardManager.Instance.AddEntry(playerName, elapsed);
-            GameFlowManager.Instance.OnCodeSuccess(elapsed);
-            OnCodeSuccessEvent?.Invoke(elapsed);
-            Debug.Log($"Código correcto ingresado por {playerName} en {elapsed} segundos.");
-            PlayerDataManager.Instance.RecordSessionTime(elapsed);
-            var table = FindObjectOfType<HighScoreTable>();
-            if (table != null)
-                table.AddHighscoreEntry(elapsed, playerName);
-            else
-                Debug.LogWarning("No se encontró HighScoreTable en la escena");
-            PlayerPrefs.Save();
+        panelClave.SetActive(false);
+
+        float elapsed = Time.time - startTime;
+
+        // 1. Grabar en PlayerDataManager (usa PlayerPrefs internamente)
+        PlayerDataManager.Instance.UpdateCurrentSessionStats(
+            elapsed,
+            $"Partida {DateTime.Now:HH:mm:ss}"
+        );
+
+        // 2. Refrescar el ranking en pantalla
+        var table = FindObjectOfType<HighScoreTable>();
+        if (table != null)
+            table.RefreshTable();
+        else
+            Debug.LogWarning("HighScoreTable no encontrado en la escena");
+
+        // 3. Seguir con el flujo de juego
+        GameFlowManager.Instance.OnCodeSuccess(elapsed);
+        OnCodeSuccessEvent?.Invoke(elapsed);
+        Debug.Log($"Código correcto ingresado en {elapsed:F2} s.");
+
+        // 4. (Opcional) Llamar a RecordSessionTime directamente si lo necesitas
+        PlayerDataManager.Instance.RecordSessionTime(elapsed);
+
 
         }
         else

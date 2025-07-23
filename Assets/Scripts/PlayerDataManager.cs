@@ -108,24 +108,32 @@ public class GameData
     public void RebuildDictionaries() => players.ForEach(p => p.SyncToDictionary());
 }
 
+
 public class PlayerDataManager : MonoBehaviour
 {
     public static PlayerDataManager Instance { get; private set; }
     public Difficulty currentDifficulty { get; private set; } = Difficulty.Easy;
 
-    public string dataPath;
-    public GameData gameData;
+    //public string dataPath;
+    public GameData gameData; //revisar el game data el cual guarda una lista de los jugadores
     public PlayerData currentPlayer;
     public GameSession currentSession;
+    private const string kGameDataKey = "gameData";  // Key única en PlayerPrefs
 
     public void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
         if (PlayerPrefs.HasKey("difficulty"))
             currentDifficulty = (Difficulty)PlayerPrefs.GetInt("difficulty");
-        dataPath = Path.Combine(Application.persistentDataPath, "playerdata.json");
+
+        // Cargar datos desde PlayerPrefs
         LoadData();
     }
 
@@ -138,20 +146,25 @@ public class PlayerDataManager : MonoBehaviour
 
     public void LoadData()
     {
-        if (File.Exists(dataPath))
+        string json = PlayerPrefs.GetString(kGameDataKey, "");
+        if (string.IsNullOrEmpty(json))
         {
-            string json = File.ReadAllText(dataPath);
+            gameData = new GameData();
+        }
+        else
+        {
             gameData = JsonUtility.FromJson<GameData>(json) ?? new GameData();
             gameData.RebuildDictionaries();
         }
-        else gameData = new GameData();
     }
 
     public void SaveData()
     {
+        // Reconstruir listas antes de serializar
         gameData.RebuildDictionaries();
-        string json = JsonUtility.ToJson(gameData, true);
-        File.WriteAllText(dataPath, json);
+        string json = JsonUtility.ToJson(gameData, prettyPrint: true);
+        PlayerPrefs.SetString(kGameDataKey, json);
+        PlayerPrefs.Save();
     }
 
     public bool PlayerExists(string name) => !string.IsNullOrWhiteSpace(name) &&
@@ -192,8 +205,15 @@ public class PlayerDataManager : MonoBehaviour
         SaveData();
     }
 
-    public void UpdateCurrentSessionStats(float tiempoJugado, string nuevoNombrePartida) =>
+    public void UpdateCurrentSessionStats(float tiempoJugado, string nuevoNombrePartida)
+    {
         RecordSessionTime(tiempoJugado);
+        if (currentSession != null)
+        {
+            currentSession.nombre = nuevoNombrePartida;
+            SaveData();
+        }
+    }
 
     public PlayerData GetCurrentPlayer() => currentPlayer;
     public GameSession GetCurrentSession() => currentSession;

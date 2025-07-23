@@ -16,7 +16,8 @@ public class GameController : MonoBehaviour
     public GameObject codePanel;              
     public GameObject timerPanel;             
     public GameObject gameOverPanel;          
-    public GameObject statsRankingPanel;      
+    [SerializeField] private HighScoreTable highScoreTable;
+    public GameObject statsRankingPanel;
 
     [Header("UI Elements")]
     public TMP_InputField nameInput;          
@@ -114,7 +115,8 @@ public class GameController : MonoBehaviour
 
             case Difficulty.Competitive:
                 ApplyHotspotHelp(false);
-                
+                //al seleccionar el modo competitivo, tiene que cambiar el timer
+
                 // Tomar el mejor tiempo menor de todos los jugadores anteriores
                 var ranking = PlayerDataManager.Instance.GetRanking();
                 if (ranking.Count > 0)
@@ -142,25 +144,42 @@ public class GameController : MonoBehaviour
     }
 
     public void OnCodeSuccess(float elapsedTime)
-    {
-        
-        //disparo desde CodeManager cuando el jugador acierta la clave
-        timerRunning = false;
-        // Guardar en PlayerDataManager
-        PlayerDataManager.Instance.UpdateCurrentSessionStats(elapsedTime, $"Partida {DateTime.Now:HH:mm:ss}");
-        if (difficulty == Difficulty.Competitive)
-        {
-            var stats = statsRankingPanel.GetComponent<GameStatistics>();
-            stats.ShowEndGameStatistics(
-            PlayerPrefs.GetString("PlayerName"), elapsedTime);
+{
+    // 1. Detener el timer
+    timerRunning = false;
 
-        }
-        else
-        {
-            // En modo facil/npormal reiniciar la sesion
-            ResetSession();
-        }
+    // 2. Guardar resultado en PlayerDataManager (y en PlayerPrefs)
+    PlayerDataManager.Instance.UpdateCurrentSessionStats(
+        elapsedTime,
+        $"Partida {DateTime.Now:HH:mm:ss}"
+    );
+
+    // 3. Refrescar la UI del ranking
+    if (highScoreTable == null)
+        highScoreTable = FindObjectOfType<HighScoreTable>();
+
+    if (highScoreTable != null)
+    {
+        highScoreTable.RefreshTable();
     }
+    else
+    {
+        Debug.LogWarning("HighScoreTable no encontrado en la escena.");
+    }
+
+    // 4. Mostrar estadísticas o reiniciar según modo
+    string playerName = PlayerPrefs.GetString("PlayerName", "Jugador");
+    if (difficulty == Difficulty.Competitive)
+    {
+        var stats = statsRankingPanel.GetComponent<GameStatistics>();
+        stats.ShowEndGameStatistics(playerName, elapsedTime);
+    }
+    else
+    {
+        // En modo Easy/Normal, reiniciar la sesión
+        ResetSession();
+    }
+}
 
     public void TriggerGameOver()
     {
@@ -171,7 +190,7 @@ public class GameController : MonoBehaviour
         gameOverPanel.SetActive(true);
         gameOverMessage.text = "¡Se acabo el tiempo! Vuelve a intentarlo";
     }
-
+    //poner nuevamente el timer en reset
     public void OnRetryClicked()
     {
         gameOverPanel.SetActive(false);
