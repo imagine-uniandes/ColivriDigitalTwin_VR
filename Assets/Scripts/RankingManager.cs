@@ -9,7 +9,7 @@ public class RankingManager : MonoBehaviour
 
     private void Awake()
     {
-        // implementacion del patrón Singleton
+        // implementacion del patron Singleton
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -18,11 +18,7 @@ public class RankingManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
-
-    /// <summary>
-    /// Información de una sesión para ranking: jugador, tiempo en segundos y fecha.
-    /// </summary>
-    public class SessionRankInfo
+        public class SessionRankInfo
     {
         public string PlayerName { get; set; }
         public float SessionTime { get; set; }
@@ -42,18 +38,17 @@ public class RankingManager : MonoBehaviour
         var mgr = PlayerDataManager.Instance;
         if (mgr == null) return all;
 
-        // Usamos GetRanking para recorrer todos los jugadores
+        //GetRanking para recorrer todos los jugadores
         foreach (var player in mgr.GetRanking())
         {
-            // Aseguramos el diccionario interno antes de iterar
+            //diccionario interno antes de iterar
             player.SyncToDictionary();
-
             foreach (var kvp in player.partidasJugadas)
             {
                 var ses = kvp.Value;
                 if (ses == null) continue;
 
-                // Parseamos fecha y añadimos el registro
+                // fecha y añadimos el registro
                 DateTime dt;
                 DateTime.TryParse(ses.fecha, out dt);
 
@@ -67,28 +62,16 @@ public class RankingManager : MonoBehaviour
         }
         return all;
     }
-
-    /// <summary>
-    /// Obtiene las mejores sesiones, ordenadas por menor tiempo (más rápidas) y luego por fecha.
-    /// </summary>
     public List<SessionRankInfo> GetTopSessions(int count)
     {
-        return GetAllSessions()
-            .OrderBy(s => s.SessionTime)
-            .ThenBy(s => s.Fecha)
-            .Take(count)
-            .ToList();
+        return GetAllSessions().OrderBy(s => s.SessionTime).ThenBy(s => s.Fecha).Take(count).ToList();
     }
 
-    /// <summary>
-    /// Igual que GetTopSessions pero filtra duplicados de un mismo jugador con el mismo tiempo.
-    /// </summary>
+   
     public List<SessionRankInfo> GetTopSessionsFiltered(int count)
     {
-        // Pedimos extra para tener margen al filtrar
         var topExpanded = GetTopSessions(count * 2);
         var filtered = new List<SessionRankInfo>();
-
         foreach (var ses in topExpanded)
         {
             bool dup = filtered.Any(e =>

@@ -19,6 +19,8 @@ public class PlayerRegistrationManager : MonoBehaviour
     [Header("Botón de Jugar")]
     public Button playButton;
 
+    public bool debugMode;
+
     // Dificultad actualmente seleccionada
     public Difficulty selectedDifficulty = Difficulty.Easy;
     public bool difficultyChosen = false;
@@ -28,6 +30,7 @@ public class PlayerRegistrationManager : MonoBehaviour
         // Ocultar ayuda y desactivar Play hasta elegir dificultad
         if (helpText != null) helpText.gameObject.SetActive(false);
         if (playButton != null) playButton.interactable = false;
+        if (debugMode) nameInputField.text = "pruebas";
 
         // Listeners de dificultad
         easyButton.onClick.AddListener(() => OnDifficultySelected(Difficulty.Easy, easyButton));
@@ -59,6 +62,7 @@ public class PlayerRegistrationManager : MonoBehaviour
         competitiveButton.image.color = Color.white;
     }
 
+    
     public void OnPlayClicked()
     {
         string playerName = nameInputField.text.Trim();

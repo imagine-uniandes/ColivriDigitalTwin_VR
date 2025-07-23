@@ -13,7 +13,7 @@ public class CodeManager : MonoBehaviour
     private int[] digitValues = new int[3];
     [Header("Feedback")]
     [SerializeField] private GameObject panelCorrecto;
-    [SerializeField] private GameObject panelVolverMenu;
+   
     [SerializeField] private GameObject panelCerca;
     [SerializeField] private GameObject panelClave;
     [SerializeField] private TextMeshProUGUI txtPosiciones;
@@ -39,7 +39,6 @@ public class CodeManager : MonoBehaviour
         panelCorrecto.SetActive(false);
         panelCerca.SetActive(false);
         panelClave.SetActive(true);
-        panelVolverMenu.SetActive(false);
         startTime = Time.time;
 
     }
@@ -121,7 +120,6 @@ public class CodeManager : MonoBehaviour
         {
             panelCorrecto.SetActive(true);
             panelClave.SetActive(false);
-            panelVolverMenu.SetActive(true);
             float elapsed = Time.time - startTime;
             string playerName = PlayerPrefs.GetString("PlayerName", "Jugador");
             LeaderboardManager.Instance.AddEntry(playerName, elapsed);
@@ -129,6 +127,12 @@ public class CodeManager : MonoBehaviour
             OnCodeSuccessEvent?.Invoke(elapsed);
             Debug.Log($"Código correcto ingresado por {playerName} en {elapsed} segundos.");
             PlayerDataManager.Instance.RecordSessionTime(elapsed);
+            var table = FindObjectOfType<HighScoreTable>();
+            if (table != null)
+                table.AddHighscoreEntry(elapsed, playerName);
+            else
+                Debug.LogWarning("No se encontró HighScoreTable en la escena");
+            PlayerPrefs.Save();
 
         }
         else

@@ -23,7 +23,7 @@ public class GameSession
     }
 }
 
-// Clase para almacenar los datos de un jugador individual
+//almacenar los datos de un jugador individual
 [Serializable]
 public class PlayerData
 {
@@ -38,7 +38,6 @@ public class PlayerData
         public string key;
         public GameSession value;
     }
-
     public List<SessionEntry> partidasList = new List<SessionEntry>();
 
     public PlayerData(string name)
@@ -124,11 +123,8 @@ public class PlayerDataManager : MonoBehaviour
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
-        // Cargar dificultad previa
         if (PlayerPrefs.HasKey("difficulty"))
             currentDifficulty = (Difficulty)PlayerPrefs.GetInt("difficulty");
-
         dataPath = Path.Combine(Application.persistentDataPath, "playerdata.json");
         LoadData();
     }
@@ -181,19 +177,12 @@ public class PlayerDataManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// Crea o selecciona jugador, inicia sesión.
-    /// </summary>
     public bool CreateOrSelectPlayer(string name)
     {
-        return PlayerExists(name)
-            ? LoginExistingPlayer(name)
-            : CreateNewPlayer(name);
+        return PlayerExists(name)? LoginExistingPlayer(name) : CreateNewPlayer(name);
     }
 
-    /// <summary>
-    /// Graba tiempo de la sesión solo en modo competitivo.
-    /// </summary>
+   
     public void RecordSessionTime(float time)
     {
         if (currentDifficulty != Difficulty.Competitive || currentPlayer == null || currentSession == null)
