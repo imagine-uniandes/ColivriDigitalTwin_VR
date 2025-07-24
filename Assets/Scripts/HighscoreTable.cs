@@ -1,76 +1,51 @@
+using System;         // ← añade esto
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System.Collections.Generic;
-using System.Collections;
-using UnityEngine.UI;
-using System.Linq;
 
 public class HighScoreTable : MonoBehaviour
 {
-
-    [SerializeField] private Transform entryContainer;
-    [SerializeField] private Transform entryTemplate;
-
-    private readonly List<Transform> entryTransformList = new List<Transform>();
+    [SerializeField] private Transform rowContainer;    // contenedor de filas
+    [SerializeField] private Transform rowTemplate;     // plantilla de una fila (inicialmente inactiva)
 
     private void Awake()
     {
-        entryTemplate.gameObject.SetActive(false);
-        RefreshTable();
+        rowTemplate.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Actualiza la tabla de clasificación a partir del ranking almacenado.
+    /// </summary>
     public void RefreshTable()
     {
-        // Limpiar UI
-        foreach (var t in entryTransformList)
-            Destroy(t.gameObject);
-        entryTransformList.Clear();
-
-        // Obtener ranking desde PlayerDataManager
-        var ranking = PlayerDataManager.Instance.GetRanking();
-
-        // Mapear a entries y ordenarlos
-        var entries = ranking.Select(p => new {
-                name   = p.playerName,
-                tiempo = p.GetBestSession().tiempoJugado
-            })
-            .OrderBy(e => e.tiempo)
-            .ToList();
-
-        // Crear filas
-        float templateHeight = 30f;
-        for (int i = 0; i < entries.Count; i++)
+        // Eliminar filas antiguas
+        foreach (Transform child in rowContainer)
         {
-            var e = entries[i];
-            var tr = Instantiate(entryTemplate, entryContainer);
-            tr.gameObject.SetActive(true);
-            var rect = tr.GetComponent<RectTransform>();
-            rect.anchoredPosition = new Vector2(0, -templateHeight * i);
+            if (child != rowTemplate) Destroy(child.gameObject);
+        }
 
-            // Rango
-            string rank = i == 0 ? "1st"
-                        : i == 1 ? "2nd"
-                        : i == 2 ? "3rd"
-                        : $"{i+1}th";
-            tr.Find("posText")
-              .GetComponent<TextMeshProUGUI>().text = rank;
+        List<PlayerData> ranking = PlayerDataManager.Instance.GetRanking();
+        for (int i = 0; i < ranking.Count; i++)
+        {
+            Transform row = Instantiate(rowTemplate, rowContainer);
+            row.gameObject.SetActive(true);
 
-            // Tiempo
-            int m = Mathf.FloorToInt(e.tiempo / 60f);
-            int s = Mathf.FloorToInt(e.tiempo % 60f);
-            tr.Find("timeText")
-              .GetComponent<TextMeshProUGUI>().text = $"{m:00}:{s:00}";
+            // Obtener referencias a los textos; se espera que el orden sea Posición- Nombre - Tiempo
+            TextMeshProUGUI[] texts = row.GetComponentsInChildren<TextMeshProUGUI>();
+            if (texts.Length >= 3)
+            {
+                int position = i + 1;
+                string playerName = ranking[i].playerName;
+                float bestTime = ranking[i].BestTime;
 
-            // Nombre
-            tr.Find("nameText")
-              .GetComponent<TextMeshProUGUI>().text = e.name;
+                // Formatear el tiempo a mm:ss.ms (puedes ajustar el formato según necesidad)
+                TimeSpan t = TimeSpan.FromSeconds(bestTime);
+                string timeString = string.Format("{0:D2}:{1:D2}.{2:D2}", t.Minutes, t.Seconds, t.Milliseconds / 10);
 
-            // Resaltar primer lugar
-            if (i == 0)
-                foreach (var f in new[]{ "posText","timeText","nameText" })
-                    tr.Find(f).GetComponent<TextMeshProUGUI>().color = Color.green;
-
-            entryTransformList.Add(tr);
+                texts[0].text = position.ToString();
+                texts[1].text = playerName;
+                texts[2].text = timeString;
+            }
         }
     }
 }

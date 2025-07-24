@@ -3,34 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
-
-
 public class GameController : MonoBehaviour
 {
     public static GameController Instance { get; private set; }
 
     [Header("UI Panels")]
-    public GameObject registrationPanel;     
-    public GameObject instructionsPanel;     
-    public GameObject codePanel;              
-    public GameObject timerPanel;             
-    public GameObject gameOverPanel;          
+    public GameObject registrationPanel;
+    public GameObject instructionsPanel;
+    public GameObject codePanel;
+    public GameObject timerPanel;
+    public GameObject gameOverPanel;
     [SerializeField] private HighScoreTable highScoreTable;
     public GameObject statsRankingPanel;
 
     [Header("UI Elements")]
-    public TMP_InputField nameInput;          
+    public TMP_InputField nameInput;
     public Button easyButton, normalButton, competitiveButton;
     public Button playButton;
     public TextMeshProUGUI timerText;
-    public TextMeshProUGUI gameOverMessage;   
+    public TextMeshProUGUI gameOverMessage;
     public Button retryButton;
 
     [Header("Gameplay Objects")]
     [SerializeField]
-    public List<GameObject> teleportHotspots;    
-    public Color helpColor = Color.green;     
+    public List<GameObject> teleportHotspots;
+    public Color helpColor = Color.green;
     private Difficulty difficulty;
     private Vector3 playerStartPos;
     private float countdownTime;
@@ -56,7 +53,7 @@ public class GameController : MonoBehaviour
         statsRankingPanel.SetActive(false);
         // Restaurar dificultad previa si existe
         difficulty = (Difficulty)PlayerPrefs.GetInt("difficulty", (int)Difficulty.Easy);
-       
+
         easyButton.onClick.AddListener(() => SelectDifficulty(Difficulty.Easy));
         normalButton.onClick.AddListener(() => SelectDifficulty(Difficulty.Normal));
         competitiveButton.onClick.AddListener(() => SelectDifficulty(Difficulty.Competitive));
@@ -64,7 +61,7 @@ public class GameController : MonoBehaviour
         retryButton.onClick.AddListener(OnRetryClicked);
 
         // Suscribirnos al exito de código
-        CodeManager.OnCodeSuccessEvent += OnCodeSuccess;
+        CodeManager.OnCodeSuccessEvent += OnCodeSuccess; //sospechoso
     }
 
     public void OnDestroy()
@@ -76,10 +73,10 @@ public class GameController : MonoBehaviour
     {
         difficulty = d;
         PlayerPrefs.SetInt("difficulty", (int)d);
-        
+
     }
 
-    
+
 
     public void OnPlayClicked()
     {
@@ -97,33 +94,36 @@ public class GameController : MonoBehaviour
         codePanel.SetActive(true);
         timerPanel.SetActive(true);
         gameOverPanel.SetActive(false);
-        statsRankingPanel.SetActive(false);
+        
         switch (difficulty)
         {
             case Difficulty.Easy:
                 foreach (var hotspot in teleportHotspots)
-            {
-                hotspot.SetActive(true);
-            }
-            timerRunning = false;
-            break;
+                {
+                    hotspot.SetActive(true);
+                }
+                timerRunning = false;
+                break;
 
             case Difficulty.Normal:
-                ApplyHotspotHelp(false);
+                foreach (var hotspot in teleportHotspots)
+                {
+                    hotspot.SetActive(false);
+                }
                 timerRunning = false;
                 break;
 
             case Difficulty.Competitive:
                 ApplyHotspotHelp(false);
                 //al seleccionar el modo competitivo, tiene que cambiar el timer
-
                 // Tomar el mejor tiempo menor de todos los jugadores anteriores
+                //necesito cambiar el tiempo 
                 var ranking = PlayerDataManager.Instance.GetRanking();
                 if (ranking.Count > 0)
                 {
                     countdownTime = ranking[0].GetCurrentSession().tiempoJugado;
                 }
-                else countdownTime = 60f; 
+                else countdownTime = 60f;
                 timerRunning = true;
                 break;
         }
@@ -144,42 +144,26 @@ public class GameController : MonoBehaviour
     }
 
     public void OnCodeSuccess(float elapsedTime)
-{
-    // 1. Detener el timer
-    timerRunning = false;
-
-    // 2. Guardar resultado en PlayerDataManager (y en PlayerPrefs)
-    PlayerDataManager.Instance.UpdateCurrentSessionStats(
-        elapsedTime,
-        $"Partida {DateTime.Now:HH:mm:ss}"
-    );
-
-    // 3. Refrescar la UI del ranking
-    if (highScoreTable == null)
-        highScoreTable = FindObjectOfType<HighScoreTable>();
-
-    if (highScoreTable != null)
     {
+        // 1. Detener el timer
+        timerRunning = false;
+
+        // 2. Guardar resultado en PlayerDataManager (y en PlayerPrefs)
+        PlayerDataManager.Instance.UpdateCurrentSessionStats(elapsedTime,$"Partida {DateTime.Now:HH:mm:ss}");
+
         highScoreTable.RefreshTable();
-    }
-    else
-    {
-        Debug.LogWarning("HighScoreTable no encontrado en la escena.");
-    }
+        if (difficulty == Difficulty.Competitive)
+        {
+            var stats = statsRankingPanel.GetComponent<GameStatistics>();
+            Debug.Log(stats);
+            stats.ShowEndGameStatistics(PlayerPrefs.GetString("PlayerName", "Jugador"), elapsedTime);
 
-    // 4. Mostrar estadísticas o reiniciar según modo
-    string playerName = PlayerPrefs.GetString("PlayerName", "Jugador");
-    if (difficulty == Difficulty.Competitive)
-    {
-        var stats = statsRankingPanel.GetComponent<GameStatistics>();
-        stats.ShowEndGameStatistics(playerName, elapsedTime);
+        }
+        else
+        {
+            ResetSession();
+        }
     }
-    else
-    {
-        // En modo Easy/Normal, reiniciar la sesión
-        ResetSession();
-    }
-}
 
     public void TriggerGameOver()
     {
@@ -210,7 +194,7 @@ public class GameController : MonoBehaviour
         statsRankingPanel.SetActive(false);
         gameOverPanel.SetActive(false);
         timerText.text = "00:00";
-        countdownTime = 60f; 
+        countdownTime = 60f;
         if (timerRunning)
             timerText.text = $"{Mathf.FloorToInt(countdownTime / 60):D2}:{Mathf.FloorToInt(countdownTime % 60):D2}";
         ApplyHotspotHelp(difficulty == Difficulty.Easy);
@@ -218,24 +202,33 @@ public class GameController : MonoBehaviour
 
         registrationPanel.SetActive(false);
         instructionsPanel.SetActive(false);
-        nameInput.text = ""; 
+        nameInput.text = "";
         var player = GameObject.FindWithTag("Player");
         if (player != null) player.transform.position = playerStartPos;
-        
+
         var feedbackPanels = FindObjectsOfType<CodeManager>();
         foreach (var panel in feedbackPanels)
         {
             panel.ResetSession();
         }
 
-        
+
     }
 
     public void ApplyHotspotHelp(bool show)
     {
-        foreach (var go in teleportHotspots){
-    var rend = go.GetComponent<Renderer>();
-    if (rend != null) 
-        rend.material.color = show ? helpColor : Color.white;}
+        foreach (var go in teleportHotspots)
+        {
+            var rend = go.GetComponent<Renderer>();
+            if (rend != null)
+                rend.material.color = show ? helpColor : Color.white;
+        }
+    }
+    
+    public enum Difficulty
+    {
+        Easy,
+        Normal,
+        Competitive
     }
 }

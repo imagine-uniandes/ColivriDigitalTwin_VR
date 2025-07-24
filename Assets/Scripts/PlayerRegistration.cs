@@ -2,13 +2,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+public enum Difficulty { Easy = 0, Normal = 1, Competitive = 2 }
+
 public class PlayerRegistrationManager : MonoBehaviour
 {
     [Header("UI References")]
-    [Tooltip("Campo de entrada para el nombre del jugador")]
     public TMP_InputField nameInputField;
-
-    [Tooltip("Texto para mostrar errores o ayuda al usuario")]
     public TextMeshProUGUI helpText;
 
     [Header("Botones de Dificultad")]
@@ -21,40 +20,46 @@ public class PlayerRegistrationManager : MonoBehaviour
 
     public bool debugMode;
 
-    // Dificultad actualmente seleccionada
     public Difficulty selectedDifficulty = Difficulty.Easy;
     public bool difficultyChosen = false;
 
-    public void Start()
+    private void Start()
     {
-        // Ocultar ayuda y desactivar Play hasta elegir dificultad
+        // Al iniciar, ocultar el mensaje de ayuda y desactivar el botón Play
         if (helpText != null) helpText.gameObject.SetActive(false);
         if (playButton != null) playButton.interactable = false;
+
         if (debugMode) nameInputField.text = "pruebas";
 
-        // Listeners de dificultad
+        // Suscribir callbacks a los botones de dificultad
         easyButton.onClick.AddListener(() => OnDifficultySelected(Difficulty.Easy, easyButton));
         normalButton.onClick.AddListener(() => OnDifficultySelected(Difficulty.Normal, normalButton));
         competitiveButton.onClick.AddListener(() => OnDifficultySelected(Difficulty.Competitive, competitiveButton));
 
-        // Listener de Play
+        // Suscribir callback al botón Play
         playButton.onClick.AddListener(OnPlayClicked);
     }
 
+    /// <summary>
+    /// Maneja la selección de dificultad. Cambia el color del botón seleccionado y habilita el botón Play.
+    /// </summary>
     public void OnDifficultySelected(Difficulty diff, Button btn)
     {
         selectedDifficulty = diff;
         difficultyChosen = true;
 
-        // Guardar en PlayerPrefs para que GameController lo use
+        // Guardar la dificultad en PlayerPrefs para que GameController la pueda leer
         PlayerPrefs.SetInt("difficulty", (int)diff);
 
-        // Activar Play y resaltar el botón
+        // Activar el botón Play y resaltar visualmente el botón elegido
         playButton.interactable = true;
         ResetDifficultyButtons();
         btn.image.color = new Color(0.3f, 0.8f, 1f);
     }
 
+    /// <summary>
+    /// Restablece el color de todos los botones de dificultad.
+    /// </summary>
     public void ResetDifficultyButtons()
     {
         easyButton.image.color = Color.white;
@@ -62,40 +67,45 @@ public class PlayerRegistrationManager : MonoBehaviour
         competitiveButton.image.color = Color.white;
     }
 
-    
+    /// <summary>
+    /// Valida el nombre y la dificultad; si son correctos, registra al jugador y avanza al GameController.
+    /// </summary>
     public void OnPlayClicked()
     {
         string playerName = nameInputField.text.Trim();
 
-        // Validaciones
         if (string.IsNullOrEmpty(playerName))
         {
             ShowError("El nombre no puede estar vacío.");
             return;
         }
+
         if (!difficultyChosen)
         {
             ShowError("Seleccione un nivel de dificultad.");
             return;
         }
 
-        // Guardar nombre
+        // Guardar el nombre para otros componentes
         PlayerPrefs.SetString("PlayerName", playerName);
 
-        // Crear o hacer login del jugador usando la lógica original de futbol
+        // Registrar o seleccionar jugador usando PlayerDataManager
         var mgr = PlayerDataManager.Instance;
         if (mgr.PlayerExists(playerName))
             mgr.LoginExistingPlayer(playerName);
         else
             mgr.CreateNewPlayer(playerName);
 
-        // Ocultar panel de registro
+        // Ocultar el panel de registro 
         gameObject.SetActive(false);
 
-        // Llamar al GameController para iniciar la partida
+        // Delegar en GameController la preparación de la partida
         GameController.Instance.OnPlayClicked();
     }
 
+    /// <summary>
+    /// Muestra un mensaje de error en pantalla.
+    /// </summary>
     public void ShowError(string message)
     {
         if (helpText != null)
@@ -104,4 +114,5 @@ public class PlayerRegistrationManager : MonoBehaviour
             helpText.gameObject.SetActive(true);
         }
     }
+
 }

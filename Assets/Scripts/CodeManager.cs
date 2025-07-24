@@ -119,30 +119,16 @@ public class CodeManager : MonoBehaviour
         if (currentInput == respuesta)
         {
             panelCorrecto.SetActive(true);
-        panelClave.SetActive(false);
+            panelClave.SetActive(false);
 
-        float elapsed = Time.time - startTime;
+            float elapsed = Time.time - startTime;
 
         // 1. Grabar en PlayerDataManager (usa PlayerPrefs internamente)
-        PlayerDataManager.Instance.UpdateCurrentSessionStats(
-            elapsed,
-            $"Partida {DateTime.Now:HH:mm:ss}"
-        );
+        
+            OnCodeSuccessEvent?.Invoke(elapsed);
+            Debug.Log($"Código correcto ingresado en {elapsed:F2} s.");
 
-        // 2. Refrescar el ranking en pantalla
-        var table = FindObjectOfType<HighScoreTable>();
-        if (table != null)
-            table.RefreshTable();
-        else
-            Debug.LogWarning("HighScoreTable no encontrado en la escena");
-
-        // 3. Seguir con el flujo de juego
-        GameFlowManager.Instance.OnCodeSuccess(elapsed);
-        OnCodeSuccessEvent?.Invoke(elapsed);
-        Debug.Log($"Código correcto ingresado en {elapsed:F2} s.");
-
-        // 4. (Opcional) Llamar a RecordSessionTime directamente si lo necesitas
-        PlayerDataManager.Instance.RecordSessionTime(elapsed);
+        
 
 
         }

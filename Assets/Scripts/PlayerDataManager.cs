@@ -1,230 +1,127 @@
+
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System.Linq;     // ← esta línea es imprescindible para usar OrderBy/Where con lambdas
 using UnityEngine;
 
-public enum Difficulty { Easy = 0, Normal = 1, Competitive = 2 }
-
-// guarda los datos de la partida individual
-enum SessionState { None, Running, Paused }
+/// <summary>
+/// Representa una única sesión de juego del jugador.
+/// </summary>
 [Serializable]
-public class GameSession
-{
-    public string nombre;
+public class SessionData {
+    public string sessionName;
     public float tiempoJugado;
-    public string fecha;
-
-    public GameSession()
-    {
-        nombre = "Partida " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        tiempoJugado = 0f;
-        fecha = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-    }
 }
 
-//almacenar los datos de un jugador individual
+/// <summary>
+/// Contiene la lista de sesiones de un jugador concreto.
+/// </summary>
 [Serializable]
-public class PlayerData
-{
+public class PlayerData {
     public string playerName;
-    [NonSerialized]
-    public Dictionary<string, GameSession> partidasJugadas = new Dictionary<string, GameSession>();
-    public string ultimaPartida;
+    public List<SessionData> sesiones = new List<SessionData>();
 
-    [Serializable]
-    public class SessionEntry
-    {
-        public string key;
-        public GameSession value;
-    }
-    public List<SessionEntry> partidasList = new List<SessionEntry>();
+    public float BestTime => sesiones.Count > 0 ? sesiones.Min(s => s.tiempoJugado) : float.MaxValue;
 
-    public PlayerData(string name)
-    {
-        playerName = name;
-        ultimaPartida = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        partidasJugadas = new Dictionary<string, GameSession>();
-        partidasJugadas.Add("partida1", new GameSession());
-        SyncFromDictionary();
-    }
-
-    public void SyncFromDictionary()
-    {
-        partidasList.Clear();
-        foreach (var kvp in partidasJugadas)
-            partidasList.Add(new SessionEntry { key = kvp.Key, value = kvp.Value });
-    }
-
-    public void SyncToDictionary()
-    {
-        partidasJugadas = new Dictionary<string, GameSession>();
-        foreach (var entry in partidasList)
-            if (entry != null && entry.key != null && entry.value != null)
-                partidasJugadas[entry.key] = entry.value;
-    }
-
-    public GameSession AddNewSession()
-    {
-        if (partidasJugadas == null || partidasJugadas.Count == 0) SyncToDictionary();
-        int num = partidasJugadas.Count + 1;
-        string key = "partida" + num;
-        var gs = new GameSession();
-        partidasJugadas[key] = gs;
-        ultimaPartida = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        SyncFromDictionary();
-        return gs;
-    }
-
-    public GameSession GetCurrentSession()
-    {
-        if (partidasJugadas == null || partidasJugadas.Count == 0) SyncToDictionary();
-        if (partidasJugadas.Count == 0) return AddNewSession();
-        string key = "partida" + partidasJugadas.Count;
-        return partidasJugadas.ContainsKey(key) ? partidasJugadas[key] : AddNewSession();
-    }
-
-    public int GetPuntuacionTotal()
-    {
-        if (partidasJugadas == null || partidasJugadas.Count == 0) SyncToDictionary();
-        int total = 0;
-        foreach (var p in partidasJugadas.Values)
-            total += (int)p.tiempoJugado;
-        return total;
-    }
-
-    public GameSession GetBestSession()
-    {
-        if (partidasJugadas == null || partidasJugadas.Count == 0) SyncToDictionary();
-        if (partidasJugadas.Count == 0) return null;
-        return partidasJugadas.Values.OrderBy(p => p.tiempoJugado).First();
-    }
+    public SessionData GetCurrentSession() => sesiones.Count > 0 ? sesiones[^1] : null;
 }
 
+/// <summary>
+/// Contenedor para serializar/deserializar una lista de jugadores.
+/// </summary>
 [Serializable]
-public class GameData
-{
+public class PlayerDataList {
     public List<PlayerData> players = new List<PlayerData>();
-    public void RebuildDictionaries() => players.ForEach(p => p.SyncToDictionary());
 }
 
-
+/// <summary>
+/// Gestor de datos de jugadores. Permite crear jugadores, iniciar sesiones,
+/// guardar y cargar la lista de jugadores y consultar el ranking.
+/// </summary>
 public class PlayerDataManager : MonoBehaviour
 {
     public static PlayerDataManager Instance { get; private set; }
-    public Difficulty currentDifficulty { get; private set; } = Difficulty.Easy;
+    private const string SaveKey = "PlayerDataList";
+    private PlayerDataList dataList = new PlayerDataList();
+    private PlayerData currentPlayer;
 
-    //public string dataPath;
-    public GameData gameData; //revisar el game data el cual guarda una lista de los jugadores
-    public PlayerData currentPlayer;
-    public GameSession currentSession;
-    private const string kGameDataKey = "gameData";  // Key única en PlayerPrefs
-
-    public void Awake()
+    private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
-        if (PlayerPrefs.HasKey("difficulty"))
-            currentDifficulty = (Difficulty)PlayerPrefs.GetInt("difficulty");
-
-        // Cargar datos desde PlayerPrefs
-        LoadData();
+        Load();
     }
 
-    public void SetDifficulty(Difficulty diff)
+    /// <summary>
+    /// Crea o selecciona un jugador y añade una nueva sesión.
+    /// </summary>
+    public void CreateOrSelectPlayer(string playerName)
     {
-        currentDifficulty = diff;
-        PlayerPrefs.SetInt("difficulty", (int)diff);
+        currentPlayer = dataList.players.Find(p => p.playerName.Equals(playerName, StringComparison.OrdinalIgnoreCase));
+        if (currentPlayer == null)
+        {
+            currentPlayer = new PlayerData { playerName = playerName };
+            dataList.players.Add(currentPlayer);
+        }
+        // Al iniciar una partida se crea una sesión vacía que luego se actualizará
+        currentPlayer.sesiones.Add(new SessionData());
+        Save();
+    }
+
+    /// <summary>
+    /// Actualiza la última sesión del jugador actual con el tiempo jugado y un nombre descriptivo.
+    /// </summary>
+    public void UpdateCurrentSessionStats(float elapsedTime, string sessionName)
+    {
+        if (currentPlayer == null) return;
+        var session = currentPlayer.GetCurrentSession();
+        if (session != null)
+        {
+            session.tiempoJugado = elapsedTime;
+            session.sessionName = sessionName;
+            Save();
+        }
+    }
+    /// <summary>
+    /// Devuelve la lista de jugadores ordenada por su mejor tiempo (menor es mejor).
+    /// </summary>
+    public List<PlayerData> GetRanking()
+    {
+    // Filtrar los jugadores que tienen al menos una sesión registrada.
+    // Se ordenan por su mejor tiempo (menor a mayor) y se devuelven en una lista nueva.
+    return dataList.players
+                   .Where(player => player.sesiones != null && player.sesiones.Count > 0)
+                   .OrderBy(player => player.BestTime)
+                   .ToList();
+    }
+
+    private void Save()
+    {
+        string json = JsonUtility.ToJson(dataList);
+        PlayerPrefs.SetString(SaveKey, json);
         PlayerPrefs.Save();
     }
 
-    public void LoadData()
+    private void Load()
     {
-        string json = PlayerPrefs.GetString(kGameDataKey, "");
-        if (string.IsNullOrEmpty(json))
+        if (PlayerPrefs.HasKey(SaveKey))
         {
-            gameData = new GameData();
-        }
-        else
-        {
-            gameData = JsonUtility.FromJson<GameData>(json) ?? new GameData();
-            gameData.RebuildDictionaries();
+            string json = PlayerPrefs.GetString(SaveKey);
+            dataList = JsonUtility.FromJson<PlayerDataList>(json);
         }
     }
 
-    public void SaveData()
+    public bool PlayerExists(string playerName)
     {
-        // Reconstruir listas antes de serializar
-        gameData.RebuildDictionaries();
-        string json = JsonUtility.ToJson(gameData, prettyPrint: true);
-        PlayerPrefs.SetString(kGameDataKey, json);
-        PlayerPrefs.Save();
+        return dataList.players.Exists(player => player.playerName.Equals(playerName, StringComparison.OrdinalIgnoreCase));
     }
-
-    public bool PlayerExists(string name) => !string.IsNullOrWhiteSpace(name) &&
-        gameData.players.Any(p => p.playerName.Equals(name, StringComparison.OrdinalIgnoreCase));
-
-    public bool CreateNewPlayer(string name)
+    public void LoginExistingPlayer(string playerName)
     {
-        if (string.IsNullOrWhiteSpace(name) || PlayerExists(name)) return false;
-        currentPlayer = new PlayerData(name);
-        gameData.players.Add(currentPlayer);
-        currentSession = currentPlayer.GetCurrentSession();
-        SaveData();
-        return true;
+        CreateOrSelectPlayer(playerName);
     }
-
-    public bool LoginExistingPlayer(string name)
+    public void CreateNewPlayer(string playerName)
     {
-        if (!PlayerExists(name)) return false;
-        currentPlayer = gameData.players.First(p => p.playerName.Equals(name, StringComparison.OrdinalIgnoreCase));
-        currentPlayer.SyncToDictionary();
-        currentSession = currentPlayer.AddNewSession();
-        SaveData();
-        return true;
-    }
-
-    public bool CreateOrSelectPlayer(string name)
-    {
-        return PlayerExists(name)? LoginExistingPlayer(name) : CreateNewPlayer(name);
-    }
-
-   
-    public void RecordSessionTime(float time)
-    {
-        if (currentDifficulty != Difficulty.Competitive || currentPlayer == null || currentSession == null)
-            return;
-        currentSession.tiempoJugado = time;
-        currentSession.fecha = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        SaveData();
-    }
-
-    public void UpdateCurrentSessionStats(float tiempoJugado, string nuevoNombrePartida)
-    {
-        RecordSessionTime(tiempoJugado);
-        if (currentSession != null)
-        {
-            currentSession.nombre = nuevoNombrePartida;
-            SaveData();
-        }
-    }
-
-    public PlayerData GetCurrentPlayer() => currentPlayer;
-    public GameSession GetCurrentSession() => currentSession;
-    public List<PlayerData> GetRanking() =>
-        gameData.players.OrderBy(p => p.GetPuntuacionTotal()).ToList();
-
-    public void DeleteAllData()
-    {
-        gameData = new GameData();
-        currentPlayer = null;
-        currentSession = null;
-        SaveData();
+        CreateOrSelectPlayer(playerName);
     }
 }
