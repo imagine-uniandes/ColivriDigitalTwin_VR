@@ -17,13 +17,15 @@ public class SessionData {
 /// Contiene la lista de sesiones de un jugador concreto.
 /// </summary>
 [Serializable]
-public class PlayerData {
+public class PlayerData
+{
     public string playerName;
     public List<SessionData> sesiones = new List<SessionData>();
 
     public float BestTime => sesiones.Count > 0 ? sesiones.Min(s => s.tiempoJugado) : float.MaxValue;
 
     public SessionData GetCurrentSession() => sesiones.Count > 0 ? sesiones[^1] : null;
+    
 }
 
 /// <summary>
@@ -49,7 +51,7 @@ public class PlayerDataManager : MonoBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(transform.root.gameObject);
         Load();
     }
 

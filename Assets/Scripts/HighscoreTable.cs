@@ -38,9 +38,9 @@ public class HighScoreTable : MonoBehaviour
                 string playerName = ranking[i].playerName;
                 float bestTime = ranking[i].BestTime;
 
-                // Formatear el tiempo a mm:ss.ms (puedes ajustar el formato según necesidad)
+                // Formatear el tiempo a mm:ss (puedes ajustar el formato según necesidad)
                 TimeSpan t = TimeSpan.FromSeconds(bestTime);
-                string timeString = string.Format("{0:D2}:{1:D2}.{2:D2}", t.Minutes, t.Seconds, t.Milliseconds / 10);
+                string timeString = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
 
                 texts[0].text = position.ToString();
                 texts[1].text = playerName;

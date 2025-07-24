@@ -37,7 +37,7 @@ public class GameController : MonoBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(transform.root.gameObject);
     }
 
     public void Start()
@@ -89,28 +89,25 @@ public class GameController : MonoBehaviour
 
         PlayerPrefs.SetString("PlayerName", playerName);
         PlayerDataManager.Instance.CreateOrSelectPlayer(playerName);
+
         registrationPanel.SetActive(false);
         instructionsPanel.SetActive(false);
         codePanel.SetActive(true);
         timerPanel.SetActive(true);
         gameOverPanel.SetActive(false);
-        
+
+        timerRunning = false;
+
         switch (difficulty)
         {
             case Difficulty.Easy:
-                foreach (var hotspot in teleportHotspots)
-                {
-                    hotspot.SetActive(true);
-                }
-                timerRunning = false;
+                foreach (var hotspot in teleportHotspots) hotspot.SetActive(true);
+                countdownTime = 0f;
                 break;
 
             case Difficulty.Normal:
-                foreach (var hotspot in teleportHotspots)
-                {
-                    hotspot.SetActive(false);
-                }
-                timerRunning = false;
+                foreach (var hotspot in teleportHotspots) hotspot.SetActive(false);
+                countdownTime = 0f;
                 break;
 
             case Difficulty.Competitive:
@@ -118,15 +115,16 @@ public class GameController : MonoBehaviour
                 //al seleccionar el modo competitivo, tiene que cambiar el timer
                 // Tomar el mejor tiempo menor de todos los jugadores anteriores
                 //necesito cambiar el tiempo 
-                var ranking = PlayerDataManager.Instance.GetRanking();
-                if (ranking.Count > 0)
-                {
-                    countdownTime = ranking[0].GetCurrentSession().tiempoJugado;
-                }
-                else countdownTime = 60f;
+                // Oculta cualquier ayuda, inicializa la cuenta atrás y activa el timer
+
+                countdownTime = 60f; // 60 segundos de cuenta atrás
                 timerRunning = true;
                 break;
+
         }
+        int minutes = Mathf.FloorToInt(countdownTime / 60f);
+        int seconds = Mathf.FloorToInt(countdownTime % 60f);
+        timerText.text = $"{minutes:D2}:{seconds:D2}";
     }
 
     public void Update()
@@ -157,6 +155,8 @@ public class GameController : MonoBehaviour
             var stats = statsRankingPanel.GetComponent<GameStatistics>();
             Debug.Log(stats);
             stats.ShowEndGameStatistics(PlayerPrefs.GetString("PlayerName", "Jugador"), elapsedTime);
+            //tengo que llamar a highscore para guardar los mismos datos del jugador y el nombre
+
 
         }
         else
@@ -183,6 +183,7 @@ public class GameController : MonoBehaviour
 
     public void ResetSession()
     {
+
         // Reinicia la logica de CodeManager 
         var cm = FindObjectOfType<CodeManager>();
         if (cm != null) cm.ResetSession();
