@@ -102,10 +102,7 @@ public class PlayerDataManager : MonoBehaviour
         // Filtrar los jugadores que tienen al menos una sesión registrada.
         // Se ordenan por su mejor tiempo (menor a mayor) y se devuelven en una lista nueva.
         //return dataList.players.Where(player => player.sesiones != null && player.sesiones.Count > 0).OrderBy(player => player.BestTime).ToList();
-        return dataList.players
-                   .Where(player => player.sesiones.Any(s => s.tiempoJugado > 0f))
-                   .OrderBy(player => player.BestTime)
-                   .ToList();
+        return dataList.players.Where(player => player.sesiones.Any(s => s.tiempoJugado > 0f)).OrderBy(player => player.BestTime).Take(10).ToList();
     }
 
     private void Save()
