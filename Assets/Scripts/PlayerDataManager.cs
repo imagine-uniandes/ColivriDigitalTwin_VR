@@ -22,7 +22,16 @@ public class PlayerData
     public string playerName;
     public List<SessionData> sesiones = new List<SessionData>();
 
-    public float BestTime => sesiones.Count > 0 ? sesiones.Min(s => s.tiempoJugado) : float.MaxValue;
+    //public float BestTime => sesiones.Count > 0 ? sesiones.Min(s => s.tiempoJugado) : float.MaxValue;
+    public float BestTime {
+        get {
+            var tiemposValidos = sesiones.Where(s => s.tiempoJugado > 0f);
+            return tiemposValidos.Any() ? tiemposValidos.Min(s => s.tiempoJugado) : float.MaxValue;
+        }
+    }
+
+    public float LastSessionTime => sesiones.Count > 0 ? sesiones[^1].tiempoJugado : float.MaxValue;
+
 
     public SessionData GetCurrentSession() => sesiones.Count > 0 ? sesiones[^1] : null;
     
@@ -90,10 +99,11 @@ public class PlayerDataManager : MonoBehaviour
     /// </summary>
     public List<PlayerData> GetRanking()
     {
-    // Filtrar los jugadores que tienen al menos una sesión registrada.
-    // Se ordenan por su mejor tiempo (menor a mayor) y se devuelven en una lista nueva.
-    return dataList.players
-                   .Where(player => player.sesiones != null && player.sesiones.Count > 0)
+        // Filtrar los jugadores que tienen al menos una sesión registrada.
+        // Se ordenan por su mejor tiempo (menor a mayor) y se devuelven en una lista nueva.
+        //return dataList.players.Where(player => player.sesiones != null && player.sesiones.Count > 0).OrderBy(player => player.BestTime).ToList();
+        return dataList.players
+                   .Where(player => player.sesiones.Any(s => s.tiempoJugado > 0f))
                    .OrderBy(player => player.BestTime)
                    .ToList();
     }
