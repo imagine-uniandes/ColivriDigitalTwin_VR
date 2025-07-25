@@ -211,7 +211,6 @@ public class GameController : MonoBehaviour
 
     // 4) Permitir al jugador ver la UI (ranking o “¡Correcto!”)
     yield return new WaitForSeconds(rankingDisplayDuration);
-
     // 5) Fundido a negro
     if (cameraBlink != null)
         yield return cameraBlink.DoFadeIn();
@@ -239,8 +238,7 @@ public class GameController : MonoBehaviour
 }
     private void ResetToRegistration()
     {
-        if (audioSource != null)
-            audioSource.Stop();
+        
         // reinicia CodeManager y timer
         FindObjectOfType<CodeManager>()?.ResetSession();
 
@@ -277,8 +275,6 @@ public class GameController : MonoBehaviour
     }
     public void OnRetryClicked()
     {
-        if (audioSource != null)
-            audioSource.Stop();
         gameOverPanel.SetActive(false);
         timerDef.InitializeTimer();  // resetea y detiene
         ResetToRegistration();
