@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +17,12 @@ public class GameController : MonoBehaviour
     public GameObject gameOverPanel;
     [SerializeField] private HighScoreTable highScoreTable;
     public GameObject statsRankingPanel;
+
+    [Header("Ranking Display")]
+    public GameObject highScorePanel;
+    public Transform highScoreFocusPoint;
+    public float rankingDisplayDuration = 3f;
+    [SerializeField] private CameraBlink cameraBlink;
 
     [Header("UI Elements")]
     public TMP_InputField nameInput;
@@ -54,6 +61,7 @@ public class GameController : MonoBehaviour
         timerPanel.SetActive(false);
         gameOverPanel.SetActive(false);
         statsRankingPanel.SetActive(false);
+        highScorePanel.SetActive(false);
         startGameButton.onClick.AddListener(OnStartButtonClicked);
         // Restaurar dificultad previa si existe
         difficulty = (Difficulty)PlayerPrefs.GetInt("difficulty", (int)Difficulty.Easy);
@@ -126,7 +134,6 @@ public class GameController : MonoBehaviour
                 //al seleccionar el modo competitivo, tiene que cambiar el timer
                 // Tomar el mejor tiempo menor de todos los jugadores anteriores
                 //necesito cambiar el tiempo 
-                // Oculta cualquier ayuda, inicializa la cuenta atrás y activa el timer
 
                 countdownTime = 60f; // 60 segundos de cuenta atrás
                 timerRunning = true;
@@ -154,26 +161,52 @@ public class GameController : MonoBehaviour
 
     public void OnCodeSuccess(float elapsedTime)
     {
-        // 1. Detener el timer
+     
         timerRunning = false;
-
-        // 2. Guardar resultado en PlayerDataManager (y en PlayerPrefs)
         PlayerDataManager.Instance.UpdateCurrentSessionStats(elapsedTime,$"Partida {DateTime.Now:HH:mm:ss}");
-
         highScoreTable.RefreshTable();
         if (difficulty == Difficulty.Competitive)
         {
-            var stats = statsRankingPanel.GetComponent<GameStatistics>();
-            Debug.Log(stats);
-            stats.ShowEndGameStatistics(PlayerPrefs.GetString("PlayerName", "Jugador"), elapsedTime);
-            //tengo que llamar a highscore para guardar los mismos datos del jugador y el nombre
-
-
+            StartCoroutine(ShowRankingAndReset(elapsedTime));
         }
         else
         {
             ResetSession();
         }
+    }
+
+    private IEnumerator ShowRankingAndReset(float elapsedTime)
+    {
+        // Mostrar paneles de ranking
+        highScorePanel.SetActive(true);
+        statsRankingPanel.SetActive(true);
+        var stats = statsRankingPanel.GetComponent<GameStatistics>();
+        if (stats != null)
+            stats.ShowEndGameStatistics(PlayerPrefs.GetString("PlayerName", "Jugador"), elapsedTime);
+        // Girar camara hacia el ranking
+        Quaternion originalCamRotation = Camera.main.transform.rotation;
+        if (highScoreFocusPoint != null)
+        {
+            Vector3 dir = (highScoreFocusPoint.position - Camera.main.transform.position).normalized;
+            Camera.main.transform.rotation = Quaternion.LookRotation(dir);
+        }
+        // Esperar unos segundos para que el jugador vea la tabla
+        yield return new WaitForSeconds(rankingDisplayDuration);
+        // Fundido a negro 
+        if (cameraBlink != null)
+            yield return cameraBlink.DoFadeIn();
+        var player = GameObject.FindWithTag("Player");
+        if (player != null) player.transform.position = playerStartPos;
+        Camera.main.transform.rotation = originalCamRotation;
+        highScorePanel.SetActive(false);
+        statsRankingPanel.SetActive(false);
+        ResetSession(); 
+        highScorePanel.SetActive(false);
+        statsRankingPanel.SetActive(false);
+        registrationPanel.SetActive(true);
+        instructionsPanel.SetActive(true);
+        if (cameraBlink != null)
+            yield return cameraBlink.DoFadeOut();
     }
 
     public void TriggerGameOver()

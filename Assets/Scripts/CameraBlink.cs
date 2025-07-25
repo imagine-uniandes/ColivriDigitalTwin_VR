@@ -8,6 +8,8 @@ public class CameraBlink : MonoBehaviour
     public Image fadeImage;
     public float fadeDuration = 0.3f;
 
+
+
     void Start()
     {
         StartCoroutine(FadeOut());
@@ -17,6 +19,9 @@ public class CameraBlink : MonoBehaviour
     {
         StartCoroutine(BlinkRoutine());
     }
+
+    public IEnumerator DoFadeIn()  => FadeIn();
+    public IEnumerator DoFadeOut() => FadeOut();
 
     IEnumerator BlinkRoutine()
     {
