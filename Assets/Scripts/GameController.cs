@@ -41,6 +41,7 @@ public class GameController : MonoBehaviour
     private Vector3 playerStartPos;
     private float countdownTime;
     private bool timerRunning;
+    [SerializeField] private float successDisplayDuration = 2f;
 
     public void Awake()
     {
@@ -165,49 +166,63 @@ public class GameController : MonoBehaviour
         timerRunning = false;
         PlayerDataManager.Instance.UpdateCurrentSessionStats(elapsedTime,$"Partida {DateTime.Now:HH:mm:ss}");
         highScoreTable.RefreshTable();
-        if (difficulty == Difficulty.Competitive)
-        {
-            StartCoroutine(ShowRankingAndReset(elapsedTime));
-        }
-        else
-        {
-            ResetSession();
-        }
+        StartCoroutine(ShowRankingAndReset(elapsedTime));
     }
+    
 
     private IEnumerator ShowRankingAndReset(float elapsedTime)
+{
+    bool isCompetitive = (difficulty == Difficulty.Competitive);
+
+    if (isCompetitive)
     {
-        // Mostrar paneles de ranking
         highScorePanel.SetActive(true);
         statsRankingPanel.SetActive(true);
+
         var stats = statsRankingPanel.GetComponent<GameStatistics>();
         if (stats != null)
-            stats.ShowEndGameStatistics(PlayerPrefs.GetString("PlayerName", "Jugador"), elapsedTime);
-        // Girar camara hacia el ranking
-        Quaternion originalCamRotation = Camera.main.transform.rotation;
-        if (highScoreFocusPoint != null)
-        {
-            Vector3 dir = (highScoreFocusPoint.position - Camera.main.transform.position).normalized;
-            Camera.main.transform.rotation = Quaternion.LookRotation(dir);
-        }
-        // Esperar unos segundos para que el jugador vea la tabla
-        yield return new WaitForSeconds(rankingDisplayDuration);
-        // Fundido a negro 
-        if (cameraBlink != null)
-            yield return cameraBlink.DoFadeIn();
-        var player = GameObject.FindWithTag("Player");
-        if (player != null) player.transform.position = playerStartPos;
-        Camera.main.transform.rotation = originalCamRotation;
-        highScorePanel.SetActive(false);
-        statsRankingPanel.SetActive(false);
-        ResetSession(); 
-        highScorePanel.SetActive(false);
-        statsRankingPanel.SetActive(false);
-        registrationPanel.SetActive(true);
-        instructionsPanel.SetActive(true);
-        if (cameraBlink != null)
-            yield return cameraBlink.DoFadeOut();
+            stats.ShowEndGameStatistics(
+                PlayerPrefs.GetString("PlayerName", "Jugador"), elapsedTime);
     }
+    else
+    {
+        highScorePanel.SetActive(false);
+        statsRankingPanel.SetActive(false);
+    }
+
+    // Orientar la cámara sólo en competitivo, si tienes un punto de enfoque
+    Quaternion originalCamRotation = Camera.main.transform.rotation;
+    if (isCompetitive && highScoreFocusPoint != null)
+    {
+        Vector3 dir = (highScoreFocusPoint.position - Camera.main.transform.position).normalized;
+        Camera.main.transform.rotation = Quaternion.LookRotation(dir);
+    }
+
+    // Esperar 'rankingDisplayDuration' segundos para que el jugador vea el panel de acierto o el ranking
+    yield return new WaitForSeconds(rankingDisplayDuration);
+
+    // Fundido a negro
+    if (cameraBlink != null)
+        yield return cameraBlink.DoFadeIn();
+
+    
+    var player = GameObject.FindWithTag("Player");
+    if (player != null) player.transform.position = playerStartPos;
+    Camera.main.transform.rotation = originalCamRotation;
+    highScorePanel.SetActive(false);
+    statsRankingPanel.SetActive(false);
+
+    ResetSession();
+
+    
+    codePanel.SetActive(false);
+    timerPanel.SetActive(false);
+    registrationPanel.SetActive(true);
+    instructionsPanel.SetActive(true);
+
+    if (cameraBlink != null)
+        yield return cameraBlink.DoFadeOut();
+}
 
     public void TriggerGameOver()
     {

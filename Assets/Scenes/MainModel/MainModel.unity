@@ -6477,7 +6477,7 @@ MonoBehaviour:
   statsRankingPanel: {fileID: 1845066616}
   highScorePanel: {fileID: 1231544850}
   highScoreFocusPoint: {fileID: 643326991}
-  rankingDisplayDuration: 3
+  rankingDisplayDuration: 5
   cameraBlink: {fileID: 1931554446}
   nameInput: {fileID: 1779275716}
   easyButton: {fileID: 1746156525}
@@ -6496,6 +6496,7 @@ MonoBehaviour:
   - {fileID: 1552379737}
   - {fileID: 1552379736}
   helpColor: {r: 0, g: 1, b: 0, a: 1}
+  successDisplayDuration: 2
 --- !u!4 &1362135582
 Transform:
   m_ObjectHideFlags: 0
