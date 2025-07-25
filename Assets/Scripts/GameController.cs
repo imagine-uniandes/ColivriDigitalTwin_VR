@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour
     public static GameController Instance { get; private set; }
 
     [Header("UI Panels")]
+    public GameObject initialPanel;
     public GameObject registrationPanel;
     public GameObject instructionsPanel;
     public GameObject codePanel;
@@ -20,6 +21,7 @@ public class GameController : MonoBehaviour
     public TMP_InputField nameInput;
     public Button easyButton, normalButton, competitiveButton;
     public Button playButton;
+    public Button startGameButton;
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI gameOverMessage;
     public Button retryButton;
@@ -45,12 +47,14 @@ public class GameController : MonoBehaviour
         //guardo posición inicial del jugador
         var player = GameObject.FindWithTag("Player");
         if (player != null) playerStartPos = player.transform.position;
-        registrationPanel.SetActive(true);
-        instructionsPanel.SetActive(false);
+        initialPanel.SetActive(true);
+        registrationPanel.SetActive(false);
+        instructionsPanel.SetActive(true);
         codePanel.SetActive(false);
         timerPanel.SetActive(false);
         gameOverPanel.SetActive(false);
         statsRankingPanel.SetActive(false);
+        startGameButton.onClick.AddListener(OnStartButtonClicked);
         // Restaurar dificultad previa si existe
         difficulty = (Difficulty)PlayerPrefs.GetInt("difficulty", (int)Difficulty.Easy);
 
@@ -63,7 +67,14 @@ public class GameController : MonoBehaviour
         // Suscribirnos al exito de código
         CodeManager.OnCodeSuccessEvent += OnCodeSuccess; //sospechoso
     }
-
+    public void OnStartButtonClicked()
+    {
+    // Ocultar el panel de inicio
+        initialPanel.SetActive(false);
+    // Mostrar el panel de registro (u otras pantallas iniciales)
+        registrationPanel.SetActive(true);
+        instructionsPanel.SetActive(true);
+    }
     public void OnDestroy()
     {
         CodeManager.OnCodeSuccessEvent -= OnCodeSuccess;
