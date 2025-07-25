@@ -8,103 +8,109 @@ public class TimerDef : MonoBehaviour
 {
     [Header("UI")]
     public TextMeshProUGUI timerText;
+
     [Header("Timer Settings")]
     public TimerMode mode = TimerMode.CountUp;
-    public float countdownTime = 600f; 
+    public float countdownTime = 600f;
 
     [Header("Events")]
     public UnityEvent OnTimerFinished;
 
-    public enum TimerMode
-    {
-        CountUp,
-        CountDown
-    }
-    private float elapsedTime = 0;
-    private float remainingTime = 0;
-    private bool isTimerRunning = true;
-    private bool hasFinished = false;
+    public enum TimerMode { CountUp, CountDown }
 
-    void Start()
+    private float elapsedTime;
+    private float remainingTime;
+    private bool isTimerRunning;
+    private bool hasFinished;
+
+    void Awake()
     {
-        InitializeTimer();
+        // Nunca arranca solo al cargar la escena
+        isTimerRunning = false;
+        hasFinished     = false;
+        InitializeTimer(); 
     }
 
     void Update()
     {
-        if (!isTimerRunning || hasFinished)
-            return;
+        if (!isTimerRunning || hasFinished) return;
 
-        switch (mode)
-        {
-            case TimerMode.CountUp:
-                UpdateCountUpTimer();
-                break;
-            case TimerMode.CountDown:
-                UpdateCountDownTimer();
-                break;
-        }
+        if (mode == TimerMode.CountUp)
+            UpdateCountUpTimer();
+        else
+            UpdateCountDownTimer();
     }
 
-    void InitializeTimer()
+    // Prepara las variables internas, pero deja el timer detenido
+    public void InitializeTimer()
     {
-        switch (mode)
-        {
-            case TimerMode.CountUp:
-                elapsedTime = 0;
-                break;
-            case TimerMode.CountDown:
-                remainingTime = countdownTime;
-                break;
-        }
+        hasFinished = false;
+        isTimerRunning = false;
+
+        if (mode == TimerMode.CountUp)
+            elapsedTime = 0f;
+        else
+            remainingTime = countdownTime;
 
         UpdateTimerDisplay();
-        hasFinished = false;
     }
 
-    void UpdateCountUpTimer()
+    // Arranca el timer desde cero
+    public void ResetTimer()
+    {
+        InitializeTimer();
+        isTimerRunning = true;
+    }
+
+    public void StartTimer()
+    {
+        if (!hasFinished) isTimerRunning = true;
+    }
+
+    public void StopTimer()
+    {
+        isTimerRunning = false;
+    }
+
+    private void UpdateCountUpTimer()
     {
         elapsedTime += Time.deltaTime;
         UpdateTimerDisplay();
     }
 
-    void UpdateCountDownTimer()
+    private void UpdateCountDownTimer()
     {
         remainingTime -= Time.deltaTime;
-
-        if (remainingTime <= 0)
+        if (remainingTime <= 0f)
         {
-            remainingTime = 0;
-            hasFinished = true;
+            remainingTime = 0f;
+            hasFinished   = true;
+            isTimerRunning = false;
             OnTimerFinished?.Invoke();
-            Debug.Log("¡Tiempo agotado!");
         }
-
         UpdateTimerDisplay();
     }
 
-    void UpdateTimerDisplay()
+    private void UpdateTimerDisplay()
     {
-        float timeToDisplay = (mode == TimerMode.CountUp) ? elapsedTime : remainingTime;
+        
+        float t = (mode == TimerMode.CountUp) ? elapsedTime : remainingTime;
+        int m = Mathf.FloorToInt(t / 60f);
+        int s = Mathf.FloorToInt(t % 60f);
 
-        int minutes = Mathf.FloorToInt(timeToDisplay / 60);
-        int seconds = Mathf.FloorToInt(timeToDisplay % 60);
-        int milliseconds = Mathf.FloorToInt((timeToDisplay * 100) % 100);
-
-        if (mode == TimerMode.CountDown && remainingTime <= 60f)
+        // Color segÃºn tiempo restante
+        if (mode == TimerMode.CountDown)
         {
-            timerText.color = Color.red;
-        }
-        else if (mode == TimerMode.CountDown && remainingTime <= 300f)
-        {
-            timerText.color = Color.yellow;
+            if (remainingTime <= 60f) timerText.color = Color.red;
+            else if (remainingTime <= 300f) timerText.color = Color.yellow;
+            else timerText.color = Color.white;
         }
         else
         {
             timerText.color = Color.white;
         }
 
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        timerText.text = $"{m:00}:{s:00}";
     }
 
     public void SetTimerMode(TimerMode newMode)
@@ -123,34 +129,7 @@ public class TimerDef : MonoBehaviour
         }
     }
 
-    public void StartTimer()
-    {
-        isTimerRunning = true;
-    }
-
-    public void StopTimer()
-    {
-        isTimerRunning = false;
-    }
-
-    public void ResetTimer()
-    {
-        InitializeTimer();
-        isTimerRunning = true;
-    }
-
-    public float GetCurrentTime()
-    {
-        return (mode == TimerMode.CountUp) ? elapsedTime : remainingTime;
-    }
-
-    public bool HasFinished()
-    {
-        return hasFinished;
-    }
-
-    public TimerMode GetTimerMode()
-    {
-        return mode;
-    }
+    // Exponer para que GameController lea el estado actual
+    public float GetCurrentTime() => (mode == TimerMode.CountUp) ? elapsedTime : remainingTime;
+    public bool HasFinished()   => hasFinished;
 }

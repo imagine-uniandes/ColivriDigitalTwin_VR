@@ -24,6 +24,10 @@ public class GameController : MonoBehaviour
     public float rankingDisplayDuration = 3f;
     [SerializeField] private CameraBlink cameraBlink;
 
+    [Header("Timer")]
+    [SerializeField] private TimerDef timerDef;        
+    private bool extraTimeGiven = false;
+
     [Header("UI Elements")]
     public TMP_InputField nameInput;
     public Button easyButton, normalButton, competitiveButton;
@@ -116,34 +120,48 @@ public class GameController : MonoBehaviour
         timerPanel.SetActive(true);
         gameOverPanel.SetActive(false);
 
-        timerRunning = false;
+        ApplyHotspotHelp(difficulty == Difficulty.Easy);
+
+        // Reset timer
+        extraTimeGiven = false;
 
         switch (difficulty)
         {
             case Difficulty.Easy:
                 foreach (var hotspot in teleportHotspots) hotspot.SetActive(true);
-                countdownTime = 0f;
+                timerDef.SetTimerMode(TimerDef.TimerMode.CountUp);
                 break;
-
             case Difficulty.Normal:
                 foreach (var hotspot in teleportHotspots) hotspot.SetActive(false);
-                countdownTime = 0f;
+                timerDef.SetTimerMode(TimerDef.TimerMode.CountUp);
                 break;
-
             case Difficulty.Competitive:
-                ApplyHotspotHelp(false);
-                //al seleccionar el modo competitivo, tiene que cambiar el timer
-                // Tomar el mejor tiempo menor de todos los jugadores anteriores
-                //necesito cambiar el tiempo 
-
-                countdownTime = 60f; // 60 segundos de cuenta atrás
-                timerRunning = true;
+                float firstTime = GetFirstPlaceTimeOrDefault(60f);
+                timerDef.SetTimerMode(TimerDef.TimerMode.CountDown);
+                timerDef.SetCountdownTime(firstTime);
                 break;
 
         }
-        int minutes = Mathf.FloorToInt(countdownTime / 60f);
-        int seconds = Mathf.FloorToInt(countdownTime % 60f);
-        timerText.text = $"{minutes:D2}:{seconds:D2}";
+        timerDef.ResetTimer();
+        timerDef.StartTimer();
+    }
+
+    private void OnTimerFinished()
+    {
+        if (difficulty == Difficulty.Competitive && !extraTimeGiven)
+        {
+            float extra = CalculateExtraTime();
+            if (extra > 0f)
+            {
+                extraTimeGiven = true;
+                timerDef.SetCountdownTime(extra);
+                timerDef.ResetTimer();
+                timerDef.StartTimer();
+                return;
+            }
+        }
+        // Sino, fin de partida
+        TriggerGameOver();
     }
 
     public void Update()
@@ -163,77 +181,102 @@ public class GameController : MonoBehaviour
     public void OnCodeSuccess(float elapsedTime)
     {
      
-        timerRunning = false;
-        PlayerDataManager.Instance.UpdateCurrentSessionStats(elapsedTime,$"Partida {DateTime.Now:HH:mm:ss}");
+        timerDef.StopTimer();
+
+        
+        PlayerDataManager.Instance.UpdateCurrentSessionStats(
+            elapsedTime, $"Partida {System.DateTime.Now:HH:mm:ss}");
         highScoreTable.RefreshTable();
+
+        // Mostrar ranking/estadísticas y luego reset
         StartCoroutine(ShowRankingAndReset(elapsedTime));
     }
     
 
     private IEnumerator ShowRankingAndReset(float elapsedTime)
 {
-    bool isCompetitive = (difficulty == Difficulty.Competitive);
+    bool comp = (difficulty == Difficulty.Competitive);
 
-    if (isCompetitive)
+    // 1) Mostrar only competitive panels
+    if (comp)
     {
         highScorePanel.SetActive(true);
         statsRankingPanel.SetActive(true);
-
         var stats = statsRankingPanel.GetComponent<GameStatistics>();
-        if (stats != null)
-            stats.ShowEndGameStatistics(
-                PlayerPrefs.GetString("PlayerName", "Jugador"), elapsedTime);
-    }
-    else
-    {
-        highScorePanel.SetActive(false);
-        statsRankingPanel.SetActive(false);
+        stats?.ShowEndGameStatistics(
+            PlayerPrefs.GetString("PlayerName"), elapsedTime);
     }
 
-    // Orientar la cámara sólo en competitivo, si tienes un punto de enfoque
+  
+
+    // 3) Girar cámara hacia el foco (para todos los modos, si quieres)
     Quaternion originalCamRotation = Camera.main.transform.rotation;
-    if (isCompetitive && highScoreFocusPoint != null)
+    if (highScoreFocusPoint != null)
     {
         Vector3 dir = (highScoreFocusPoint.position - Camera.main.transform.position).normalized;
         Camera.main.transform.rotation = Quaternion.LookRotation(dir);
     }
 
-    // Esperar 'rankingDisplayDuration' segundos para que el jugador vea el panel de acierto o el ranking
+    // 4) Permitir al jugador ver la UI (ranking o “¡Correcto!”)
     yield return new WaitForSeconds(rankingDisplayDuration);
 
-    // Fundido a negro
+    // 5) Fundido a negro
     if (cameraBlink != null)
         yield return cameraBlink.DoFadeIn();
 
-    
+    // 6) Mientras está negro, recolocar jugador y restaurar cámara
     var player = GameObject.FindWithTag("Player");
     if (player != null) player.transform.position = playerStartPos;
     Camera.main.transform.rotation = originalCamRotation;
-    highScorePanel.SetActive(false);
-    statsRankingPanel.SetActive(false);
 
-    ResetSession();
+    // 7) Ocultar TODO lo mostrado
+    if (comp)
+    {
+        highScorePanel.SetActive(false);
+        statsRankingPanel.SetActive(false);
+    }
+    // if (correctPanel != null) correctPanel.SetActive(false);
 
-    
-    codePanel.SetActive(false);
-    timerPanel.SetActive(false);
-    registrationPanel.SetActive(true);
-    instructionsPanel.SetActive(true);
+    // 8) Volver al registro
+    ResetToRegistration();
 
+    // 9) Fundido de vuelta
     if (cameraBlink != null)
         yield return cameraBlink.DoFadeOut();
 }
+    private void ResetToRegistration()
+    {
+        // reinicia CodeManager y timer
+        FindObjectOfType<CodeManager>()?.ResetSession();
+        timerDef.StopTimer();
+
+        // UI
+        codePanel.SetActive(false);
+        timerPanel.SetActive(false);
+        registrationPanel.SetActive(true);
+        instructionsPanel.SetActive(true);
+    }
 
     public void TriggerGameOver()
     {
-        timerRunning = false;
-        // Mover jugador a posición inicial
-        var player = GameObject.FindWithTag("Player");
-        if (player != null) player.transform.position = playerStartPos;
+        timerDef.StopTimer();
+        GameObject.FindWithTag("Player").transform.position = playerStartPos;
         gameOverPanel.SetActive(true);
-        gameOverMessage.text = "¡Se acabo el tiempo! Vuelve a intentarlo";
+        gameOverMessage.text = "¡Se acabó el tiempo!";
     }
-    //poner nuevamente el timer en reset
+
+    private float CalculateExtraTime()
+    {
+        var r = PlayerDataManager.Instance.GetRanking();
+        if (r.Count >= 2)
+            return Mathf.Max(0f, r[1].BestTime - r[0].BestTime);
+        return 0f;
+    }
+    private float GetFirstPlaceTimeOrDefault(float @default)
+    {
+        var r = PlayerDataManager.Instance.GetRanking();
+        return (r.Count > 0) ? r[0].BestTime : @default;
+    }
     public void OnRetryClicked()
     {
         gameOverPanel.SetActive(false);
