@@ -43,8 +43,7 @@ public class GameController : MonoBehaviour
     public Color helpColor = Color.green;
     private Difficulty difficulty;
     private Vector3 playerStartPos;
-    private float countdownTime;
-    private bool timerRunning;
+    
     [SerializeField] private float successDisplayDuration = 2f;
 
     public void Awake()
@@ -78,13 +77,27 @@ public class GameController : MonoBehaviour
         retryButton.onClick.AddListener(OnRetryClicked);
 
         // Suscribirnos al exito de código
-        CodeManager.OnCodeSuccessEvent += OnCodeSuccess; //sospechoso
+        CodeManager.OnCodeSuccessEvent += OnCodeSuccess; 
+        timerDef.OnTimerFinished.AddListener(OnTimerFinished);
+
     }
+    
+    public void OnTimerFinished()
+{
+    // Detener el timer por si acaso
+    timerDef.StopTimer();
+    // Mover al jugador a start
+    var player = GameObject.FindWithTag("Player");
+    if (player != null) player.transform.position = playerStartPos;
+    // Mostrar panel de game over
+    gameOverPanel.SetActive(true);
+    gameOverMessage.text = "¡Se acabó el tiempo!";
+}
     public void OnStartButtonClicked()
     {
-    // Ocultar el panel de inicio
+        // Ocultar el panel de inicio
         initialPanel.SetActive(false);
-    // Mostrar el panel de registro (u otras pantallas iniciales)
+        // Mostrar el panel de registro (u otras pantallas iniciales)
         registrationPanel.SetActive(true);
         instructionsPanel.SetActive(true);
     }
@@ -143,40 +156,10 @@ public class GameController : MonoBehaviour
 
         }
         timerDef.ResetTimer();
-        timerDef.StartTimer();
     }
 
-    private void OnTimerFinished()
-    {
-        if (difficulty == Difficulty.Competitive && !extraTimeGiven)
-        {
-            float extra = CalculateExtraTime();
-            if (extra > 0f)
-            {
-                extraTimeGiven = true;
-                timerDef.SetCountdownTime(extra);
-                timerDef.ResetTimer();
-                timerDef.StartTimer();
-                return;
-            }
-        }
-        // Sino, fin de partida
-        TriggerGameOver();
-    }
-
-    public void Update()
-    {
-        if (!timerRunning) return;
-
-        countdownTime -= Time.deltaTime;
-        if (countdownTime < 0) countdownTime = 0;
-        int minutes = Mathf.FloorToInt(countdownTime / 60f);
-        int seconds = Mathf.FloorToInt(countdownTime % 60f);
-        timerText.text = $"{minutes:D2}:{seconds:D2}";
-
-        if (countdownTime <= 0)
-            TriggerGameOver();
-    }
+    
+    
 
     public void OnCodeSuccess(float elapsedTime)
     {
@@ -248,9 +231,11 @@ public class GameController : MonoBehaviour
     {
         // reinicia CodeManager y timer
         FindObjectOfType<CodeManager>()?.ResetSession();
-        timerDef.StopTimer();
+    
+    // REINICIALIZA y DETIENE el TimerDef
+        timerDef.InitializeTimer();
 
-        // UI
+    // UI
         codePanel.SetActive(false);
         timerPanel.SetActive(false);
         registrationPanel.SetActive(true);
@@ -280,43 +265,40 @@ public class GameController : MonoBehaviour
     public void OnRetryClicked()
     {
         gameOverPanel.SetActive(false);
-        ResetSession();
+        timerDef.InitializeTimer();  // resetea y detiene
+        ResetToRegistration();
     }
 
     public void ResetSession()
-    {
+{
+    // 1. Reinicia la lógica de CodeManager
+    var cm = FindObjectOfType<CodeManager>();
+    if (cm != null) cm.ResetSession();
 
-        // Reinicia la logica de CodeManager 
-        var cm = FindObjectOfType<CodeManager>();
-        if (cm != null) cm.ResetSession();
-        // Reinicia timer si es competitivo
-        if (difficulty == Difficulty.Competitive)
-            timerRunning = true;
-        codePanel.SetActive(true);
-        timerPanel.SetActive(true);
-        statsRankingPanel.SetActive(false);
-        gameOverPanel.SetActive(false);
-        timerText.text = "00:00";
-        countdownTime = 60f;
-        if (timerRunning)
-            timerText.text = $"{Mathf.FloorToInt(countdownTime / 60):D2}:{Mathf.FloorToInt(countdownTime % 60):D2}";
-        ApplyHotspotHelp(difficulty == Difficulty.Easy);
+    // 2. Reinicia y detiene el TimerDef
+    timerDef.InitializeTimer();
 
+    // 3. UI: pon en marcha los paneles de juego
+    codePanel.SetActive(true);
+    timerPanel.SetActive(true);
+    statsRankingPanel.SetActive(false);
+    gameOverPanel.SetActive(false);
 
-        registrationPanel.SetActive(false);
-        instructionsPanel.SetActive(false);
-        nameInput.text = "";
-        var player = GameObject.FindWithTag("Player");
-        if (player != null) player.transform.position = playerStartPos;
+    // 4. Restablece hotspots según modo (solo para fácil se muestran)
+    ApplyHotspotHelp(difficulty == Difficulty.Easy);
 
-        var feedbackPanels = FindObjectsOfType<CodeManager>();
-        foreach (var panel in feedbackPanels)
-        {
-            panel.ResetSession();
-        }
+    // 5. Oculta UI de registro/instrucciones (volverá a mostrarse desde la corutina o OnRetry)
+    registrationPanel.SetActive(false);
+    instructionsPanel.SetActive(false);
 
+    // 6. Limpia el campo de nombre
+    nameInput.text = "";
 
-    }
+    // 7. Recoloca al jugador en la posición inicial
+    var player = GameObject.FindWithTag("Player");
+    if (player != null)
+        player.transform.position = playerStartPos;
+}
 
     public void ApplyHotspotHelp(bool show)
     {

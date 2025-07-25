@@ -6779,7 +6779,7 @@ MonoBehaviour:
   competitiveButton: {fileID: 1730945075}
   playButton: {fileID: 879654730}
   startGameButton: {fileID: 1854498890}
-  timerText: {fileID: 0}
+  timerText: {fileID: 687315354}
   gameOverMessage: {fileID: 2132069066}
   retryButton: {fileID: 2132069065}
   teleportHotspots:
