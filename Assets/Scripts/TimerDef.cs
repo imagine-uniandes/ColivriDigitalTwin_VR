@@ -41,7 +41,6 @@ public class TimerDef : MonoBehaviour
             UpdateCountDownTimer();
     }
 
-    // Prepara las variables internas, pero deja el timer detenido
     public void InitializeTimer()
     {
         hasFinished = false;
@@ -55,7 +54,6 @@ public class TimerDef : MonoBehaviour
         UpdateTimerDisplay();
     }
 
-    // Arranca el timer desde cero
     public void ResetTimer()
     {
         InitializeTimer();
@@ -129,7 +127,6 @@ public class TimerDef : MonoBehaviour
         }
     }
 
-    // Exponer para que GameController lea el estado actual
     public float GetCurrentTime() => (mode == TimerMode.CountUp) ? elapsedTime : remainingTime;
     public bool HasFinished()   => hasFinished;
 }

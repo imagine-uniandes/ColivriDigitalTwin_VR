@@ -1,4 +1,4 @@
-using System;         // ← añade esto
+using System;         
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class HighScoreTable : MonoBehaviour
 {
     [SerializeField] private Transform rowContainer;    
-    [SerializeField] private Transform rowTemplate;     // plantilla de una fila 
+    [SerializeField] private Transform rowTemplate;     
 
     public Color normalTextColour = Color.white;
     public Color highlightTextColour = new Color(0f, 255.0f, 0f);
@@ -16,13 +16,8 @@ public class HighScoreTable : MonoBehaviour
     {
         rowTemplate.gameObject.SetActive(false);
     }
-
-    
-    /// Actualiza la tabla de clasificación a partir del ranking almacenado.
-   
     public void RefreshTable()
     {
-        // Eliminar filas antiguas
         foreach (Transform child in rowContainer)
         {
             if (child != rowTemplate) Destroy(child.gameObject);
@@ -36,7 +31,6 @@ public class HighScoreTable : MonoBehaviour
             row.gameObject.SetActive(true);
 
             
-            // Obtener referencias a los textos se espera que el orden sea Posición- Nombre - Tiempo
             TextMeshProUGUI[] texts = row.GetComponentsInChildren<TextMeshProUGUI>();
             if (texts.Length >= 3)
             {

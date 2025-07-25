@@ -25,24 +25,20 @@ public class PlayerRegistrationManager : MonoBehaviour
 
     private void Start()
     {
-        // Al iniciar, ocultar el mensaje de ayuda y desactivar el botón Play
+        // Al iniciar, ocultar el mensaje de ayuda y desactivar el Play
         if (helpText != null) helpText.gameObject.SetActive(false);
         if (playButton != null) playButton.interactable = false;
-
         if (debugMode) nameInputField.text = "pruebas";
-
-        // Suscribir callbacks a los botones de dificultad
         easyButton.onClick.AddListener(() => OnDifficultySelected(Difficulty.Easy, easyButton));
         normalButton.onClick.AddListener(() => OnDifficultySelected(Difficulty.Normal, normalButton));
         competitiveButton.onClick.AddListener(() => OnDifficultySelected(Difficulty.Competitive, competitiveButton));
 
-        // Suscribir callback al botón Play
         playButton.onClick.AddListener(OnPlayClicked);
     }
 
-    /// <summary>
-    /// Maneja la selección de dificultad. Cambia el color del botón seleccionado y habilita el botón Play.
-    /// </summary>
+   
+  
+    
     public void OnDifficultySelected(Difficulty diff, Button btn)
     {
         selectedDifficulty = diff;
@@ -50,26 +46,18 @@ public class PlayerRegistrationManager : MonoBehaviour
 
         // Guardar la dificultad en PlayerPrefs para que GameController la pueda leer
         PlayerPrefs.SetInt("difficulty", (int)diff);
-
         // Activar el botón Play y resaltar visualmente el botón elegido
         playButton.interactable = true;
         ResetDifficultyButtons();
         btn.image.color = new Color(0.3f, 0.8f, 1f);
     }
 
-    /// <summary>
-    /// Restablece el color de todos los botones de dificultad.
-    /// </summary>
     public void ResetDifficultyButtons()
     {
         easyButton.image.color = Color.white;
         normalButton.image.color = Color.white;
         competitiveButton.image.color = Color.white;
     }
-
-    /// <summary>
-    /// Valida el nombre y la dificultad; si son correctos, registra al jugador y avanza al GameController.
-    /// </summary>
     public void OnPlayClicked()
     {
         string playerName = nameInputField.text.Trim();
@@ -102,10 +90,6 @@ public class PlayerRegistrationManager : MonoBehaviour
         // Delegar en GameController la preparación de la partida
         GameController.Instance.OnPlayClicked();
     }
-
-    /// <summary>
-    /// Muestra un mensaje de error en pantalla.
-    /// </summary>
     public void ShowError(string message)
     {
         if (helpText != null)

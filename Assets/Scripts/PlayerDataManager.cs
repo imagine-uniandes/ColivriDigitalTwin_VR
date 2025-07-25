@@ -1,21 +1,19 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;     // ← esta línea es imprescindible para usar OrderBy/Where con lambdas
+using System.Linq;   
 using UnityEngine;
 
-/// <summary>
-/// Representa una única sesión de juego del jugador.
-/// </summary>
+
 [Serializable]
 public class SessionData {
     public string sessionName;
     public float tiempoJugado;
 }
 
-/// <summary>
-/// Contiene la lista de sesiones de un jugador concreto.
-/// </summary>
+
+//Contiene la lista de sesiones de un jugador concreto
+
 [Serializable]
 public class PlayerData
 {
@@ -37,18 +35,17 @@ public class PlayerData
     
 }
 
-/// <summary>
-/// Contenedor para serializar/deserializar una lista de jugadores.
-/// </summary>
+
+//Contenedor para serializar/deserializar una lista de jugadores
+
 [Serializable]
 public class PlayerDataList {
     public List<PlayerData> players = new List<PlayerData>();
 }
 
-/// <summary>
-/// Gestor de datos de jugadores. Permite crear jugadores, iniciar sesiones,
-/// guardar y cargar la lista de jugadores y consultar el ranking.
-/// </summary>
+
+//Gestor de datos de jugadores. Permite crear jugadores, iniciar sesiones,guardar y cargar la lista de jugadores y consultar el ranking.
+
 public class PlayerDataManager : MonoBehaviour
 {
     public static PlayerDataManager Instance { get; private set; }
@@ -64,9 +61,9 @@ public class PlayerDataManager : MonoBehaviour
         Load();
     }
 
-    /// <summary>
-    /// Crea o selecciona un jugador y añade una nueva sesión.
-    /// </summary>
+  
+    /// Crea o selecciona un jugador y añade una nueva sesi
+   
     public void CreateOrSelectPlayer(string playerName)
     {
         currentPlayer = dataList.players.Find(p => p.playerName.Equals(playerName, StringComparison.OrdinalIgnoreCase));
@@ -75,14 +72,10 @@ public class PlayerDataManager : MonoBehaviour
             currentPlayer = new PlayerData { playerName = playerName };
             dataList.players.Add(currentPlayer);
         }
-        // Al iniciar una partida se crea una sesión vacía que luego se actualizará
         currentPlayer.sesiones.Add(new SessionData());
         Save();
     }
 
-    /// <summary>
-    /// Actualiza la última sesión del jugador actual con el tiempo jugado y un nombre descriptivo.
-    /// </summary>
     public void UpdateCurrentSessionStats(float elapsedTime, string sessionName)
     {
         if (currentPlayer == null) return;
@@ -94,13 +87,9 @@ public class PlayerDataManager : MonoBehaviour
             Save();
         }
     }
-    /// <summary>
-    /// Devuelve la lista de jugadores ordenada por su mejor tiempo (menor es mejor).
-    /// </summary>
     public List<PlayerData> GetRanking()
     {
-        // Filtrar los jugadores que tienen al menos una sesión registrada.
-        // Se ordenan por su mejor tiempo (menor a mayor) y se devuelven en una lista nueva.
+        // Se ordenan por su mejor tiempo  y se devuelven en una lista nueva
         //return dataList.players.Where(player => player.sesiones != null && player.sesiones.Count > 0).OrderBy(player => player.BestTime).ToList();
         return dataList.players.Where(player => player.sesiones.Any(s => s.tiempoJugado > 0f)).OrderBy(player => player.BestTime).Take(10).ToList();
     }

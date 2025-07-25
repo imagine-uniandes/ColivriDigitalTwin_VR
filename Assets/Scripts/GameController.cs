@@ -43,6 +43,9 @@ public class GameController : MonoBehaviour
     public Color helpColor = Color.green;
     private Difficulty difficulty;
     private Vector3 playerStartPos;
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip successClip;
     
     [SerializeField] private float successDisplayDuration = 2f;
 
@@ -65,7 +68,7 @@ public class GameController : MonoBehaviour
         timerPanel.SetActive(false);
         gameOverPanel.SetActive(false);
         statsRankingPanel.SetActive(false);
-        highScorePanel.SetActive(false);
+        highScorePanel.SetActive(true);
         startGameButton.onClick.AddListener(OnStartButtonClicked);
         // Restaurar dificultad previa si existe
         difficulty = (Difficulty)PlayerPrefs.GetInt("difficulty", (int)Difficulty.Easy);
@@ -100,6 +103,7 @@ public class GameController : MonoBehaviour
         // Mostrar el panel de registro (u otras pantallas iniciales)
         registrationPanel.SetActive(true);
         instructionsPanel.SetActive(true);
+        highScorePanel.SetActive(true);
     }
     public void OnDestroy()
     {
@@ -129,6 +133,7 @@ public class GameController : MonoBehaviour
 
         registrationPanel.SetActive(false);
         instructionsPanel.SetActive(false);
+        highScorePanel.SetActive(false); 
         codePanel.SetActive(true);
         timerPanel.SetActive(true);
         gameOverPanel.SetActive(false);
@@ -163,6 +168,9 @@ public class GameController : MonoBehaviour
 
     public void OnCodeSuccess(float elapsedTime)
     {
+
+        if (audioSource != null && successClip != null)
+            audioSource.PlayOneShot(successClip);
      
         timerDef.StopTimer();
 
@@ -179,16 +187,17 @@ public class GameController : MonoBehaviour
     private IEnumerator ShowRankingAndReset(float elapsedTime)
 {
     bool comp = (difficulty == Difficulty.Competitive);
-
+    
+    
     // 1) Mostrar only competitive panels
-    if (comp)
-    {
-        highScorePanel.SetActive(true);
-        statsRankingPanel.SetActive(true);
-        var stats = statsRankingPanel.GetComponent<GameStatistics>();
-        stats?.ShowEndGameStatistics(
-            PlayerPrefs.GetString("PlayerName"), elapsedTime);
-    }
+        if (comp)
+        {
+            //highScorePanel.SetActive(true);
+            statsRankingPanel.SetActive(true);
+            var stats = statsRankingPanel.GetComponent<GameStatistics>();
+            stats?.ShowEndGameStatistics(
+                PlayerPrefs.GetString("PlayerName"), elapsedTime);
+        }
 
   
 
@@ -217,6 +226,7 @@ public class GameController : MonoBehaviour
     {
         highScorePanel.SetActive(false);
         statsRankingPanel.SetActive(false);
+        
     }
     // if (correctPanel != null) correctPanel.SetActive(false);
 
@@ -229,17 +239,20 @@ public class GameController : MonoBehaviour
 }
     private void ResetToRegistration()
     {
+        if (audioSource != null)
+            audioSource.Stop();
         // reinicia CodeManager y timer
         FindObjectOfType<CodeManager>()?.ResetSession();
-    
-    // REINICIALIZA y DETIENE el TimerDef
+
+        // REINICIALILZA y DETIENE el TimerDef
         timerDef.InitializeTimer();
 
-    // UI
+        // UI
         codePanel.SetActive(false);
         timerPanel.SetActive(false);
         registrationPanel.SetActive(true);
         instructionsPanel.SetActive(true);
+        highScorePanel.SetActive(true);
     }
 
     public void TriggerGameOver()
@@ -264,6 +277,8 @@ public class GameController : MonoBehaviour
     }
     public void OnRetryClicked()
     {
+        if (audioSource != null)
+            audioSource.Stop();
         gameOverPanel.SetActive(false);
         timerDef.InitializeTimer();  // resetea y detiene
         ResetToRegistration();
@@ -271,30 +286,25 @@ public class GameController : MonoBehaviour
 
     public void ResetSession()
 {
-    // 1. Reinicia la lógica de CodeManager
+    // 1. Reinicia la LOGICA de CodeManager
     var cm = FindObjectOfType<CodeManager>();
     if (cm != null) cm.ResetSession();
 
     // 2. Reinicia y detiene el TimerDef
     timerDef.InitializeTimer();
 
-    // 3. UI: pon en marcha los paneles de juego
     codePanel.SetActive(true);
     timerPanel.SetActive(true);
     statsRankingPanel.SetActive(false);
     gameOverPanel.SetActive(false);
 
-    // 4. Restablece hotspots según modo (solo para fácil se muestran)
     ApplyHotspotHelp(difficulty == Difficulty.Easy);
 
-    // 5. Oculta UI de registro/instrucciones (volverá a mostrarse desde la corutina o OnRetry)
     registrationPanel.SetActive(false);
     instructionsPanel.SetActive(false);
 
-    // 6. Limpia el campo de nombre
     nameInput.text = "";
 
-    // 7. Recoloca al jugador en la posición inicial
     var player = GameObject.FindWithTag("Player");
     if (player != null)
         player.transform.position = playerStartPos;
