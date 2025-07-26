@@ -18,7 +18,7 @@ public class PlayerRegistrationManager : MonoBehaviour
     [Header("Botón de Jugar")]
     public Button playButton;
 
-    public bool debugMode;
+    //public bool debugMode;
 
     public Difficulty selectedDifficulty = Difficulty.Easy;
     public bool difficultyChosen = false;
@@ -28,7 +28,7 @@ public class PlayerRegistrationManager : MonoBehaviour
         // Al iniciar, ocultar el mensaje de ayuda y desactivar el Play
         if (helpText != null) helpText.gameObject.SetActive(false);
         if (playButton != null) playButton.interactable = false;
-        if (debugMode) nameInputField.text = "pruebas";
+        //if (debugMode) nameInputField.text = "pruebas";
         easyButton.onClick.AddListener(() => OnDifficultySelected(Difficulty.Easy, easyButton));
         normalButton.onClick.AddListener(() => OnDifficultySelected(Difficulty.Normal, normalButton));
         competitiveButton.onClick.AddListener(() => OnDifficultySelected(Difficulty.Competitive, competitiveButton));
