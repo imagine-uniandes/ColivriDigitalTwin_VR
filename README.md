@@ -6,7 +6,7 @@
 
 ---
 
-> **ColivriDigitalTwin_VR** es una demo de pistas en realidad virtual (VR) localizada en el laboratorio COLIVRI. El/la jugador(a) registra su nombre, elige dificultad (Fácil, Normal o Competitivo), y resuelve una clave de 3 dígitos. El sistema registra el tiempo, actualiza el leaderboard (Top-10), y muestra estadísticas al finalizar.
+> **ColivriDigitalTwin_VR** es una demo de pistas en realidad virtual (VR) localizado en el laboratorio COLIVRI. El/la jugador(a) registra su nombre, elige dificultad (Fácil, Normal o Competitivo), y resuelve una clave de 3 dígitos a través de pistas escondidas en todo el laboratorio. El sistema registra el tiempo, actualiza el leaderboard (Top 10), y muestra estadísticas al finalizar.
 
 ---
 
@@ -20,29 +20,29 @@
 - [Compilación para Quest/Android](#compilación-para-questandroid)
 - [Cómo colaborar](#cómo-colaborar)
 - [Solución de problemas](#solución-de-problemas)
-- [Licencia](#licencia)
 
 ---
 
 ## Características principales
 
-- **Tres modos de juego:**  
-  - *Fácil/Normal*: Cronómetro ascendente (CountUp).  
-  - *Competitivo*: Cronómetro descendente (CountDown) desde el mejor tiempo. Extensión automática si el tiempo llega a 00:00.
-- **Leaderboard Top-10:**  
-  - Persistencia local (PlayerPrefs/JSON)  
+- **Tres modos de juego:**
+  - *Fácil/Normal*: Cronómetro ascendente (CountUp) + ayuda Teleports activos.
+  - *Normal*: Cronómetro ascendente (CountUp)
+  - *Competitivo*: Cronómetro descendente (CountDown) desde el mejor tiempo. Extensión automática si el tiempo llega a 00:00. Sin ayudas adicionales de Teleports.
+- **Leaderboard Top 10:**  
+  - Persistencia local (PlayerPrefs/JSON) 
   - Formato mm:ss  
-  - Resalta el jugador actual
-- **Estadísticas finales:** nombre, tiempo, posición
-- **UI completa:** paneles de registro, instrucciones, temporizador, “game over”, ranking y estadísticas
-- **Transiciones suaves:** fundido (“blink”) de cámara y enfoque al leaderboard
-- **Audio feedback** al resolver la clave
+  - Resalta el nombre del jugador actual
+- **Estadísticas finales:** Nombre, tiempo y posición.
+- **UI completa:** Paneles de registro, instrucciones, temporizador, pistas dinámicas, game over, ranking y estadísticas.
+- **Transiciones suaves:** Fundido “blink” de cámara y enfoque al leaderboard.
+- **Audio feedback** al resolver la clave.
 - **Código modular:** GameController, CodeManager, PlayerDataManager, HighScoreTable, TimerDef, CameraBlink, GameStatistics
 
 ---
 
 >  **Nota:**  
-> Para una experiencia visual óptima, utiliza prefabs y materiales compatibles con el pipeline URP o Standard según tu configuración de proyecto.
+> Para una experiencia visual óptima, utiliza prefabs y materiales compatibles con el pipeline URP o Standard según la configuración de proyecto.
 
 ---
 
@@ -54,14 +54,14 @@
 - **URP** (Universal Render Pipeline) 
 - **Android Build Support** (para compilar APK)
 
-> 🟩 **NOTA:**  
+> **Nota:**  
 > Si algún modelo/prefab aparece rosado, revisa y actualiza el material/shader en el Inspector (Standard/URP/HDRP).
 
 ---
 
 ## 🧩 Arquitectura y estructura
 
-- **GameController:** Orquesta UI, estados y transiciones
+- **GameController:** Orquesta la UI de estados y transiciones
 - **CodeManager:** Entrada y validación de la clave
 - **TimerDef:** Cronómetro CountUp/CountDown y eventos de finalización
 - **PlayerDataManager:** Persistencia y cálculo de mejores tiempos
@@ -80,7 +80,7 @@
 - **Proyecto configurado en URP** 
 - **Android Build Support** (para Quest/Android)
 
-> 🟨 **ADVERTENCIA:**  
+> **ADVERTENCIA:**  
 > La compilación para Quest solo funciona en ARM64 y XR Plug-in Management configurado correctamente. No olvidar agregar el módulo Android Build Support en Unity Hub.
 
 ---
@@ -103,12 +103,12 @@
 
 ---
 
-> 🟦 **Nota:**  
+> **Nota:**  
 > Puedes personalizar los paneles UI y el leaderboard cambiando colores y fuentes en el Inspector para que combinen con el branding de tu laboratorio o proyecto.
 
 ---
 
-## 📱 Compilación para Quest/Android
+## Compilación para Quest/Android
 
 1. Instala **Android Build Support** (Unity Hub → Installs → Add modules)
 2. Ve a **File → Build Settings → Android** y haz *Switch Platform*
@@ -129,7 +129,7 @@
 
 ---
 
-> 🟥 **IMPORTANTE:**  
+>  **IMPORTANTE:**  
 > Si tienes problemas con shaders o materiales al exportar a Quest/Android, convierte los materiales a URP/Lit y actualiza los prefabs antes de compilar.
 
 ---
@@ -153,21 +153,21 @@
 
 ---
 
-> 🟩 **CONSEJO:**  
+> **Consejo:**  
 > Antes de abrir un PR, revisa que no haya duplicados y que el código compile tanto en Editor como en Android/Quest.
 
 ---
 
-## 🛠️ Solución de problemas
+##  Solución de problemas
 
 - **Material rosado:** Convierte materiales a Standard o URP/Lit y reasigna en el prefab
-- **Avatar humanoide:** Configura Rig = Humanoid y crea/asigna el Avatar al Animator. Para Generic, no necesitas Avatar
 - **Timer no actualiza:** Verifica que `TimerDef.timerText` esté asignado y evita duplicados
 - **Leaderboard no resalta/actualiza:** Confirma llamada a `highScoreTable.RefreshTable()` tras guardar sesión; limita correctamente el Top-10
 
 ---
+Para explorar más sobre la documentación de Meta XR All-In-One ingrese al siguiente link: https://developers.meta.com/horizon/downloads/package/meta-xr-sdk-all-in-one-upm/
 
-> 🟨 **ADVERTENCIA:**  
+>  **ADVERTENCIA:**  
 > Si experimentas errores al compilar para Quest, revisa que todos los paquetes estén actualizados y que los materiales sean compatibles con Android y URP.
 
 ---
