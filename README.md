@@ -59,7 +59,7 @@
 
 ---
 
-## 🧩 Arquitectura y estructura
+## Arquitectura y estructura
 
 - **GameController:** Orquesta la UI de estados y transiciones
 - **CodeManager:** Entrada y validación de la clave
