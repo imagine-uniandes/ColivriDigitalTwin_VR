@@ -16,6 +16,7 @@
 - [Tecnologías utilizadas](#tecnologías-utilizadas)
 - [Arquitectura y estructura](#arquitectura-y-estructura)
 - [Requisitos](#requisitos)
+- [Debug con Quest Link](#debug-con-quest-link)
 - [Guía de instalación y ejecución](#guía-de-instalación-y-ejecución)
 - [Compilación para Quest/Android](#compilación-para-questandroid)
 - [Cómo colaborar](#cómo-colaborar)
@@ -82,6 +83,27 @@
 
 > **ADVERTENCIA:**  
 > La compilación para Quest solo funciona en ARM64 y XR Plug-in Management configurado correctamente. No olvidar agregar el módulo Android Build Support en Unity Hub.
+
+---
+## Debug con Quest Link
+Durante el desarrollo, es posible probar y depurar el proyecto directamente desde el editor de Unity utilizando **Quest Link** (Meta Quest Link). Esto permite iterar rápidamente sin compilar un APK en cada cambio.
+
+### Requisitos previos
+
+- Visor **Meta Quest 2/Pro/3** en modo desarrollador  
+- **Cable USB-C** 
+- Aplicación **Meta Quest Link** instalada en el PC  
+- Paquetes XR correctamente configurados en el proyecto
+
+### Pasos para activar Quest Link en Unity
+
+1. Conecta el visor al PC mediante cable USB-C o activa Air Link en Configuración del quest.  
+2. En el visor, **acepta la solicitud de conexión y acceso a datos**.  
+3. En la aplicación **Meta Quest Link** del PC, activa el modo Link y selecciona escritorio virtual.  
+4. En Unity:
+   - Asegurar de que el **XR Plug-in Management** esté habilitado para la plataforma **PC, Mac & Linux Standalone** con **Oculus/Meta** activo.
+   - Cambia la plataforma a **PC** (*File → Build Settings → PC, Mac & Linux Standalone → Switch Platform*).
+5. Pulsar **Play** en Unity para probar directamente la escena en VR.
 
 ---
 
