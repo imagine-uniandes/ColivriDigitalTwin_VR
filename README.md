@@ -1,176 +1,173 @@
 # ColivriDigitalTwin_VR
 
-**ColivriDigitalTwin_VR** es un demo de pistas en VR localizado en el laboratorio COLIVRI. El/la jugador(a) registra su nombre, elige dificultad (Fácil, Normal o Competitivo) y resuelve una clave de 3 dígitos.
-El sistema registra el tiempo, actualiza un leaderboard (Top-10) con posición, nombre y mejor tiempo, y muestra un panel de estadísticas al finalizar.
+[![Unity](https://img.shields.io/badge/unity-2021.3%2B-blue.svg)](https://unity.com/)
+[![Quest](https://img.shields.io/badge/Platform-Meta%20Quest-green.svg)](https://www.meta.com/quest/)
+[![Status: Demo](https://img.shields.io/badge/status-Demo-important.svg)]()
 
 ---
 
-## Contenidos
-
-- [Características](#-características)
-- [Tecnologías](#-tecnologías)
-- [Estructura lógica](#-estructura-lógica)
-- [Requisitos](#-requisitos)
-- [Ejecutar en Unity (Editor)](#-ejecutar-en-unity-editor)
-- [Construir y ejecutar APK (Quest/Android)](#-construir-y-ejecutar-apk-questandroid)
-- [Cómo colaborar](#-cómo-colaborar)
-- [Solución de problemas](#-solución-de-problemas)
-
+> **ColivriDigitalTwin_VR** es una demo de pistas en realidad virtual (VR) localizada en el laboratorio COLIVRI. El/la jugador(a) registra su nombre, elige dificultad (Fácil, Normal o Competitivo), y resuelve una clave de 3 dígitos. El sistema registra el tiempo, actualiza el leaderboard (Top-10), y muestra estadísticas al finalizar.
 
 ---
 
-## Características
-- **Tres modos de juego**
-  - **Fácil / Normal:** Cronómetro **ascendente** (CountUp).
-  - **Competitivo:** Cronómetro **descendente** (CountDown) que parte del **mejor tiempo** del Top-1. Si llega a 00:00, se otorga **una extensión** igual a la diferencia **(tiempo 2.º − tiempo 1.º)**.
-- **Leaderboard Top-10** con persistencia local (PlayerPrefs/JSON), formato de tiempo **mm:ss** y **resaltado** del jugador actual (si entra en Top-10).
-- **Estadísticas de fin de partida** (nombre, tiempo, posición).
-- **IU completa** con panel de registro, instrucciones, temporizador, “game over”, panel de ranking y estadísticas.
-- **Transiciones suaves**: fundido/“blink” de cámara y enfoque hacia el leaderboard.
-- **Audio de acierto** al resolver la clave.
-- **Código modular:** (GameController, CodeManager, PlayerDataManager, HighScoreTable, TimerDef, CameraBlink, GameStatistics)
+## Tabla de contenidos
+
+- [Características principales](#características-principales)
+- [Tecnologías utilizadas](#tecnologías-utilizadas)
+- [Arquitectura y estructura](#arquitectura-y-estructura)
+- [Requisitos](#requisitos)
+- [Guía de instalación y ejecución](#guía-de-instalación-y-ejecución)
+- [Compilación para Quest/Android](#compilación-para-questandroid)
+- [Cómo colaborar](#cómo-colaborar)
+- [Solución de problemas](#solución-de-problemas)
+- [Licencia](#licencia)
 
 ---
 
-## Tecnologías
-- **Unity** (LTS recomendado).
-- **C#** con **TextMeshPro** para UI.
-- **Meta/Oculus XR Interaction SDK** (interacción VR).
-- **URP** opcional (si el proyecto se configura con Universal Render Pipeline).
-> **Nota:** si importas modelos/prefabs y aparecen **rosado**, revisa y actualiza **materiales/shaders** a los de tu *render pipeline* (Standard o URP/HDRP) y reasigna materiales en el prefab.
+## Características principales
 
+- **Tres modos de juego:**  
+  - *Fácil/Normal*: Cronómetro ascendente (CountUp).  
+  - *Competitivo*: Cronómetro descendente (CountDown) desde el mejor tiempo. Extensión automática si el tiempo llega a 00:00.
+- **Leaderboard Top-10:**  
+  - Persistencia local (PlayerPrefs/JSON)  
+  - Formato mm:ss  
+  - Resalta el jugador actual
+- **Estadísticas finales:** nombre, tiempo, posición
+- **UI completa:** paneles de registro, instrucciones, temporizador, “game over”, ranking y estadísticas
+- **Transiciones suaves:** fundido (“blink”) de cámara y enfoque al leaderboard
+- **Audio feedback** al resolver la clave
+- **Código modular:** GameController, CodeManager, PlayerDataManager, HighScoreTable, TimerDef, CameraBlink, GameStatistics
 
 ---
 
-## Estructura lógica
+>  **Nota:**  
+> Para una experiencia visual óptima, utiliza prefabs y materiales compatibles con el pipeline URP o Standard según tu configuración de proyecto.
 
-- **GameController:** Orquesta UI, flujo de estados, dificultades y transiciones (incluye audio de acierto).
-- **CodeManager:** Entrada y validación de la **clave de 3 dígitos**; emite evento al acertar.
-- **TimerDef:** Cronómetro **CountUp/CountDown** con `OnTimerFinished`.
-- **PlayerDataManager:** Persistencia de jugadores y sesiones; cálculo de **BestTime**.
-- **HighScoreTable:** Renderiza el **Top-10**: posición, nombre y tiempo **mm:ss**.
-- **GameStatistics:** Estadísticas de la partida recién finalizada.
-- **CameraBlink:** Fundidos (panel UI con `Image` a pantalla completa).
+---
+
+## Tecnologías utilizadas
+
+- **Unity** (LTS recomendado: 2021.3+, 2022.3+, 2023.2+)
+- **C#** + **TextMeshPro** para UI
+- **Meta/Oculus XR Interaction SDK** (Meta XR All-In-One SDK)
+- **URP** (Universal Render Pipeline) 
+- **Android Build Support** (para compilar APK)
+
+> 🟩 **NOTA:**  
+> Si algún modelo/prefab aparece rosado, revisa y actualiza el material/shader en el Inspector (Standard/URP/HDRP).
+
+---
+
+## 🧩 Arquitectura y estructura
+
+- **GameController:** Orquesta UI, estados y transiciones
+- **CodeManager:** Entrada y validación de la clave
+- **TimerDef:** Cronómetro CountUp/CountDown y eventos de finalización
+- **PlayerDataManager:** Persistencia y cálculo de mejores tiempos
+- **HighScoreTable:** Renderiza Top 10 con posición, nombre y tiempo
+- **GameStatistics:** Estadísticas de la partida finalizada
+- **CameraBlink:** Fundidos de pantalla con panel UI
 
 ---
 
 ## Requisitos
 
--Unity Hub + Unity LTS (2021.3+ / 2022.3+ / 2023.2+).
+- **Unity Hub** + Unity LTS (2021.3+, 2022.3+, 2023.2+)
+- **Paquetes necesarios:**
+  - TextMeshPro
+  - Meta/Oculus XR (Interaction SDK all-in-one)
+- **Proyecto configurado en URP** 
+- **Android Build Support** (para Quest/Android)
 
--Paquetes:
+> 🟨 **ADVERTENCIA:**  
+> La compilación para Quest solo funciona en ARM64 y XR Plug-in Management configurado correctamente. No olvidar agregar el módulo Android Build Support en Unity Hub.
 
-  >TextMeshPro.
+---
 
--Meta/Oculus XR (Meta Interaction SDK all-in-one).
+## Guía de instalación y ejecución
 
-- Proyecto configurado en URP (Universal Rendering Pipeline)
+1. **Clona el repositorio:**
+   ```bash
+   git clone https://github.com/imagine-uniandes/ColivriDigitalTwin_VR
+   ```
+2. Abre la carpeta con Unity Hub y selecciona la versión LTS compatible.
+3. Instala los paquetes necesarios desde Window → Package Manager.
+4. Abre la escena principal: `Assets/Scenes/MainModel`.
+5. Verifica asignaciones en el Inspector:
+   - **GameController:** Paneles (Initial, Registration, Instructions, Code, Timer, GameOver, HighScorePanel, StatsRankingPanel)
+   - **TimerDef:** Arrastra el componente del TimerPanel, asigna el TextMeshProUGUI del reloj
+   - **Audio (opcional):** Asigna AudioSource y successClip
+   - **CameraBlink:** Crea un FadePanel (UI → Panel) y asigna su Image a fadeImage
+6. Pulsa **Play** para iniciar el flujo: Registro → Dificultad → Juego → Ranking/Estadísticas → Reset
 
--Android Build Support (para compilar APK).
+---
 
-## Ejecutar en Unity (Editor)
-Clonar el repositorio:
+> 🟦 **Nota:**  
+> Puedes personalizar los paneles UI y el leaderboard cambiando colores y fuentes en el Inspector para que combinen con el branding de tu laboratorio o proyecto.
 
-bash
-Copy
-Edit
-git clone https://github.com/imagine-uniandes/ColivriDigitalTwin_VR
+---
 
-Abrir la carpeta del proyecto con Unity Hub (elige versión LTS compatible).
+## 📱 Compilación para Quest/Android
 
-Instalar paquetes necesarios desde Window → Package Manager.
+1. Instala **Android Build Support** (Unity Hub → Installs → Add modules)
+2. Ve a **File → Build Settings → Android** y haz *Switch Platform*
+3. Añade la escena principal a *Scenes In Build*
+4. Configura en **Project Settings → Player → Other Settings**:
+   - Scripting Backend: IL2CPP
+   - Target Architectures: ARM64
+   - XR Plug-in Management: habilita Oculus/Meta para Android
+   - Ajusta materiales según tu pipeline
+5. Haz *Build* o *Build And Run* para generar el .apk
+6. Instala en Quest:
+   - Activa *Developer Mode* en el visor
+   - Usa Meta Quest Developer Hub o ADB:
+     ```bash
+     adb devices
+     adb install -r path/to/ColivriDigitalTwin_VR.apk
+     ```
 
-Abrir la escena principal (Assets/Scenes/MainModel)
+---
 
-Revisar asignaciones en Inspector (resumen):
+> 🟥 **IMPORTANTE:**  
+> Si tienes problemas con shaders o materiales al exportar a Quest/Android, convierte los materiales a URP/Lit y actualiza los prefabs antes de compilar.
 
-GameController
+---
 
-Paneles: Initial, Registration, Instructions, Code, Timer, GameOver, HighScorePanel, StatsRankingPanel.
-
-TimerDef: arrastra el componente del TimerPanel.
-
-Audio (opcional): AudioSource (sin Play On Awake) y successClip.
-
-TimerDef (en TimerPanel)
-
-Arrastrar el TextMeshProUGUI del reloj al campo timerText.
-
-El evento OnTimerFinished se suscribe también por código.
-
-CameraBlink
-
-Crear un FadePanel (UI → Panel) que cubra toda la pantalla; asignar su Image a fadeImage.
-
-Pulsar Play:
-
-Inicio → Registro → Dificultad → Juego → Ranking/Estadísticas → Reset.
-
-## Construir y ejecutar APK (Quest/Android)
-Instalar Android Build Support (Unity Hub → Installs → Add modules).
-
-File → Build Settings → Android → Switch Platform.
-Añadir la escena principal a Scenes In Build.
-
-Project Settings:
-
-Player → Other Settings:
-
-Scripting Backend: IL2CPP
-
-Target Architectures: ARM64
-
-XR Plug-in Management: habilitar Oculus/Meta para Android.
-
-(URP/HDRP) Asegurar coherencia con el pipeline y materiales.
-
-Build o Build And Run para generar el .apk.
-
-Instalar en Quest:
-
-Activar Developer Mode.
-
-O bien Meta Quest Developer Hub (Install APK), o con ADB:
-
-bash
-Copy
-Edit
-adb devices
-adb install -r path/to/ColivriDigitalTwin_VR.apk
 ## Cómo colaborar
-Flujo de ramas
 
-main: estable.
+- **Ramas:**  
+  - `main`: estable  
+  - `develop`: integración  
+  - `feature/<nombre>`: nuevas funcionalidades
+- **Pull Requests:**  
+  - Descripción clara  
+  - Screenshots/GIFs si afecta UI/VR  
+  - Pruebas manuales en Editor/dispositivo
+- **Estilo:**  
+  - C# PascalCase para clases/métodos públicos, camelCase para campos privados  
+  - Nombres claros en prefabs/escenas
+- **Issues:**  
+  - Usa etiquetas (`bug`, `enhancement`, `question`, `VR`, `UI`, `build`)  
+  - Incluye pasos de reproducción, logs/stacktrace y versión de Unity/paquetes
 
-develop: integración.
+---
 
-feature/<nombre-corto>: nuevas funcionalidades.
+> 🟩 **CONSEJO:**  
+> Antes de abrir un PR, revisa que no haya duplicados y que el código compile tanto en Editor como en Android/Quest.
 
-Pull Requests
+---
 
-Descripción clara del cambio.
+## 🛠️ Solución de problemas
 
-Screenshots/GIFs si afecta a UI/VR.
+- **Material rosado:** Convierte materiales a Standard o URP/Lit y reasigna en el prefab
+- **Avatar humanoide:** Configura Rig = Humanoid y crea/asigna el Avatar al Animator. Para Generic, no necesitas Avatar
+- **Timer no actualiza:** Verifica que `TimerDef.timerText` esté asignado y evita duplicados
+- **Leaderboard no resalta/actualiza:** Confirma llamada a `highScoreTable.RefreshTable()` tras guardar sesión; limita correctamente el Top-10
 
-Pruebas manuales: Editor y (si aplica) dispositivo.
+---
 
-Estilo
+> 🟨 **ADVERTENCIA:**  
+> Si experimentas errores al compilar para Quest, revisa que todos los paquetes estén actualizados y que los materiales sean compatibles con Android y URP.
 
-C#: PascalCase para clases/métodos públicos, camelCase para campos privados.
-
-Prefabs/Scenes con nombres claros (UI_Registration, Panel_Timer, etc.).
-
-Issues
-
-Etiquetas: bug, enhancement, question, VR, UI, build.
-
-Incluir pasos de reproducción, logs/stacktrace y versión de Unity/paquetes.
-
-## Solución de problemas
-Modelo/prefab magenta (rosado): materiales/shaders incompatibles. Convierte materiales a Standard o URP/Lit y re-asigna en el prefab; usa las utilidades de Upgrade Materials si estás en URP.
-
-Avatar humanoide (Animator): para Humanoid, configura Rig = Humanoid y crea/arrastra el Avatar al Animator. Para Generic, no necesitas Avatar.
-
-Timer no actualiza: verifica que el TimerDef.timerText esté asignado, evita duplicados de TimerDef y no mezcles lógicas antiguas (elimina countdownTime/timerRunning del GameController).
-
-Leaderboard no resalta/actualiza: confirma llamada a highScoreTable.RefreshTable() tras guardar sesión y que el Top-10 se limita correctamente en HighScoreTable.
+---
