@@ -42,7 +42,7 @@
 
 ---
 
->  **Nota:**  
+> [!NOTE]
 > Para una experiencia visual óptima, utiliza prefabs y materiales compatibles con el pipeline URP o Standard según la configuración de proyecto.
 
 ---
@@ -56,7 +56,7 @@
 - **URP** (Universal Render Pipeline) 
 - **Android Build Support** (para compilar APK)
 
-> **Nota:**  
+> [!NOTE]
 > Si algún modelo/prefab aparece rosado, revisa y actualiza el material/shader en el Inspector (Standard/URP/HDRP).
 
 ---
@@ -83,7 +83,7 @@
 - **Proyecto configurado en URP** 
 - **Android Build Support** (para Quest/Android)
 
-> **ADVERTENCIA:**  
+> [!WARNING] 
 > La compilación para Quest solo funciona en ARM64 y XR Plug-in Management configurado correctamente. No olvidar agregar el módulo Android Build Support en Unity Hub.
 
 ---
@@ -127,7 +127,7 @@ Durante el desarrollo, es posible probar y depurar el proyecto directamente desd
 
 ---
 
-> **Nota:**  
+>[!NOTE] 
 > Puedes personalizar los paneles UI y el leaderboard cambiando colores y fuentes en el Inspector para que combinen con el branding de tu laboratorio o proyecto.
 
 ---
@@ -153,7 +153,7 @@ Durante el desarrollo, es posible probar y depurar el proyecto directamente desd
 
 ---
 
->  **IMPORTANTE:**  
+> [!IMPORTANT]
 > Si tienes problemas con shaders o materiales al exportar a Quest/Android, convierte los materiales a URP/Lit y actualiza los prefabs antes de compilar.
 
 ---
@@ -178,7 +178,7 @@ Durante el desarrollo, es posible probar y depurar el proyecto directamente desd
 
 ---
 
-> **Consejo:**  
+> [!TIP] 
 > Antes de abrir un PR, revisa que no haya duplicados y que el código compile tanto en Editor como en Android/Quest.
 
 ---
@@ -190,10 +190,10 @@ Durante el desarrollo, es posible probar y depurar el proyecto directamente desd
 - **Leaderboard no resalta/actualiza:** Confirma llamada a `highScoreTable.RefreshTable()` tras guardar sesión; limita correctamente el Top 10
 
 ---
-Para explorar más sobre la documentación de Meta XR All-In-One ingrese al siguiente link: https://developers.meta.com/horizon/downloads/package/meta-xr-sdk-all-in-one-upm/ /n
-Si quieres investigar más sobre el funcionamiento del paquete teleport ingrese al siguiente link: https://developers.meta.com/horizon/documentation/unity/unity-isdk-teleport-interaction/
+- Para explorar más sobre la documentación de Meta XR All-In-One ingrese al siguiente link: https://developers.meta.com/horizon/downloads/package/meta-xr-sdk-all-in-one-upm/ 
+- Si quieres investigar más sobre el funcionamiento del paquete teleport ingrese al siguiente link: https://developers.meta.com/horizon/documentation/unity/unity-isdk-teleport-interaction/
 
->  **ADVERTENCIA:**  
+> [!WARNING] 
 > Si experimentas errores al compilar para Quest, revisa que todos los paquetes estén actualizados y que los materiales sean compatibles con Android y URP.
 
 ---
