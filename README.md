@@ -49,7 +49,8 @@
 
 ## Tecnologías utilizadas
 
-- **Unity** (LTS recomendado: 2021.3+, 2022.3+, 2023.2+)
+- **Unity** versión 2022.3.5f1
+- **Unity Hub** versión 3.12.1
 - **C#** + **TextMeshPro** para UI
 - **Meta/Oculus XR Interaction SDK** (Meta XR All-In-One SDK)
 - **URP** (Universal Render Pipeline) 
