@@ -159,18 +159,19 @@ Durante el desarrollo, es posible probar y depurar el proyecto directamente desd
 ## Cómo colaborar
 
 - **Ramas:**  
-  - `main`: estable  
-  - `develop`: integración  
-  - `feature/<nombre>`: nuevas funcionalidades
+  - `main`: estable
+    Para integración de nuevas funcionalidades con permisos crea una nueva rama llamada:
+    - `develop/<nombre>`: nuevas funcionalidades
 - **Pull Requests:**  
-  - Descripción clara  
+  - Descripción clara de los cambios realizados
   - Screenshots/GIFs si afecta UI/VR  
   - Pruebas manuales en Editor/dispositivo
 - **Estilo:**  
-  - C# PascalCase para clases/métodos públicos, camelCase para campos privados  
+  - C# camelCase para campos del código  (Nombramiento de funciones, variables, etc)
   - Nombres claros en prefabs/escenas
+  - Organización de carpetas (Ej: Assets/Models para los modelos 3D en la escena, Assets/Scripts para agregar nuevos archivos .cs al proyecto )
 - **Issues:**  
-  - Usa etiquetas (`bug`, `enhancement`, `question`, `VR`, `UI`, `build`)  
+  - Usa etiquetas (`bug`, `question`, `VR`, `UI`, `build`)  
   - Incluye pasos de reproducción, logs/stacktrace y versión de Unity/paquetes
 
 ---
@@ -184,10 +185,11 @@ Durante el desarrollo, es posible probar y depurar el proyecto directamente desd
 
 - **Material rosado:** Convierte materiales a Standard o URP/Lit y reasigna en el prefab
 - **Timer no actualiza:** Verifica que `TimerDef.timerText` esté asignado y evita duplicados
-- **Leaderboard no resalta/actualiza:** Confirma llamada a `highScoreTable.RefreshTable()` tras guardar sesión; limita correctamente el Top-10
+- **Leaderboard no resalta/actualiza:** Confirma llamada a `highScoreTable.RefreshTable()` tras guardar sesión; limita correctamente el Top 10
 
 ---
 Para explorar más sobre la documentación de Meta XR All-In-One ingrese al siguiente link: https://developers.meta.com/horizon/downloads/package/meta-xr-sdk-all-in-one-upm/
+Si quieres investigar más sobre el funcionamiento del paquete teleport ingrese al siguiente link: https://developers.meta.com/horizon/documentation/unity/unity-isdk-teleport-interaction/
 
 >  **ADVERTENCIA:**  
 > Si experimentas errores al compilar para Quest, revisa que todos los paquetes estén actualizados y que los materiales sean compatibles con Android y URP.
