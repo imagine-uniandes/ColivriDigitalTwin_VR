@@ -63,10 +63,11 @@
 
 ## Arquitectura y estructura
 
-- **GameController:** Orquesta la UI de estados y transiciones
+- **GameController:** Contiene los paneles de la UI, display del ranking, timer, elementos específicos de UI, objetos del juego (Teleports) y Audio source.
 - **CodeManager:** Entrada y validación de la clave
 - **TimerDef:** Cronómetro CountUp/CountDown y eventos de finalización
 - **PlayerDataManager:** Persistencia y cálculo de mejores tiempos
+- **PlayerDataRegistration:** Manejo de selección modo de juego
 - **HighScoreTable:** Renderiza Top 10 con posición, nombre y tiempo
 - **GameStatistics:** Estadísticas de la partida finalizada
 - **CameraBlink:** Fundidos de pantalla con panel UI
