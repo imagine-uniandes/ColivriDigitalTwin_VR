@@ -188,7 +188,7 @@ Durante el desarrollo, es posible probar y depurar el proyecto directamente desd
 - **Leaderboard no resalta/actualiza:** Confirma llamada a `highScoreTable.RefreshTable()` tras guardar sesión; limita correctamente el Top 10
 
 ---
-Para explorar más sobre la documentación de Meta XR All-In-One ingrese al siguiente link: https://developers.meta.com/horizon/downloads/package/meta-xr-sdk-all-in-one-upm/
+Para explorar más sobre la documentación de Meta XR All-In-One ingrese al siguiente link: https://developers.meta.com/horizon/downloads/package/meta-xr-sdk-all-in-one-upm/ /n
 Si quieres investigar más sobre el funcionamiento del paquete teleport ingrese al siguiente link: https://developers.meta.com/horizon/documentation/unity/unity-isdk-teleport-interaction/
 
 >  **ADVERTENCIA:**  
