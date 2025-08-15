@@ -27,7 +27,7 @@
 ## Características principales
 
 - **Tres modos de juego:**
-  - *Fácil/Normal*: Cronómetro ascendente (CountUp) + ayuda Teleports activos.
+  - *Fácil*: Cronómetro ascendente (CountUp) + ayuda Teleports activos.
   - *Normal*: Cronómetro ascendente (CountUp)
   - *Competitivo*: Cronómetro descendente (CountDown) desde el mejor tiempo. Extensión automática si el tiempo llega a 00:00. Sin ayudas adicionales de Teleports.
 - **Leaderboard Top 10:**  
@@ -43,7 +43,7 @@
 ---
 
 > [!NOTE]
-> Para una experiencia visual óptima, utiliza prefabs y materiales compatibles con el pipeline URP o Standard según la configuración de proyecto.
+> Para una experiencia visual coherente, utilizar prefabs y materiales compatibles con el pipeline URP o Standard según la configuración de proyecto.
 
 ---
 
@@ -54,7 +54,7 @@
 - **C#** + **TextMeshPro** para UI
 - **Meta/Oculus XR Interaction SDK** (Meta XR All-In-One SDK)
 - **URP** (Universal Render Pipeline) 
-- **Android Build Support** (para compilar APK)
+- **Android Build Support** (para compilar APK) 
 
 > [!NOTE]
 > Si algún modelo/prefab aparece rosado, revisa y actualiza el material/shader en el Inspector (Standard/URP/HDRP).
@@ -76,7 +76,7 @@
 
 ## Requisitos
 
-- **Unity Hub** + Unity LTS (2021.3+, 2022.3+, 2023.2+)
+- **Unity Hub** + Unity LTS (2022.3+, 2023.2+)
 - **Paquetes necesarios:**
   - TextMeshPro
   - Meta/Oculus XR (Interaction SDK all-in-one)
@@ -84,7 +84,7 @@
 - **Android Build Support** (para Quest/Android)
 
 > [!WARNING] 
-> La compilación para Quest solo funciona en ARM64 y XR Plug-in Management configurado correctamente. No olvidar agregar el módulo Android Build Support en Unity Hub.
+> La compilación para Quest solo funciona en ARM64 y XR Plug-in Management configurado correctamente. No olvidar agregar el módulo Android Build Support en Unity Hub, además de configurar en Project settings los permisos de ocuclus tanto para PC como android.
 
 ---
 ## Debug con Quest Link
@@ -99,12 +99,11 @@ Durante el desarrollo, es posible probar y depurar el proyecto directamente desd
 
 ### Pasos para activar Quest Link en Unity
 
-1. Conecta el visor al PC mediante cable USB-C o activa Air Link en Configuración del quest.  
-2. En el visor, **acepta la solicitud de conexión y acceso a datos**.  
-3. En la aplicación **Meta Quest Link** del PC, activa el modo Link y selecciona escritorio virtual.  
-4. En Unity:
+1. Conectar el visor al PC mediante cable USB-C o activa Air Link en Configuración del quest.  
+2. En el visor, **acepta la solicitud de conexión y acceso a datos**.   
+3. En Unity:
    - Asegurar de que el **XR Plug-in Management** esté habilitado para la plataforma **PC, Mac & Linux Standalone** con **Oculus/Meta** activo.
-   - Cambia la plataforma a **PC** (*File → Build Settings → PC, Mac & Linux Standalone → Switch Platform*).
+   - Cambiar la plataforma a **PC** (*File → Build Settings → PC, Mac & Linux Standalone → Switch Platform*).
 5. Pulsar **Play** en Unity para probar directamente la escena en VR.
 
 ---
@@ -119,16 +118,11 @@ Durante el desarrollo, es posible probar y depurar el proyecto directamente desd
 3. Instala los paquetes necesarios desde Window → Package Manager.
 4. Abre la escena principal: `Assets/Scenes/MainModel`.
 5. Verifica asignaciones en el Inspector:
-   - **GameController:** Paneles (Initial, Registration, Instructions, Code, Timer, GameOver, HighScorePanel, StatsRankingPanel)
+   - **GameController:** Paneles (Registro, Instrucciones, PanelClave, Teleports Hostpots, Timer, GameOver Panel, HighScorePanel, StatsRankingPanel, Audio Source Asignado)
    - **TimerDef:** Arrastra el componente del TimerPanel, asigna el TextMeshProUGUI del reloj
-   - **Audio (opcional):** Asigna AudioSource y successClip
+   - **Audio:** Asigna AudioSource y successClip
    - **CameraBlink:** Crea un FadePanel (UI → Panel) y asigna su Image a fadeImage
-6. Pulsa **Play** para iniciar el flujo: Registro → Dificultad → Juego → Ranking/Estadísticas → Reset
-
----
-
->[!NOTE] 
-> Puedes personalizar los paneles UI y el leaderboard cambiando colores y fuentes en el Inspector para que combinen con el branding de tu laboratorio o proyecto.
+6. Pulsar **Play** para iniciar el flujo: Registro → Dificultad → Juego → Ranking/Estadísticas → Reset
 
 ---
 
@@ -144,12 +138,8 @@ Durante el desarrollo, es posible probar y depurar el proyecto directamente desd
    - Ajusta materiales según tu pipeline
 5. Haz *Build* o *Build And Run* para generar el .apk
 6. Instala en Quest:
-   - Activa *Developer Mode* en el visor
-   - Usa Meta Quest Developer Hub o ADB:
-     ```bash
-     adb devices
-     adb install -r path/to/ColivriDigitalTwin_VR.apk
-     ```
+   - Activa *Developer Mode* en el visor (si no lo tiene)
+   - Si selecciona *Build And Run* al completar la carga del demo, el apk se ejecuta despues de terminar la compilación, además este se guardará en las demos del casco correspondiente. (Habrá una copia guardada en el pc en el que se esté desarrollando)
 
 ---
 
@@ -179,7 +169,7 @@ Durante el desarrollo, es posible probar y depurar el proyecto directamente desd
 ---
 
 > [!TIP] 
-> Antes de abrir un PR, revisa que no haya duplicados y que el código compile tanto en Editor como en Android/Quest.
+> Antes de abrir un proyecto, revisa que no haya duplicados y que el código compile tanto en Editor como en Android/Quest.
 
 ---
 
