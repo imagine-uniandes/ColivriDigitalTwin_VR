@@ -6,8 +6,9 @@
 [![Status: Demo](https://img.shields.io/badge/status-Demo-important.svg)]()
 
 ---
+<div align="center">![8b0d2eed-cd52-4982-b438-bd2f9e04f902 2](https://github.com/user-attachments/assets/9678d792-ef1d-4209-bf7b-1c8e723df222)</div>
 
-![8b0d2eed-cd52-4982-b438-bd2f9e04f902 2](https://github.com/user-attachments/assets/9678d792-ef1d-4209-bf7b-1c8e723df222)
+
 
 
 > **ColivriDigitalTwin_VR** es una demo de pistas en realidad virtual (VR) localizado en el laboratorio COLIVRI. El/la jugador(a) registra su nombre, elige dificultad (Fácil, Normal o Competitivo), y resuelve una clave de 3 dígitos a través de pistas escondidas en todo el laboratorio. El sistema registra el tiempo, actualiza el leaderboard (Top 10), y muestra estadísticas al finalizar.
