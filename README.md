@@ -1,5 +1,4 @@
 
-https://github.com/user-attachments/assets/f1f364db-63bd-4014-b9dd-c8d6a7a096a4
 # ColivriDigitalTwin_VR
 
 [![Unity](https://img.shields.io/badge/unity-2021.3%2B-blue.svg)](https://unity.com/)
