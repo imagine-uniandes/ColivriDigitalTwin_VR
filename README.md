@@ -6,8 +6,11 @@
 [![Status: Demo](https://img.shields.io/badge/status-Demo-important.svg)]()
 
 ---
-<div align="center">![8b0d2eed-cd52-4982-b438-bd2f9e04f902 2](https://github.com/user-attachments/assets/9678d792-ef1d-4209-bf7b-1c8e723df222)</div>
 
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/9678d792-ef1d-4209-bf7b-1c8e723df222" alt="ColivriDigitalTwin_VR Demo GIF" />
+</div>
 
 
 
