@@ -101,7 +101,7 @@
 ---
 ## Debug con Quest Link
 Durante el desarrollo, es posible probar y depurar el proyecto directamente desde el editor de Unity utilizando **Quest Link** (Meta Quest Link). Esto permite iterar rápidamente sin compilar un APK en cada cambio.
-Aquí puedes acceder a un tutorial sobre cómo usar el [Quest Link ]([url](https://codelabs.virtual.uniandes.edu.co/codelabs/activar-oculus-link/#0))
+Aquí puedes acceder a un tutorial sobre cómo usar el [Quest Link](https://codelabs.virtual.uniandes.edu.co/codelabs/activar-oculus-link/#0)
 
 ### Requisitos previos
 
