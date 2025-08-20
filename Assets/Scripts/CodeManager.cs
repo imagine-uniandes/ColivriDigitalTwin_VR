@@ -2,166 +2,193 @@ using System.Linq;
 using UnityEngine;
 using TMPro;
 using System;
+using System.Collections;
 
 public class CodeManager : MonoBehaviour
 {
     [Header("Carga de la pista")]
     [SerializeField] private RetoLoader retoLoader;
-    private string respuesta;
-    [Header("UI de digitos")]
-    [SerializeField] private TMP_Text[] digitTexts;
+
+    private string respuestaActual;
+
+    [Header("UI de dígitos (input del jugador)")]
+    [SerializeField] private TMP_Text[] digitTexts; // 3 TMP_Text del display del jugador
     private int[] digitValues = new int[3];
+
     [Header("Feedback")]
-    [SerializeField] private GameObject panelCorrecto;
-   
-    [SerializeField] private GameObject panelCerca;
-    [SerializeField] private GameObject panelClave;
-    [SerializeField] private TextMeshProUGUI txtPosiciones;
-    [SerializeField] private TextMeshProUGUI txtWrongPos;
+    [SerializeField] private GameObject panelCorrecto; // se muestra cuando acierta
+    [SerializeField] private GameObject panelCerca;    // feedback de “cerca”
+    [SerializeField] private GameObject panelClave;    // panel con los controles de ingreso
+    [SerializeField] private TextMeshProUGUI txtPosiciones; // dígitos bien posicionados
+    [SerializeField] private TextMeshProUGUI txtWrongPos;   // dígitos correctos en pos. equivocada
 
-    private float startTime;
+    [Header("Timing")]
+    [Tooltip("Tiempo que se muestra el feedback 'correcto' ANTES de mostrar estadísticas y volver a registro.")]
+    [SerializeField] private float perRetoFeedbackDelay = 1.2f;
+
+    // Evento cuando se completa EL RETO (una partida)
     public static event Action<float> OnCodeSuccessEvent;
-    
 
-    void Start()
+    // Tiempos
+    private float sessionStartTime;  // inicio de la partida (un reto)
+    private float retoStartTime;     // alias por si quieres métricas por reto
+
+    private void Start()
     {
-        InitializeAnswer();
-        ResetSession();
-        
+        ResetVisualsOnly();
     }
-  
+
+    /// <summary>
+    /// Llamado desde GameController al presionar Play para arrancar la partida (un reto).
+    /// </summary>
+    public void BeginSession(bool shuffle = false)
+    {
+        if (retoLoader == null)
+        {
+            Debug.LogError("CodeManager: RetoLoader no asignado.");
+            return;
+        }
+
+        // NO avanzamos reto aquí. RetoLoader ya tiene el reto “actual” preparado desde el regreso a registro.
+        // Solo asegúrate de que las pistas y dígitos se muestren:
+        retoLoader.UpdatePistasUI();
+        CargarRespuestaActual();
+
+        ResetDigits();
+        panelCorrecto?.SetActive(false);
+        panelCerca?.SetActive(false);
+        panelClave?.SetActive(true);
+
+        sessionStartTime = Time.time;
+        retoStartTime = Time.time;
+    }
+
+    /// <summary>
+    /// Llamado por GameController al volver al registro u otros resets globales.
+    /// </summary>
     public void ResetSession()
     {
-        InitializeAnswer();
-        for (int i = 0; i < digitValues.Length; i++)
-            digitValues[i] = 0;
+        ResetVisualsOnly();
+    }
+
+    private void ResetVisualsOnly()
+    {
+        for (int i = 0; i < digitValues.Length; i++) digitValues[i] = 0;
         UpdateDisplay();
-        panelCorrecto.SetActive(false);
-        panelCerca.SetActive(false);
-        panelClave.SetActive(true);
-        startTime = Time.time;
 
+        if (panelCorrecto) panelCorrecto.SetActive(false);
+        if (panelCerca)    panelCerca.SetActive(false);
+        if (panelClave)    panelClave.SetActive(true);
     }
-    
 
-
-
-    private void InitializeAnswer()
+    private void ResetDigits()
     {
-        if (retoLoader != null && retoLoader.reto != null)
-        {
-            respuesta = retoLoader.reto.respuesta;
-        }
+        for (int i = 0; i < digitValues.Length; i++) digitValues[i] = 0;
+        UpdateDisplay();
     }
-    /*
-    private void MostrarPistas()
+
+    private void CargarRespuestaActual()
     {
-        if (retoLoader.reto != null && pistasUI.Length >= 5)
-        {
-            pistasUI[0].text = retoLoader.reto.pista1;
-            pistasUI[1].text = retoLoader.reto.pista2;
-            pistasUI[2].text = retoLoader.reto.pista3;
-            pistasUI[3].text = retoLoader.reto.pista4;
-            pistasUI[4].text = retoLoader.reto.pista5;
-        }
+        var reto = retoLoader?.GetCurrentReto();
+        respuestaActual = reto?.respuesta;
+
+        if (string.IsNullOrEmpty(respuestaActual))
+            Debug.LogWarning("Respuesta del reto actual no inicializada.");
     }
-    */
+
     public void IncreaseDigit(int index)
     {
-        panelCorrecto.SetActive(false);
-        panelCerca.SetActive(false);
-        panelClave.SetActive(true);
+        if (panelCorrecto) panelCorrecto.SetActive(false);
+        if (panelCerca)    panelCerca.SetActive(false);
+        if (panelClave)    panelClave.SetActive(true);
 
-        digitValues[index] = (digitValues[index] +1) %10;
+        digitValues[index] = (digitValues[index] + 1) % 10;
         UpdateDisplay();
     }
 
     public void DecreaseDigit(int index)
     {
-        panelCorrecto.SetActive(false);
-        panelCerca.SetActive(false);
-        panelClave.SetActive(true);
-        digitValues[index] = (digitValues[index] +9) %10;
+        if (panelCorrecto) panelCorrecto.SetActive(false);
+        if (panelCerca)    panelCerca.SetActive(false);
+        if (panelClave)    panelClave.SetActive(true);
+
+        digitValues[index] = (digitValues[index] + 9) % 10;
         UpdateDisplay();
     }
 
     public void OnClear()
     {
-        panelCorrecto.SetActive(false);
-        panelCerca.SetActive(false);
-        panelClave.SetActive(true);
-        for (int i = 0; i < digitValues.Length; i++)
-            digitValues[i] = 0;
-        UpdateDisplay();
+        if (panelCorrecto) panelCorrecto.SetActive(false);
+        if (panelCerca)    panelCerca.SetActive(false);
+        if (panelClave)    panelClave.SetActive(true);
+
+        ResetDigits();
     }
 
     public void OnValidate()
     {
-        if (respuesta == null)
+        if (string.IsNullOrEmpty(respuestaActual))
         {
-            InitializeAnswer();
-        }
-        if (string.IsNullOrEmpty(respuesta))
-        {
-            Debug.LogWarning("No se puede validar: respuesta no esta inicializada");
-            return;
+            CargarRespuestaActual();
+            if (string.IsNullOrEmpty(respuestaActual))
+            {
+                Debug.LogWarning("No se puede validar: respuesta no está inicializada.");
+                return;
+            }
         }
         if (panelCorrecto == null || panelCerca == null || panelClave == null)
         {
-            Debug.LogWarning("Paneles no estan asignados en el inspector");
+            Debug.LogWarning("Asigna los paneles de feedback en el inspector.");
             return;
         }
+
         panelCorrecto.SetActive(false);
         panelCerca.SetActive(false);
 
         string currentInput = string.Concat(digitValues.Select(d => d.ToString()));
 
-        if (currentInput == respuesta)
+        if (currentInput == respuestaActual)
         {
+            // 1) Mostrar feedback de acierto SIEMPRE
             panelCorrecto.SetActive(true);
             panelClave.SetActive(false);
 
-            float elapsed = Time.time - startTime;
+            // Tiempo de la partida (un reto)
+            float totalElapsed = Time.time - sessionStartTime;
 
-        // 1. Grabar en PlayerDataManager (usa PlayerPrefs internamente)
-        
-            OnCodeSuccessEvent?.Invoke(elapsed);
-            Debug.Log($"Código correcto ingresado en {elapsed:F2} s.");
-
-        
-
-
+            // 2) Tras el delay, notificar a GameController para guardar stats, mostrar ranking y volver a registro
+            StartCoroutine(NotifySuccessAfterDelay(perRetoFeedbackDelay, totalElapsed));
         }
         else
         {
+            // Feedback “cerca”
             int good = 0, wrong = 0;
             for (int i = 0; i < 3; i++)
             {
                 char c = currentInput[i];
-                if (c == respuesta[i])
-                    good++;
-                else if (respuesta.Contains(c.ToString()))
-                    wrong++;
+                if (c == respuestaActual[i]) good++;
+                else if (respuestaActual.Contains(c.ToString())) wrong++;
             }
-            if (txtPosiciones != null)
-                txtPosiciones.SetText("{0}", good);
-            if (txtWrongPos != null)
-                txtWrongPos.SetText("{0}", wrong);
+            if (txtPosiciones != null) txtPosiciones.SetText("{0}", good);
+            if (txtWrongPos != null)   txtWrongPos.SetText("{0}", wrong);
 
             panelCerca.SetActive(true);
             panelClave.SetActive(false);
         }
     }
 
+    private IEnumerator NotifySuccessAfterDelay(float delay, float totalElapsed)
+    {
+        yield return new WaitForSeconds(delay);
+        OnCodeSuccessEvent?.Invoke(totalElapsed);
+        Debug.Log($"Reto completado en {totalElapsed:F2} s. Se mostrarán estadísticas y se volverá al registro.");
+    }
+
     private void UpdateDisplay()
     {
-        if (digitTexts != null)
-        {
-            for (int i = 0; i < digitTexts.Length; i++)
-            {
-                if (digitTexts[i] != null)
-                    digitTexts[i].text = digitValues[i].ToString();
-            }
-        }
+        if (digitTexts == null) return;
+        for (int i = 0; i < digitTexts.Length; i++)
+            if (digitTexts[i] != null)
+                digitTexts[i].text = digitValues[i].ToString();
     }
 }

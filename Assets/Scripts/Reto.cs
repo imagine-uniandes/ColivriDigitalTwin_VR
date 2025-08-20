@@ -1,3 +1,5 @@
+
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,4 +14,10 @@ public class Reto
     public string pista4;
     public string pista5;
     public string respuesta;
+
+}
+[System.Serializable]
+public class RetosList
+{
+    public List<Reto> retos;
 }
