@@ -18,6 +18,8 @@ public class GameController : MonoBehaviour
     public GameObject gameOverPanel;
     [SerializeField] private HighScoreTable highScoreTable;
     public GameObject statsRankingPanel;
+
+    [Header("Reto Loader")]
     [SerializeField] private RetoLoader retoLoader;
 
     [Header("Ranking Display")]
@@ -136,6 +138,7 @@ public class GameController : MonoBehaviour
         ApplyHotspotHelp(difficulty == Difficulty.Easy);
         extraTimeGiven = false;
 
+        // Timer según dificultad
         switch (difficulty)
         {
             case Difficulty.Easy:
@@ -155,6 +158,18 @@ public class GameController : MonoBehaviour
 
         timerDef.ResetTimer();
 
+        // === CLAVE: configurar RetoLoader y fijar reto de la sesión ===
+        if (retoLoader == null) retoLoader = FindObjectOfType<RetoLoader>();
+        if (retoLoader != null)
+        {
+            retoLoader.ConfigureModeByDifficulty(difficulty);
+            retoLoader.PrepareForNewSession(); // fija Reto 1 / aleatorio / mantiene secuencia
+        }
+        else
+        {
+            Debug.LogError("GameController: RetoLoader no asignado ni encontrado en escena.");
+        }
+
         var cm = FindObjectOfType<CodeManager>();
         cm?.BeginSession(shuffle: false);
     }
@@ -170,7 +185,6 @@ public class GameController : MonoBehaviour
             elapsedTime, $"Partida {System.DateTime.Now:HH:mm:ss}");
         highScoreTable.RefreshTable();
 
-        // Mostrar estadísticas y luego volver al registro (todas las dificultades)
         StartCoroutine(ShowStatsAndReturnToRegister(elapsedTime));
     }
 
@@ -208,14 +222,18 @@ public class GameController : MonoBehaviour
         // 6) Ocultar stats
         statsRankingPanel.SetActive(false);
 
-        // 7) Avanzar al siguiente reto y preparar UI de pistas
+        // 7) Avanzar reto SOLO en competitivo
         if (retoLoader != null)
         {
-            bool avanzado = retoLoader.LoadNextReto();
-            retoLoader.UpdatePistasUI();
+            if (difficulty == Difficulty.Competitive)
+            {
+                bool avanzado = retoLoader.LoadNextReto();
+                retoLoader.UpdatePistasUI();
 
-            // Si quieres reiniciar al primero cuando se acaben:
-            if (!avanzado) { retoLoader.ResetSequence(shuffle: false); retoLoader.UpdatePistasUI(); }
+                // Si quieres reiniciar al primero cuando se acaben:
+                if (!avanzado) { retoLoader.ResetSequence(shuffle: false); retoLoader.UpdatePistasUI(); }
+            }
+            // En Fácil y Normal: no avanzamos (cada sesión es 1 reto y vuelve al registro).
         }
 
         // 8) Volver al registro

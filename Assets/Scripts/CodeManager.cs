@@ -49,8 +49,7 @@ public class CodeManager : MonoBehaviour
             return;
         }
 
-        // NO avanzamos reto aquí. RetoLoader ya tiene el reto “actual” preparado desde el regreso a registro.
-        // Solo asegúrate de que las pistas y dígitos se muestren:
+        // RetoLoader ya fijó el reto actual (1 / aleatorio / secuencial).
         retoLoader.UpdatePistasUI();
         CargarRespuestaActual();
 

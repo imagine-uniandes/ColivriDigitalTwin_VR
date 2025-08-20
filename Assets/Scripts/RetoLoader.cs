@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using SysRandom = System.Random; // ← usamos System.Random sin chocar con UnityEngine.Random
 
 [System.Serializable]
 public class TripleDigits
@@ -29,6 +30,14 @@ public class TripleDigits
 
 public class RetoLoader : MonoBehaviour
 {
+    // === NUEVO: modo de carga según dificultad ===
+    public enum LoadMode
+    {
+        EasyOnlyFirst,  // siempre idReto = 1
+        RandomOne,      // uno aleatorio por sesión
+        Sequential      // avanza 1,2,3,... (lo que ya tenías)
+    }
+
     [Header("UI Pistas (texto completo)")]
     [SerializeField] private TextMeshProUGUI pista1UI;
     [SerializeField] private TextMeshProUGUI pista2UI;
@@ -45,6 +54,10 @@ public class RetoLoader : MonoBehaviour
 
     public RetosList retosList;
     private int currentIndex = 0;
+
+    // === NUEVO: estado de modo y RNG ===
+    private LoadMode mode = LoadMode.Sequential;
+    private readonly SysRandom rng = new SysRandom();
 
     public int TotalRetos => (retosList?.retos?.Count) ?? 0;
     public int CurrentIndex => currentIndex;
@@ -70,6 +83,56 @@ public class RetoLoader : MonoBehaviour
         }
     }
 
+    // === NUEVO: configurar el modo desde GameController ===
+    public void ConfigureModeByDifficulty(GameController.Difficulty difficulty)
+    {
+        switch (difficulty)
+        {
+            case GameController.Difficulty.Easy:
+                mode = LoadMode.EasyOnlyFirst;
+                break;
+            case GameController.Difficulty.Normal:
+                mode = LoadMode.RandomOne;
+                break;
+            case GameController.Difficulty.Competitive:
+                mode = LoadMode.Sequential;
+                break;
+        }
+    }
+
+    // === NUEVO: fijar el reto actual al iniciar una sesión (al darle Play) ===
+    public void PrepareForNewSession()
+    {
+        if (TotalRetos == 0) return;
+
+        switch (mode)
+        {
+            case LoadMode.EasyOnlyFirst:
+                SetCurrentByIdReto(1);
+                break;
+
+            case LoadMode.RandomOne:
+                currentIndex = rng.Next(0, TotalRetos); // elige uno y se queda para toda la sesión
+                break;
+
+            case LoadMode.Sequential:
+                // no tocar currentIndex (continúa donde iba la secuencia)
+                // si prefieres reiniciar cada sesión descomenta:
+                // currentIndex = 0;
+                break;
+        }
+
+        UpdatePistasUI();
+    }
+
+    // === NUEVO: helper para ir directo por idReto ===
+    public void SetCurrentByIdReto(int idReto)
+    {
+        if (retosList?.retos == null || retosList.retos.Count == 0) return;
+        int idx = retosList.retos.FindIndex(r => r.idReto == idReto);
+        currentIndex = (idx >= 0) ? idx : 0;
+    }
+
     public void ResetSequence(bool shuffle = false)
     {
         currentIndex = 0;
@@ -84,9 +147,14 @@ public class RetoLoader : MonoBehaviour
         return retosList.retos[currentIndex];
     }
 
+    /// <summary>
+    /// Avanza solo en modo secuencial (en Fácil/Normal no se usa).
+    /// </summary>
     public bool LoadNextReto()
     {
         if (retosList == null || retosList.retos == null) return false;
+        if (mode != LoadMode.Sequential) return false; // ← clave
+
         if (currentIndex + 1 < retosList.retos.Count)
         {
             currentIndex++;
@@ -123,11 +191,8 @@ public class RetoLoader : MonoBehaviour
     private string ExtractThreeDigits(string pista)
     {
         if (string.IsNullOrEmpty(pista)) return "";
-        // Split por espacio y toma el primer token
         int space = pista.IndexOf(' ');
         string token = (space > 0) ? pista.Substring(0, space) : pista;
-
-        // Sanitiza y asegura largo 3 (por si viniera con algo raro)
         token = token.Trim();
         if (token.Length >= 3) token = token.Substring(0, 3);
         return token;
@@ -135,6 +200,7 @@ public class RetoLoader : MonoBehaviour
 
     private void Shuffle(List<Reto> list)
     {
+        // Mantengo tu shuffle con UnityEngine.Random (independiente del SysRandom)
         for (int i = 0; i < list.Count; i++)
         {
             int j = Random.Range(i, list.Count);
