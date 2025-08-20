@@ -9,7 +9,11 @@
 
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/9678d792-ef1d-4209-bf7b-1c8e723df222" alt="ColivriDigitalTwin_VR Demo GIF" />
+  <a href="https://youtu.be/Q7htB_qRoV8">
+    <img src="https://github.com/user-attachments/assets/9678d792-ef1d-4209-bf7b-1c8e723df222" alt="ColivriDigitalTwin_VR Demo GIF" />
+  </a>
+  <br/>
+  <a href="https://youtu.be/Q7htB_qRoV8">🎬 Ver video en YouTube</a>
 </div>
 
 
