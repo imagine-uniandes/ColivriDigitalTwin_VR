@@ -25,6 +25,7 @@
 ## Tabla de contenidos
 
 - [Características principales](#características-principales)
+- [Características importantes para desarrolladores](#características-importantes-para-desarrolladores)
 - [Tecnologías utilizadas](#tecnologías-utilizadas)
 - [Arquitectura y estructura](#arquitectura-y-estructura)
 - [Requisitos](#requisitos)
@@ -57,6 +58,26 @@
 > [!NOTE]
 > Para una experiencia visual coherente, utilizar prefabs y materiales compatibles con el pipeline URP o Standard según la configuración de proyecto.
 
+---
+
+## Características importantes para desarrolladores
+
+A continuación se describen brevemente la responsabilidad principal de cada script encontrado en el proyecto. Esto ayuda a los desarrolladores a identificar rápidamente el propósito y función de cada componente clave.
+
+- **Assets/Scripts/CodeManager.cs**  
+  *Responsabilidad:* Gestiona el flujo de la partida (reto), incluyendo el control de la entrada del jugador, validación de respuestas, manejo de feedback visual, y el tiempo transcurrido en cada reto.
+
+- **Assets/Scripts/RetoLoader.cs**  
+  *Responsabilidad:* Administra la carga y gestión de los retos disponibles. Selecciona el reto actual según el modo de dificultad (fácil, normal, competitivo), actualiza la interfaz de pistas y permite avanzar entre retos en modo secuencial.
+
+- **Assets/Scripts/GameController.cs**  
+  *Responsabilidad:* Controla el ciclo principal del juego: inicia la partida, gestiona la transición entre paneles, configura la dificultad y coordina la interacción entre los distintos managers (por ejemplo, registro de jugador, retos, estadísticas).
+
+- **Assets/Scripts/PlayerRegistration.cs**  
+  *Responsabilidad:* Maneja el registro de jugadores, verifica la entrada del nombre y la selección de dificultad, y coordina el inicio de la partida desde la interfaz de usuario.
+
+- **Assets/Scripts/PlayerDataManager.cs**  
+  *Responsabilidad:* Administra los datos persistentes de los jugadores, incluyendo la creación, selección y registro de estadísticas para cada sesión de juego.
 ---
 
 ## Tecnologías utilizadas
