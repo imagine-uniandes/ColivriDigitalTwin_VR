@@ -84,7 +84,7 @@ A continuación se describen brevemente la responsabilidad principal de cada scr
 - [Unity 2022.3.5f1](https://unity.com/releases/editor/whats-new/2022.3.5)
 - [Unity Hub 3.12.1](https://unity.com/download)
 - [C#](https://learn.microsoft.com/es-es/dotnet/csharp/) + [TextMeshPro](https://docs.unity3d.com/Packages/com.unity.textmeshpro@latest/)
-- [Meta/Oculus XR Interaction SDK (Meta XR All-In-One SDK)](https://developer.oculus.com/documentation/unity/meta-xr-all-in-one-sdk-overview/)
+- [Meta/Oculus XR Interaction SDK (Meta XR All-In-One SDK)](https://developers.meta.com/horizon/downloads/package/meta-xr-sdk-all-in-one-upm/)
 - [URP (Universal Render Pipeline)](https://unity.com/universal-render-pipeline)
 - [Android Build Support](https://developer.android.com/studio)
 
