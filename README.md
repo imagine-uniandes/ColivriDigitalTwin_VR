@@ -32,7 +32,7 @@
 - [Debug con Quest Link](#debug-con-quest-link)
 - [Guía de instalación y ejecución](#guía-de-instalación-y-ejecución)
 - [Compilación para Quest/Android](#compilación-para-questandroid)
-- [Descarga de APKs](descarga-de-apks)
+- [Descarga de APKs](#descarga-de-apks)
 - [Cómo colaborar](#cómo-colaborar)
 - [Solución de problemas](#solución-de-problemas)
 
