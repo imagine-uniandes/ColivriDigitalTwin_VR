@@ -32,6 +32,7 @@
 - [Debug con Quest Link](#debug-con-quest-link)
 - [Guía de instalación y ejecución](#guía-de-instalación-y-ejecución)
 - [Compilación para Quest/Android](#compilación-para-questandroid)
+- [Descarga de APKs](descarga-de-apks)
 - [Cómo colaborar](#cómo-colaborar)
 - [Solución de problemas](#solución-de-problemas)
 
@@ -180,6 +181,15 @@ Aquí puedes acceder a un tutorial sobre cómo usar el [Quest Link](https://code
 > [!IMPORTANT]
 > Si tienes problemas con shaders o materiales al exportar a Quest/Android, convierte los materiales a URP/Lit y actualiza los prefabs antes de compilar.
 
+---
+## Descarga de APKs
+
+Puedes descargar los archivos APK de las releases oficiales del proyecto. Cada versión publicada incluye su respectivo APK listo para instalar en dispositivos Android.
+
+- [Demo01 v0.0.1](https://github.com/imagine-uniandes/ColivriDigitalTwin_VR/releases/tag/0.0.1)  
+  &nbsp;&nbsp;└─ [PruebaDigitalTwinColivri2.apk](https://github.com/imagine-uniandes/ColivriDigitalTwin_VR/releases/download/0.0.1/PruebaDigitalTwinColivri2.apk)
+
+> Para ver más versiones y APKs, visita la sección [Releases](https://github.com/imagine-uniandes/ColivriDigitalTwin_VR/releases).
 ---
 
 ## Cómo colaborar
