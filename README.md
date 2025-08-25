@@ -18,19 +18,19 @@
 
 
 > **ColivriDigitalTwin_VR** es una demo de pistas en realidad virtual (VR) localizado en el laboratorio COLIVRI. El/la jugador(a) registra su nombre, elige dificultad (Fácil, Normal o Competitivo), y resuelve una clave de 3 dígitos a través de pistas escondidas en todo el laboratorio. El sistema registra el tiempo, actualiza el leaderboard (Top 10), y muestra estadísticas al finalizar.
-- Link de descarga (APK): 
-
 ---
 
 ## Tabla de contenidos
 
 - [Características principales](#características-principales)
+- [Características importantes para desarrolladores](#características-importantes-para-desarrolladores)
 - [Tecnologías utilizadas](#tecnologías-utilizadas)
 - [Arquitectura y estructura](#arquitectura-y-estructura)
 - [Requisitos](#requisitos)
 - [Debug con Quest Link](#debug-con-quest-link)
 - [Guía de instalación y ejecución](#guía-de-instalación-y-ejecución)
 - [Compilación para Quest/Android](#compilación-para-questandroid)
+- [Descarga de APKs](#descarga-de-apks)
 - [Cómo colaborar](#cómo-colaborar)
 - [Solución de problemas](#solución-de-problemas)
 
@@ -59,14 +59,34 @@
 
 ---
 
+## Características importantes para desarrolladores
+
+A continuación se describen brevemente la responsabilidad principal de cada script encontrado en el proyecto. Esto ayuda a los desarrolladores a identificar rápidamente el propósito y función de cada componente clave.
+
+- **Assets/Scripts/CodeManager.cs**  
+  *Responsabilidad:* Gestiona el flujo de la partida (reto), incluyendo el control de la entrada del jugador, validación de respuestas, manejo de feedback visual, y el tiempo transcurrido en cada reto.
+
+- **Assets/Scripts/RetoLoader.cs**  
+  *Responsabilidad:* Administra la carga y gestión de los retos disponibles. Selecciona el reto actual según el modo de dificultad (fácil, normal, competitivo), actualiza la interfaz de pistas y permite avanzar entre retos en modo secuencial.
+
+- **Assets/Scripts/GameController.cs**  
+  *Responsabilidad:* Controla el ciclo principal del juego: inicia la partida, gestiona la transición entre paneles, configura la dificultad y coordina la interacción entre los distintos managers (por ejemplo, registro de jugador, retos, estadísticas).
+
+- **Assets/Scripts/PlayerRegistration.cs**  
+  *Responsabilidad:* Maneja el registro de jugadores, verifica la entrada del nombre y la selección de dificultad, y coordina el inicio de la partida desde la interfaz de usuario.
+
+- **Assets/Scripts/PlayerDataManager.cs**  
+  *Responsabilidad:* Administra los datos persistentes de los jugadores, incluyendo la creación, selección y registro de estadísticas para cada sesión de juego.
+---
+
 ## Tecnologías utilizadas
 
-- **Unity** versión 2022.3.5f1
-- **Unity Hub** versión 3.12.1
-- **C#** + **TextMeshPro** para UI
-- **Meta/Oculus XR Interaction SDK** (Meta XR All-In-One SDK)
-- **URP** (Universal Render Pipeline) 
-- **Android Build Support** (para compilar APK) 
+- [Unity 2022.3.5f1](https://unity.com/releases/editor/whats-new/2022.3.5)
+- [Unity Hub 3.12.1](https://unity.com/download)
+- [C#](https://learn.microsoft.com/es-es/dotnet/csharp/) + [TextMeshPro](https://docs.unity3d.com/Packages/com.unity.textmeshpro@latest/)
+- [Meta/Oculus XR Interaction SDK (Meta XR All-In-One SDK)](https://developers.meta.com/horizon/downloads/package/meta-xr-sdk-all-in-one-upm/)
+- [URP (Universal Render Pipeline)](https://unity.com/universal-render-pipeline)
+- [Android Build Support](https://developer.android.com/studio)
 
 > [!NOTE]
 > Si algún modelo/prefab aparece rosado, revisa y actualiza el material/shader en el Inspector (Standard/URP/HDRP).
@@ -144,21 +164,36 @@ Aquí puedes acceder a un tutorial sobre cómo usar el [Quest Link](https://code
 1. Instala **Android Build Support** (Unity Hub → Installs → Add modules)
 2. Ve a **File → Build Settings → Android** y haz *Switch Platform*
 3. Añade la escena principal a *Scenes In Build*
-4. Configura en **Project Settings → Player → Other Settings**:
-   - Scripting Backend: IL2CPP
-   - Target Architectures: ARM64
-   - XR Plug-in Management: habilita Oculus/Meta para Android
+4. Configura en **Project Settings → XR-Plug-in Managment**:
+   - XR Plug-in Management: habilita Oculus/Meta para Android y PC
    - Ajusta materiales según tu pipeline
 5. Haz *Build* o *Build And Run* para generar el .apk
 6. Instala en Quest:
    - Activa *Developer Mode* en el visor (si no lo tiene)
    - Si selecciona *Build And Run* al completar la carga del demo, el apk se ejecuta despues de terminar la compilación, además este se guardará en las demos del casco correspondiente. (Habrá una copia guardada en el pc en el que se esté desarrollando)
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/b0648467-ef62-4755-93cf-c5a2f40f091b" width="300"/>
+  <img src="https://github.com/user-attachments/assets/0efa0762-efa3-4802-ab78-b891655c7919"  width="300"/>
+
+
+
+</div>
+
 
 ---
 
 > [!IMPORTANT]
 > Si tienes problemas con shaders o materiales al exportar a Quest/Android, convierte los materiales a URP/Lit y actualiza los prefabs antes de compilar.
 
+---
+## Descarga de APKs
+
+Puedes descargar los archivos APK de las releases oficiales del proyecto. Cada versión publicada incluye su respectivo APK listo para instalar en dispositivos Android.
+
+- [Demo01 v0.0.1](https://github.com/imagine-uniandes/ColivriDigitalTwin_VR/releases/tag/0.0.1)  
+  &nbsp;&nbsp;└─ [PruebaDigitalTwinColivri2.apk](https://github.com/imagine-uniandes/ColivriDigitalTwin_VR/releases/download/0.0.1/PruebaDigitalTwinColivri2.apk)
+
+> Para ver más versiones y APKs, visita la sección [Releases](https://github.com/imagine-uniandes/ColivriDigitalTwin_VR/releases).
 ---
 
 ## Cómo colaborar
