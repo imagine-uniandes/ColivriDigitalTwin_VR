@@ -18,8 +18,6 @@
 
 
 > **ColivriDigitalTwin_VR** es una demo de pistas en realidad virtual (VR) localizado en el laboratorio COLIVRI. El/la jugador(a) registra su nombre, elige dificultad (Fácil, Normal o Competitivo), y resuelve una clave de 3 dígitos a través de pistas escondidas en todo el laboratorio. El sistema registra el tiempo, actualiza el leaderboard (Top 10), y muestra estadísticas al finalizar.
-- Link de descarga (APK): 
-
 ---
 
 ## Tabla de contenidos
@@ -83,12 +81,12 @@ A continuación se describen brevemente la responsabilidad principal de cada scr
 
 ## Tecnologías utilizadas
 
-- **Unity** versión 2022.3.5f1
-- **Unity Hub** versión 3.12.1
-- **C#** + **TextMeshPro** para UI
-- **Meta/Oculus XR Interaction SDK** (Meta XR All-In-One SDK)
-- **URP** (Universal Render Pipeline) 
-- **Android Build Support** (para compilar APK) 
+- [Unity 2022.3.5f1](https://unity.com/releases/editor/whats-new/2022.3.5)
+- [Unity Hub 3.12.1](https://unity.com/download)
+- [C#](https://learn.microsoft.com/es-es/dotnet/csharp/) + [TextMeshPro](https://docs.unity3d.com/Packages/com.unity.textmeshpro@latest/)
+- [Meta/Oculus XR Interaction SDK (Meta XR All-In-One SDK)](https://developer.oculus.com/documentation/unity/meta-xr-all-in-one-sdk-overview/)
+- [URP (Universal Render Pipeline)](https://unity.com/universal-render-pipeline)
+- [Android Build Support](https://developer.android.com/studio)
 
 > [!NOTE]
 > Si algún modelo/prefab aparece rosado, revisa y actualiza el material/shader en el Inspector (Standard/URP/HDRP).
