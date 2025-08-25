@@ -52,11 +52,19 @@ public class GameController : MonoBehaviour
     [SerializeField] private AudioClip successClip;
     [SerializeField] private float successDisplayDuration = 2f;
 
+    [Header("Audio (Suspenso)")]
+    [SerializeField] private AudioSource suspenseSource;       
+    [SerializeField] private AudioClip suspenseClip;          
+    [SerializeField, Range(0f, 1f)] private float suspenseVolume = 0.6f;
+    private bool suspenseActive = false;
+    private Coroutine suspenseGuardRoutine;
+
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(transform.root.gameObject);
+        EnsureSuspenseSource();
     }
 
     private void Start()
@@ -95,6 +103,7 @@ public class GameController : MonoBehaviour
 
     public void OnTimerFinished()
     {
+        StopSuspenseBed();
         timerDef.StopTimer();
         var player = GameObject.FindWithTag("Player");
         if (player != null) player.transform.position = playerStartPos;
@@ -172,10 +181,12 @@ public class GameController : MonoBehaviour
 
         var cm = FindObjectOfType<CodeManager>();
         cm?.BeginSession(shuffle: false);
+        StartSuspenseBed();
     }
 
     public void OnCodeSuccess(float elapsedTime)
     {
+        StopSuspenseBed();
         if (audioSource != null && successClip != null)
             audioSource.PlayOneShot(successClip);
 
@@ -250,6 +261,7 @@ public class GameController : MonoBehaviour
 
         // REINICIALIZA y DETIENE el TimerDef
         timerDef.InitializeTimer();
+        StopSuspenseBed();
 
         // UI
         codePanel.SetActive(false);
@@ -261,6 +273,7 @@ public class GameController : MonoBehaviour
 
     public void TriggerGameOver()
     {
+        StopSuspenseBed();
         timerDef.StopTimer();
         var player = GameObject.FindWithTag("Player");
         if (player != null) player.transform.position = playerStartPos;
@@ -284,6 +297,7 @@ public class GameController : MonoBehaviour
 
     public void OnRetryClicked()
     {
+        StopSuspenseBed();
         gameOverPanel.SetActive(false);
         timerDef.InitializeTimer();
         ResetToRegistration();
@@ -320,6 +334,67 @@ public class GameController : MonoBehaviour
             var rend = go.GetComponent<Renderer>();
             if (rend != null)
                 rend.material.color = show ? helpColor : Color.white;
+        }
+    }
+    private void EnsureSuspenseSource()
+    {
+        if (suspenseSource == null)
+        {
+            suspenseSource = gameObject.AddComponent<AudioSource>();
+            suspenseSource.playOnAwake = false;
+            suspenseSource.loop = true;        // loop por defecto
+            suspenseSource.spatialBlend = 0f;  // 2D
+            suspenseSource.volume = suspenseVolume;
+            suspenseSource.dopplerLevel = 0f;  // por si algún día usas 3D
+        }
+    }
+
+    private void StartSuspenseBed()
+    {
+        if (suspenseClip == null) return;
+        EnsureSuspenseSource();
+
+        suspenseSource.clip = suspenseClip;
+        suspenseSource.loop = true;                 
+        suspenseSource.spatialBlend = 0f;          
+        suspenseSource.ignoreListenerPause = true;  
+        if (suspenseSource.isPlaying) suspenseSource.Stop();
+        suspenseSource.Play();
+
+        suspenseActive = true;
+
+        // Guardia: relanza si algo externo lo detiene
+        if (suspenseGuardRoutine == null)
+            suspenseGuardRoutine = StartCoroutine(SuspenseGuard());
+    }
+
+    private void StopSuspenseBed()
+    {
+        suspenseActive = false;
+
+        if (suspenseGuardRoutine != null)
+        {
+            StopCoroutine(suspenseGuardRoutine);
+            suspenseGuardRoutine = null;
+        }
+
+        if (suspenseSource != null && suspenseSource.isPlaying)
+            suspenseSource.Stop();
+    }
+
+    private IEnumerator SuspenseGuard()
+    {
+        while (suspenseActive)
+        {
+            if (suspenseSource != null && suspenseClip != null)
+            {
+                if (!suspenseSource.isPlaying)
+                {
+                    suspenseSource.loop = true;
+                    suspenseSource.Play();
+                }
+            }
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
