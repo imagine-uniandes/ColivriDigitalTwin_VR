@@ -164,15 +164,21 @@ Aquí puedes acceder a un tutorial sobre cómo usar el [Quest Link](https://code
 1. Instala **Android Build Support** (Unity Hub → Installs → Add modules)
 2. Ve a **File → Build Settings → Android** y haz *Switch Platform*
 3. Añade la escena principal a *Scenes In Build*
-4. Configura en **Project Settings → Player → Other Settings**:
-   - Scripting Backend: IL2CPP
-   - Target Architectures: ARM64
-   - XR Plug-in Management: habilita Oculus/Meta para Android
+4. Configura en **Project Settings → XR-Plug-in Managment**:
+   - XR Plug-in Management: habilita Oculus/Meta para Android y PC
    - Ajusta materiales según tu pipeline
 5. Haz *Build* o *Build And Run* para generar el .apk
 6. Instala en Quest:
    - Activa *Developer Mode* en el visor (si no lo tiene)
    - Si selecciona *Build And Run* al completar la carga del demo, el apk se ejecuta despues de terminar la compilación, además este se guardará en las demos del casco correspondiente. (Habrá una copia guardada en el pc en el que se esté desarrollando)
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/b0648467-ef62-4755-93cf-c5a2f40f091b" width="300"/>
+  <img src="https://github.com/user-attachments/assets/0efa0762-efa3-4802-ab78-b891655c7919"  width="300"/>
+
+
+
+</div>
+
 
 ---
 
