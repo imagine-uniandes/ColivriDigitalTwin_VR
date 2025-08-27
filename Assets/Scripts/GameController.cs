@@ -59,6 +59,20 @@ public class GameController : MonoBehaviour
     private bool suspenseActive = false;
     private Coroutine suspenseGuardRoutine;
 
+    [Header("Locomotion / Teleport")]
+    [Tooltip("Arrastra aquí el objeto raíz del Teleport/Locomotion (p.ej. 'LocomotionController (Interaction)')")]
+    [SerializeField] private GameObject locomotionControllerRoot;
+
+    [Tooltip("componentes a activar/desactivar junto con el teleport")]
+    [SerializeField] private List<MonoBehaviour> teleportScriptsToToggle = new List<MonoBehaviour>();
+
+    [Header("Animators a controlar")]
+    [Tooltip("Arrastra aquí los Animator de los modelos que quieres pausar/reproducir.")]
+    [SerializeField] private List<Animator> animatorsToControl = new List<Animator>();
+
+    [Tooltip("Si lo dejas vacío, se reproducirá el estado por defecto del Animator.")]
+    [SerializeField] private string stateToPlayOnSuccess = "";
+
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
@@ -80,6 +94,10 @@ public class GameController : MonoBehaviour
         gameOverPanel.SetActive(false);
         statsRankingPanel.SetActive(false);
         highScorePanel.SetActive(true);
+
+        // === DESACTIVAR TELEPORT EN MENÚ INICIAL ===
+        SetTeleportEnabled(false);
+        FreezeModelAnimators(); 
 
         startGameButton.onClick.AddListener(OnStartButtonClicked);
 
@@ -109,6 +127,10 @@ public class GameController : MonoBehaviour
         if (player != null) player.transform.position = playerStartPos;
         gameOverPanel.SetActive(true);
         gameOverMessage.text = "¡Se acabó el tiempo!";
+
+        // Volvemos a bloquear teleport en pantallas de resultado/menú
+        SetTeleportEnabled(false);
+        FreezeModelAnimators();
     }
 
     public void OnStartButtonClicked()
@@ -117,6 +139,10 @@ public class GameController : MonoBehaviour
         registrationPanel.SetActive(true);
         instructionsPanel.SetActive(true);
         highScorePanel.SetActive(true);
+
+        // En el registro también debe estar desactivado
+        SetTeleportEnabled(false);
+        FreezeModelAnimators();
     }
 
     public void SelectDifficulty(Difficulty d)
@@ -136,6 +162,10 @@ public class GameController : MonoBehaviour
 
         PlayerPrefs.SetString("PlayerName", playerName);
         PlayerDataManager.Instance.CreateOrSelectPlayer(playerName);
+
+        // === ACTIVAR TELEPORT AL COMENZAR LA PARTIDA ===
+        SetTeleportEnabled(true);
+        FreezeModelAnimators();
 
         registrationPanel.SetActive(false);
         instructionsPanel.SetActive(false);
@@ -186,6 +216,7 @@ public class GameController : MonoBehaviour
 
     public void OnCodeSuccess(float elapsedTime)
     {
+        PlayModelAnimatorsFromStart();
         StopSuspenseBed();
         if (audioSource != null && successClip != null)
             audioSource.PlayOneShot(successClip);
@@ -269,6 +300,10 @@ public class GameController : MonoBehaviour
         registrationPanel.SetActive(true);
         instructionsPanel.SetActive(true);
         highScorePanel.SetActive(true);
+
+        // Al volver al registro, bloquear teleport
+        SetTeleportEnabled(false);
+        FreezeModelAnimators();
     }
 
     public void TriggerGameOver()
@@ -279,6 +314,10 @@ public class GameController : MonoBehaviour
         if (player != null) player.transform.position = playerStartPos;
         gameOverPanel.SetActive(true);
         gameOverMessage.text = "¡Se acabó el tiempo!";
+
+        // En game over estamos en UI -> teleport off
+        SetTeleportEnabled(false);
+        FreezeModelAnimators();
     }
 
     private float CalculateExtraTime()
@@ -301,6 +340,7 @@ public class GameController : MonoBehaviour
         gameOverPanel.SetActive(false);
         timerDef.InitializeTimer();
         ResetToRegistration();
+        // ResetToRegistration ya desactiva el teleport
     }
 
     public void ResetSession()
@@ -336,6 +376,7 @@ public class GameController : MonoBehaviour
                 rend.material.color = show ? helpColor : Color.white;
         }
     }
+
     private void EnsureSuspenseSource()
     {
         if (suspenseSource == null)
@@ -395,6 +436,48 @@ public class GameController : MonoBehaviour
                 }
             }
             yield return new WaitForSeconds(0.5f);
+        }
+    }
+
+    // ===================== NUEVO: MÉTODO CENTRAL =====================
+    private void SetTeleportEnabled(bool enabled)
+    {
+        if (locomotionControllerRoot)
+            locomotionControllerRoot.SetActive(enabled);
+
+        if (teleportScriptsToToggle != null)
+        {
+            foreach (var s in teleportScriptsToToggle)
+            {
+                if (s) s.enabled = enabled;
+            }
+        }
+    }
+    private void FreezeModelAnimators()
+    {
+        foreach (var a in animatorsToControl)
+        {
+            if (!a) continue;
+            // Deja el Animator en el frame 0 de su estado por defecto y lo pausa
+            a.speed = 0f;
+            a.Rebind();
+            a.Update(0f);
+        }
+    }
+
+    private void PlayModelAnimatorsFromStart()
+    {
+        foreach (var a in animatorsToControl)
+        {
+            if (!a) continue;
+            // Arranca desde el principio
+            if (!string.IsNullOrEmpty(stateToPlayOnSuccess))
+                a.Play(stateToPlayOnSuccess, 0, 0f); // play estado indicado
+            else
+            {
+                // Si no se indicó un estado, usa el estado por defecto (ya está en t=0 por Rebind)
+            }
+            a.speed = 1f;
         }
     }
 
