@@ -21929,7 +21929,7 @@ MonoBehaviour:
   gameOverPanel: {fileID: 1552379743}
   highScoreTable: {fileID: 561683595}
   statsRankingPanel: {fileID: 1845066616}
-  retoLoader: {fileID: 1552379750}
+  retoLoader: {fileID: 426799047}
   highScorePanel: {fileID: 1231544850}
   highScoreFocusPoint: {fileID: 643326991}
   rankingDisplayDuration: 10
@@ -28008,18 +28008,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 6709727476190722743}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1552379750 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1341473762027727456, guid: d794e7a2914572c4cbe5eff0d79ae4f7,
-    type: 3}
-  m_PrefabInstance: {fileID: 6709727476190722743}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1552379745}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b8ef960ca553c34b8aab462a65bb6de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!82 &1552379756
 AudioSource:
   m_ObjectHideFlags: 0
