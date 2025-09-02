@@ -54,8 +54,8 @@ Material:
     m_Floats:
     - _BumpScale: 0.5
     - _Glossiness: 0.312
-    - _Metallic: 0.144
-    - _Smoothness: 0.312
+    - _Metallic: 0
+    - _Smoothness: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
