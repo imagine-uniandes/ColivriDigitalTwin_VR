@@ -103,6 +103,11 @@ A continuación se describen brevemente la responsabilidad principal de cada scr
 - **HighScoreTable:** Renderiza Top 10 con posición, nombre y tiempo
 - **GameStatistics:** Estadísticas de la partida finalizada
 - **CameraBlink:** Fundidos de pantalla con panel UI
+<p align="center">
+  <img width="400" height="600" alt="Untitled diagram | Mermaid Chart-2025-09-05-163751" src="https://github.com/user-attachments/assets/0e764af5-d469-41f1-8854-98161697fabe" />
+</p>
+
+
 
 ---
 
