@@ -231,6 +231,7 @@ Puedes descargar los archivos APK de las releases oficiales del proyecto. Cada v
 - **Material rosado:** Convierte materiales a Standard o URP/Lit y reasigna en el prefab
 - **Timer no actualiza:** Verifica que `TimerDef.timerText` esté asignado y evita duplicados
 - **Leaderboard no resalta/actualiza:** Confirma llamada a `highScoreTable.RefreshTable()` tras guardar sesión; limita correctamente el Top 10
+- **Panel que no apaerece:** Revisar si GameController tiene asignado los paneles de pistas correspondientes.
 
 ---
 - Para explorar más sobre la documentación de Meta XR All-In-One ingrese al siguiente link: https://developers.meta.com/horizon/downloads/package/meta-xr-sdk-all-in-one-upm/ 
