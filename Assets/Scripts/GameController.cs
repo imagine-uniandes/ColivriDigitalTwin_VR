@@ -14,10 +14,16 @@ public class GameController : MonoBehaviour
     public GameObject registrationPanel;
     public GameObject instructionsPanel;
     public GameObject codePanel;
-    public GameObject timerPanel;
+    // [OBSOLETO] public GameObject timerPanel; // ahora usamos los dos de abajo
     public GameObject gameOverPanel;
     [SerializeField] private HighScoreTable highScoreTable;
     public GameObject statsRankingPanel;
+
+    [Header("Timer Panels")]
+    [SerializeField] private GameObject timerPanelDefault;        // Fácil / Normal
+    [SerializeField] private GameObject timerPanelCompetitive;    // Competitivo
+    [SerializeField] private TextMeshProUGUI timerTextDefault;    // Label del panel default
+    [SerializeField] private TextMeshProUGUI timerTextCompetitive;// Label del panel competitivo
 
     [Header("Reto Loader")]
     [SerializeField] private RetoLoader retoLoader;
@@ -37,7 +43,7 @@ public class GameController : MonoBehaviour
     public Button easyButton, normalButton, competitiveButton;
     public Button playButton;
     public Button startGameButton;
-    public TextMeshProUGUI timerText;
+    // [OBSOLETO] public TextMeshProUGUI timerText; // lo maneja TimerDef con BindLabel
     public TextMeshProUGUI gameOverMessage;
     public Button retryButton;
 
@@ -53,8 +59,8 @@ public class GameController : MonoBehaviour
     [SerializeField] private float successDisplayDuration = 2f;
 
     [Header("Audio (Suspenso)")]
-    [SerializeField] private AudioSource suspenseSource;       
-    [SerializeField] private AudioClip suspenseClip;          
+    [SerializeField] private AudioSource suspenseSource;
+    [SerializeField] private AudioClip suspenseClip;
     [SerializeField, Range(0f, 1f)] private float suspenseVolume = 0.6f;
     private bool suspenseActive = false;
     private Coroutine suspenseGuardRoutine;
@@ -90,14 +96,18 @@ public class GameController : MonoBehaviour
         registrationPanel.SetActive(false);
         instructionsPanel.SetActive(true);
         codePanel.SetActive(false);
-        timerPanel.SetActive(false);
+        // timerPanel.SetActive(false); // obsoleto
         gameOverPanel.SetActive(false);
         statsRankingPanel.SetActive(false);
         highScorePanel.SetActive(true);
 
+        // Oculta ambos paneles de timer al inicio
+        if (timerPanelDefault) timerPanelDefault.SetActive(false);
+        if (timerPanelCompetitive) timerPanelCompetitive.SetActive(false);
+
         // === DESACTIVAR TELEPORT EN MENÚ INICIAL ===
         SetTeleportEnabled(false);
-        FreezeModelAnimators(); 
+        FreezeModelAnimators();
 
         startGameButton.onClick.AddListener(OnStartButtonClicked);
 
@@ -171,8 +181,11 @@ public class GameController : MonoBehaviour
         instructionsPanel.SetActive(false);
         highScorePanel.SetActive(false);
         codePanel.SetActive(true);
-        timerPanel.SetActive(true);
         gameOverPanel.SetActive(false);
+
+        // Apaga ambos paneles de timer antes de decidir
+        if (timerPanelDefault) timerPanelDefault.SetActive(false);
+        if (timerPanelCompetitive) timerPanelCompetitive.SetActive(false);
 
         ApplyHotspotHelp(difficulty == Difficulty.Easy);
         extraTimeGiven = false;
@@ -182,20 +195,43 @@ public class GameController : MonoBehaviour
         {
             case Difficulty.Easy:
                 foreach (var hotspot in teleportHotspots) hotspot.SetActive(true);
-                timerDef.SetTimerMode(TimerDef.TimerMode.CountUp);
+                if (timerPanelDefault) timerPanelDefault.SetActive(true);
+                if (timerDef && timerTextDefault) timerDef.BindLabel(timerTextDefault);
+                if (timerDef)
+                {
+                    timerDef.SetUrgentColorsEnabled(true);                // por si algún día usas countdown aquí
+                    timerDef.SetColorOverride(false, Color.white);        // sin override global
+                    timerDef.SetTimerMode(TimerDef.TimerMode.CountUp);
+                }
                 break;
+
             case Difficulty.Normal:
                 foreach (var hotspot in teleportHotspots) hotspot.SetActive(false);
-                timerDef.SetTimerMode(TimerDef.TimerMode.CountUp);
+                if (timerPanelDefault) timerPanelDefault.SetActive(true);
+                if (timerDef && timerTextDefault) timerDef.BindLabel(timerTextDefault);
+                if (timerDef)
+                {
+                    timerDef.SetUrgentColorsEnabled(true);
+                    timerDef.SetColorOverride(false, Color.white);
+                    timerDef.SetTimerMode(TimerDef.TimerMode.CountUp);
+                }
                 break;
+
             case Difficulty.Competitive:
-                float firstTime = GetFirstPlaceTimeOrDefault(60f);
-                timerDef.SetTimerMode(TimerDef.TimerMode.CountDown);
-                timerDef.SetCountdownTime(firstTime);
+                if (timerPanelCompetitive) timerPanelCompetitive.SetActive(true);
+                if (timerDef && timerTextCompetitive) timerDef.BindLabel(timerTextCompetitive);
+                if (timerDef)
+                {
+                    float firstTime = GetFirstPlaceTimeOrDefault(60f);
+                    timerDef.SetUrgentColorsEnabled(false);               // SIN rojos/amarillos
+                    timerDef.SetColorOverride(true, Color.white);         // fuerza blanco
+                    timerDef.SetTimerMode(TimerDef.TimerMode.CountDown);
+                    timerDef.SetCountdownTime(firstTime);
+                }
                 break;
         }
 
-        timerDef.ResetTimer();
+        if (timerDef) timerDef.ResetTimer();
 
         // === CLAVE: configurar RetoLoader y fijar reto de la sesión ===
         if (retoLoader == null) retoLoader = FindObjectOfType<RetoLoader>();
@@ -291,12 +327,16 @@ public class GameController : MonoBehaviour
         FindObjectOfType<CodeManager>()?.ResetSession();
 
         // REINICIALIZA y DETIENE el TimerDef
-        timerDef.InitializeTimer();
+        if (timerDef) timerDef.InitializeTimer();
         StopSuspenseBed();
 
         // UI
         codePanel.SetActive(false);
-        timerPanel.SetActive(false);
+
+        // Apaga ambos paneles de timer
+        if (timerPanelDefault) timerPanelDefault.SetActive(false);
+        if (timerPanelCompetitive) timerPanelCompetitive.SetActive(false);
+
         registrationPanel.SetActive(true);
         instructionsPanel.SetActive(true);
         highScorePanel.SetActive(true);
@@ -338,7 +378,7 @@ public class GameController : MonoBehaviour
     {
         StopSuspenseBed();
         gameOverPanel.SetActive(false);
-        timerDef.InitializeTimer();
+        if (timerDef) timerDef.InitializeTimer();
         ResetToRegistration();
         // ResetToRegistration ya desactiva el teleport
     }
@@ -348,10 +388,39 @@ public class GameController : MonoBehaviour
         var cm = FindObjectOfType<CodeManager>();
         if (cm != null) cm.ResetSession();
 
-        timerDef.InitializeTimer();
+        if (timerDef) timerDef.InitializeTimer();
 
         codePanel.SetActive(true);
-        timerPanel.SetActive(true);
+        // Mostrar el panel correcto según dificultad y re-enlazar label
+        if (timerPanelDefault) timerPanelDefault.SetActive(false);
+        if (timerPanelCompetitive) timerPanelCompetitive.SetActive(false);
+
+        switch (difficulty)
+        {
+            case Difficulty.Easy:
+            case Difficulty.Normal:
+                if (timerPanelDefault) timerPanelDefault.SetActive(true);
+                if (timerDef && timerTextDefault) timerDef.BindLabel(timerTextDefault);
+                if (timerDef)
+                {
+                    timerDef.SetUrgentColorsEnabled(true);
+                    timerDef.SetColorOverride(false, Color.white);
+                    timerDef.SetTimerMode(TimerDef.TimerMode.CountUp);
+                }
+                break;
+
+            case Difficulty.Competitive:
+                if (timerPanelCompetitive) timerPanelCompetitive.SetActive(true);
+                if (timerDef && timerTextCompetitive) timerDef.BindLabel(timerTextCompetitive);
+                if (timerDef)
+                {
+                    timerDef.SetUrgentColorsEnabled(false);
+                    timerDef.SetColorOverride(true, Color.white);
+                    timerDef.SetTimerMode(TimerDef.TimerMode.CountDown);
+                }
+                break;
+        }
+
         statsRankingPanel.SetActive(false);
         gameOverPanel.SetActive(false);
 
@@ -396,9 +465,9 @@ public class GameController : MonoBehaviour
         EnsureSuspenseSource();
 
         suspenseSource.clip = suspenseClip;
-        suspenseSource.loop = true;                 
-        suspenseSource.spatialBlend = 0f;          
-        suspenseSource.ignoreListenerPause = true;  
+        suspenseSource.loop = true;
+        suspenseSource.spatialBlend = 0f;
+        suspenseSource.ignoreListenerPause = true;
         if (suspenseSource.isPlaying) suspenseSource.Stop();
         suspenseSource.Play();
 

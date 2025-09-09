@@ -9,6 +9,9 @@ public class CodeManager : MonoBehaviour
     [Header("Carga de la pista")]
     [SerializeField] private RetoLoader retoLoader;
 
+    [Header("Timer")]
+    [SerializeField] private TimerDef timerDef;
+
     private string respuestaActual;
 
     [Header("UI de dígitos (input del jugador)")]
@@ -48,6 +51,8 @@ public class CodeManager : MonoBehaviour
             Debug.LogError("CodeManager: RetoLoader no asignado.");
             return;
         }
+
+        if (timerDef == null) timerDef = FindObjectOfType<TimerDef>();
 
         // RetoLoader ya fijó el reto actual (1 / aleatorio / secuencial).
         retoLoader.UpdatePistasUI();
@@ -153,9 +158,19 @@ public class CodeManager : MonoBehaviour
             panelClave.SetActive(false);
 
             // Tiempo de la partida (un reto)
-            float totalElapsed = Time.time - sessionStartTime;
+            float totalElapsed;
+            if (timerDef != null)
+            {
+                timerDef.StopTimer();                         // congela el label
+                totalElapsed = timerDef.GetTimeForStats();    // misma definición que el label
+            }
+            else
+            {
+                // Respaldo si no hubiera TimerDef asignado
+                totalElapsed = Time.time - sessionStartTime;
+            }
 
-            // 2) Tras el delay, notificar a GameController para guardar stats, mostrar ranking y volver a registro
+            // 3) Tras el delay, notificar a GameController con ese MISMO tiempo
             StartCoroutine(NotifySuccessAfterDelay(perRetoFeedbackDelay, totalElapsed));
         }
         else
