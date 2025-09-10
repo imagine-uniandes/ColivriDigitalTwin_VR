@@ -1,5 +1,3 @@
-using System;         
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -10,11 +8,11 @@ public class GameStatistics : MonoBehaviour
 
     public void ShowEndGameStatistics(string playerName, float elapsedTime)
     {
-        TimeSpan t = TimeSpan.FromSeconds(elapsedTime);
-        string timeString = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
+        // Mismo formateo que el label del TimerDef (usa floor)
+        string timeString = TimerDef.FormatMMSS(elapsedTime);
 
         titleText.text = $"Resultados para {playerName}";
-        infoText.text  = $"Tiempo: {timeString}";
+        infoText.text = $"Tiempo: {timeString}";
         gameObject.SetActive(true);
     }
 }

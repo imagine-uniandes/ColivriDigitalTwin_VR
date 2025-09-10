@@ -20,6 +20,7 @@ public class CodeManager : MonoBehaviour
 
     [Header("Feedback")]
     [SerializeField] private GameObject panelCorrecto; // se muestra cuando acierta
+    [SerializeField] private GameObject panelCorrecto1;
     [SerializeField] private GameObject panelCerca;    // feedback de “cerca”
     [SerializeField] private GameObject panelClave;    // panel con los controles de ingreso
     [SerializeField] private TextMeshProUGUI txtPosiciones; // dígitos bien posicionados
@@ -60,6 +61,7 @@ public class CodeManager : MonoBehaviour
 
         ResetDigits();
         panelCorrecto?.SetActive(false);
+        panelCorrecto1?.SetActive(false);
         panelCerca?.SetActive(false);
         panelClave?.SetActive(true);
 
@@ -81,6 +83,7 @@ public class CodeManager : MonoBehaviour
         UpdateDisplay();
 
         if (panelCorrecto) panelCorrecto.SetActive(false);
+        if (panelCorrecto1) panelCorrecto1.SetActive(false);
         if (panelCerca)    panelCerca.SetActive(false);
         if (panelClave)    panelClave.SetActive(true);
     }
@@ -103,6 +106,7 @@ public class CodeManager : MonoBehaviour
     public void IncreaseDigit(int index)
     {
         if (panelCorrecto) panelCorrecto.SetActive(false);
+        if(panelCorrecto1) panelCorrecto1.SetActive(false);
         if (panelCerca)    panelCerca.SetActive(false);
         if (panelClave)    panelClave.SetActive(true);
 
@@ -113,6 +117,7 @@ public class CodeManager : MonoBehaviour
     public void DecreaseDigit(int index)
     {
         if (panelCorrecto) panelCorrecto.SetActive(false);
+        if(panelCorrecto1) panelCorrecto1.SetActive(false);
         if (panelCerca)    panelCerca.SetActive(false);
         if (panelClave)    panelClave.SetActive(true);
 
@@ -123,6 +128,7 @@ public class CodeManager : MonoBehaviour
     public void OnClear()
     {
         if (panelCorrecto) panelCorrecto.SetActive(false);
+        if(panelCorrecto1) panelCorrecto1.SetActive(false);
         if (panelCerca)    panelCerca.SetActive(false);
         if (panelClave)    panelClave.SetActive(true);
 
@@ -147,6 +153,7 @@ public class CodeManager : MonoBehaviour
         }
 
         panelCorrecto.SetActive(false);
+        panelCorrecto1.SetActive(false);
         panelCerca.SetActive(false);
 
         string currentInput = string.Concat(digitValues.Select(d => d.ToString()));
@@ -155,6 +162,7 @@ public class CodeManager : MonoBehaviour
         {
             // 1) Mostrar feedback de acierto SIEMPRE
             panelCorrecto.SetActive(true);
+            panelCorrecto1.SetActive(true);
             panelClave.SetActive(false);
 
             // Tiempo de la partida (un reto)

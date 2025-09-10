@@ -250,10 +250,15 @@ public class GameController : MonoBehaviour
         StartSuspenseBed();
     }
 
-    public void OnCodeSuccess(float elapsedTime)
+    public void OnCodeSuccess(float elapsedTimeParam)
     {
         PlayModelAnimatorsFromStart();
+
         StopSuspenseBed();
+        if (timerDef) timerDef.StopTimer();
+
+        float tFromTimer = timerDef ? timerDef.GetTimeForStats() : elapsedTimeParam;
+        float elapsedTime = tFromTimer;
         if (audioSource != null && successClip != null)
             audioSource.PlayOneShot(successClip);
 
@@ -270,8 +275,20 @@ public class GameController : MonoBehaviour
     {
         // 1) Mostrar stats por jugador
         statsRankingPanel.SetActive(true);
+        /*
         var stats = statsRankingPanel.GetComponent<GameStatistics>();
         stats?.ShowEndGameStatistics(PlayerPrefs.GetString("PlayerName"), elapsedTime);
+        */
+        var stats = statsRankingPanel.GetComponentInChildren<GameStatistics>(true);
+        if (stats == null)
+        {
+            Debug.LogError("GameController: GameStatistics no encontrado en StatsRankingPanel ni en sus hijos.");
+        }
+        else
+        {
+            stats.ShowEndGameStatistics(PlayerPrefs.GetString("PlayerName"), elapsedTime);
+            Debug.Log($"[Stats] Tiempo mostrado: {elapsedTime:F2} -> {TimerDef.FormatMMSS(elapsedTime)}");
+        }
 
         // 2) Orientar cámara (opcional)
         Quaternion originalCamRotation = Quaternion.identity;
