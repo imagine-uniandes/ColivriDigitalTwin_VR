@@ -5,9 +5,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-using Oculus.Interaction;                    // InteractableState
-using Oculus.Interaction.Grab;               // GrabInteractable
-using Oculus.Interaction.HandGrab;           // HandGrabInteractable
+using Oculus.Interaction;                   
+using Oculus.Interaction.Grab;             
+using Oculus.Interaction.HandGrab;          
 
 
 public class TutorialController : MonoBehaviour
@@ -21,8 +21,13 @@ public class TutorialController : MonoBehaviour
 
     [Header("UI Principal")]
     [SerializeField] private TMP_Text instructionText;
-    [SerializeField] private Toggle[] checklistToggles;   // [0] Obs360, [1] Manos, [2] Rot+Pitch, [3] Agarre, [4] Cierre
+    [SerializeField] private Toggle[] checklistToggles;  
     [SerializeField] private GameObject checklistRoot;
+
+    [Header("UI Extra")]
+    [Tooltip("Panel de bienvenida que aparece solo al inicio.")]
+    [SerializeField] private GameObject welcomePanel;
+    [SerializeField] private float welcomeDuration = 5f;
 
     [Header("Audio")]
     [SerializeField] private AudioSource musicSource;
@@ -37,12 +42,12 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private GameObject portalRoot;
     [SerializeField] private Animator portalAnimator;
     [SerializeField] private string sceneToLoad = "MainModel";
-    [SerializeField] private Collider portalTrigger;   // Cualquier collider que envuelva el portal
+    [SerializeField] private Collider portalTrigger;  
 
     [Header("Refs del Rig / Jugador")]
-    [SerializeField] private Transform head;               // CenterEyeAnchor
-    [SerializeField] private Transform leftController;     // mano izq
-    [SerializeField] private Transform rightController;    // mano der
+    [SerializeField] private Transform head;               
+    [SerializeField] private Transform leftController;    
+    [SerializeField] private Transform rightController;  
     [SerializeField] private float nearHighlightRadius = 1.2f;
 
     [Header("Observación 360°")]
@@ -62,9 +67,8 @@ public class TutorialController : MonoBehaviour
     private float rotAccumYaw;
     private bool rotYawDone, rotPitchDone;
 
-    // ==== CAMBIO: soporta cualquier tipo de Interactable (cercano, a distancia, con manos) ====
     [Header("Agarre de objetos (Interaction SDK/ISDK)")]
-    [Tooltip("Arrastra aquí los GameObjects de los objetos que se pueden agarrar (balón, botella, etc.).")]
+
     [SerializeField] private List<GameObject> grabbables = new List<GameObject>();
     private bool anyGrabRegistered;
 
@@ -89,10 +93,19 @@ public class TutorialController : MonoBehaviour
             musicSource.Play();
         }
 
-        if (checklistRoot) checklistRoot.SetActive(true);
-        EnablePortal(false);
+        if (welcomePanel) welcomePanel.SetActive(true);
+        if (checklistRoot) checklistRoot.SetActive(false);
+        StartCoroutine(HideWelcomeThenShowChecklist());
 
+        EnablePortal(false);
         GoToStage(startStage);
+    }
+
+    private IEnumerator HideWelcomeThenShowChecklist()
+    {
+        yield return new WaitForSeconds(welcomeDuration);
+        if (welcomePanel) welcomePanel.SetActive(false);
+        if (checklistRoot) checklistRoot.SetActive(true);
     }
 
     private void Update()
@@ -122,11 +135,10 @@ public class TutorialController : MonoBehaviour
                     break;
             }
         }
-        else
+
+        if (portalTrigger && head && portalTrigger.enabled && AreAllTogglesOn())
         {
-            // Detección simple por proximidad al portal 
-            if (portalTrigger && head && portalTrigger.enabled &&
-                portalTrigger.bounds.Contains(head.position))
+            if (portalTrigger.bounds.Contains(head.position))
             {
                 TryLoadNextScene();
             }
@@ -148,7 +160,7 @@ public class TutorialController : MonoBehaviour
             case Stage.Observacion:
                 obsAccumYaw = 0f;
                 lastForwardFlat = FlatForward(head ? head.forward : Vector3.forward);
-                Say("Mira a tu alrededor para familiarizarte con el entorno. Cuando completes la observación, aparecerá el panel de tareas.");
+                Say("Mira a tu alrededor para familiarizarte con el entorno. Cuando completes la observación,continúa con el tutorial.");
                 PlayVoice(obsClip);
                 AuraTrigger("Talk");
                 break;
@@ -162,7 +174,7 @@ public class TutorialController : MonoBehaviour
 
             case Stage.Rotacion:
                 InitRotation();
-                Say("Practiquemos girar con el joystick derecho. Luego mira hacia arriba para ver el increíble techo.");
+                Say("Practiquemos girar con el joystick derecho");
                 PlayVoice(rotClip);
                 AuraTrigger("Talk");
                 break;
@@ -178,7 +190,7 @@ public class TutorialController : MonoBehaviour
                 Say("¡Excelente! Dirígete a la puerta holográfica para continuar al Gemelo Digital COLIVRI.");
                 PlayVoice(cierreClip);
                 AuraTrigger("ThumbsUp");
-                EnablePortal(true);
+                EnablePortal(true);       // por si el portal estaba oculto
                 SetToggle(4, true);
                 tutorialFinished = true;
                 break;
@@ -203,7 +215,21 @@ public class TutorialController : MonoBehaviour
     private void CompleteStage(int checklistIndex)
     {
         SetToggle(checklistIndex, true);
+
+        // Si ya están todos listos, mostrar el portal (opcional)
+        if (AreAllTogglesOn()) EnablePortal(true);
+
         Advance();
+    }
+
+    private bool AreAllTogglesOn()
+    {
+        if (checklistToggles == null || checklistToggles.Length == 0) return false;
+        for (int i = 0; i < checklistToggles.Length; i++)
+        {
+            if (checklistToggles[i] == null || !checklistToggles[i].isOn) return false;
+        }
+        return true;
     }
 
     private void Say(string text)
@@ -239,7 +265,6 @@ public class TutorialController : MonoBehaviour
         if (portalTrigger) portalTrigger.enabled = on;
     }
 
-    // ---------- Observación 360 ----------
     private bool CheckObservation360()
     {
         if (!head) return false;
@@ -261,7 +286,6 @@ public class TutorialController : MonoBehaviour
         return fwd.normalized;
     }
 
-    // ---------- Controladores ----------
     private void InitControllers()
     {
         leftMoved = rightMoved = false;
@@ -276,7 +300,6 @@ public class TutorialController : MonoBehaviour
         return leftMoved && rightMoved;
     }
 
-    // ---------- Rotación + mirar arriba ----------
     private void InitRotation()
     {
         rotAccumYaw = 0f; rotYawDone = rotPitchDone = false;
@@ -306,7 +329,6 @@ public class TutorialController : MonoBehaviour
         return rotYawDone && rotPitchDone;
     }
 
-    // ---------- Agarre (cercano / a distancia / con manos) ----------
     private void InitGrab()
     {
         anyGrabRegistered = false;
@@ -330,7 +352,7 @@ public class TutorialController : MonoBehaviour
         if (!go) return false;
 
         var gi = go.GetComponent<GrabInteractable>() ??
-                  go.GetComponentInChildren<GrabInteractable>(true);
+                 go.GetComponentInChildren<GrabInteractable>(true);
         if (gi && gi.State == InteractableState.Select) return true;
 
         var hgi = go.GetComponent<HandGrabInteractable>() ??
@@ -350,8 +372,10 @@ public class TutorialController : MonoBehaviour
 
     private void TryLoadNextScene()
     {
-        if (!tutorialFinished) return;
+        if (!AreAllTogglesOn()) return;              // seguridad extra
         if (string.IsNullOrEmpty(sceneToLoad)) return;
         SceneManager.LoadScene(sceneToLoad);
     }
+
+   
 }
