@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+using Oculus.Interaction;                    // InteractableState
+using Oculus.Interaction.Grab;               // GrabInteractable
+using Oculus.Interaction.HandGrab;           // HandGrabInteractable
 
 
 public class TutorialController : MonoBehaviour
@@ -12,64 +16,61 @@ public class TutorialController : MonoBehaviour
 
     public enum Stage { Saludo, Observacion, Controladores, Rotacion, Agarre, Cierre }
 
-    [Header("Orden de etapas (opcional, por si quieres empezar en otra)")]
+    [Header("Orden de etapas (opcional)")]
     [SerializeField] private Stage startStage = Stage.Saludo;
 
     [Header("UI Principal")]
-    [SerializeField] private TMP_Text instructionText;    
-    [SerializeField] private Toggle[] checklistToggles;   
-    [SerializeField] private GameObject checklistRoot;    
+    [SerializeField] private TMP_Text instructionText;
+    [SerializeField] private Toggle[] checklistToggles;   // [0] Obs360, [1] Manos, [2] Rot+Pitch, [3] Agarre, [4] Cierre
+    [SerializeField] private GameObject checklistRoot;
 
     [Header("Audio")]
-    [SerializeField] private AudioSource musicSource;      
+    [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioClip musicClip;
-    [SerializeField] private AudioSource voiceSource;     
-    [SerializeField] private AudioClip saludoClip;
-    [SerializeField] private AudioClip obsClip;
-    [SerializeField] private AudioClip ctrlClip;
-    [SerializeField] private AudioClip rotClip;
-    [SerializeField] private AudioClip agarreClip;
-    [SerializeField] private AudioClip cierreClip;
+    [SerializeField] private AudioSource voiceSource;
+    [SerializeField] private AudioClip saludoClip, obsClip, ctrlClip, rotClip, agarreClip, cierreClip;
 
     [Header("Aura / Feedback (opcional)")]
-    [SerializeField] private Animator auraAnimator;       
+    [SerializeField] private Animator auraAnimator;
 
     [Header("Portal / Salida")]
-    [SerializeField] private GameObject portalRoot;       
-    [SerializeField] private Animator portalAnimator;      
+    [SerializeField] private GameObject portalRoot;
+    [SerializeField] private Animator portalAnimator;
     [SerializeField] private string sceneToLoad = "MainModel";
-    [SerializeField] private Collider portalTrigger;      
+    [SerializeField] private Collider portalTrigger;   // Cualquier collider que envuelva el portal
 
     [Header("Refs del Rig / Jugador")]
-    [SerializeField] private Transform head;               // cámara (OVRCameraRig center eye)
-    [SerializeField] private Transform leftController;     // mano izquierda (obj del rig)
-    [SerializeField] private Transform rightController;    // mano derecha
-    [SerializeField] private float nearHighlightRadius = 1.2f; 
+    [SerializeField] private Transform head;               // CenterEyeAnchor
+    [SerializeField] private Transform leftController;     // mano izq
+    [SerializeField] private Transform rightController;    // mano der
+    [SerializeField] private float nearHighlightRadius = 1.2f;
 
-    [Header("Stage: Observación 360°")]
-    [SerializeField] private float requiredYaw = 300f;     // ~360 con tolerancia
-    [SerializeField] private float minAngularSpeed = 5f;   // evita ruido
+    [Header("Observación 360°")]
+    [SerializeField] private float requiredYaw = 300f;
+    [SerializeField] private float minAngularSpeed = 5f;
     private float obsAccumYaw;
     private Vector3 lastForwardFlat;
 
-    [Header("Stage: Controladores (mover manos)")]
-    [SerializeField] private float minHandMovement = 0.2f; // metros
+    [Header("Controladores (mover manos)")]
+    [SerializeField] private float minHandMovement = 0.2f;
     private Vector3 l0, r0;
     private bool leftMoved, rightMoved;
 
-    [Header("Stage: Rotación con Joystick + Mirar arriba")]
+    [Header("Rotación con Joystick + Mirar arriba")]
     [SerializeField] private float yawGoalDegrees = 90f;
-    [SerializeField] private float pitchGoalDegrees = 30f; // mirar arriba ~30°
+    [SerializeField] private float pitchGoalDegrees = 30f;
     private float rotAccumYaw;
     private bool rotYawDone, rotPitchDone;
 
-    [Header("Stage: Agarre de objetos")]
-    [SerializeField] private List<OVRGrabbable> grabbables; // Nao, marcador, pelota
-    private Dictionary<OVRGrabbable, bool> lastGrabbed = new Dictionary<OVRGrabbable, bool>();
+    // ==== CAMBIO: soporta cualquier tipo de Interactable (cercano, a distancia, con manos) ====
+    [Header("Agarre de objetos (Interaction SDK/ISDK)")]
+    [Tooltip("Arrastra aquí los GameObjects de los objetos que se pueden agarrar (balón, botella, etc.).")]
+    [SerializeField] private List<GameObject> grabbables = new List<GameObject>();
     private bool anyGrabRegistered;
 
     private Stage current;
     private bool tutorialFinished;
+    private bool _advancing = false;
 
     private void Awake()
     {
@@ -89,50 +90,48 @@ public class TutorialController : MonoBehaviour
         }
 
         if (checklistRoot) checklistRoot.SetActive(true);
-
         EnablePortal(false);
-
-        if (grabbables != null)
-        {
-            lastGrabbed.Clear();
-            foreach (var g in grabbables) if (g) lastGrabbed[g] = g.isGrabbed;
-        }
 
         GoToStage(startStage);
     }
 
     private void Update()
     {
-        if (tutorialFinished) return;
-
-        switch (current)
+        if (!tutorialFinished)
         {
-            case Stage.Saludo:
-               
-                if (!voiceSource || !voiceSource.isPlaying) StartCoroutine(AdvanceAfter(1.0f));
-                break;
+            switch (current)
+            {
+                case Stage.Saludo:
+                    if (!voiceSource || !voiceSource.isPlaying) StartCoroutine(AdvanceAfter(1.0f));
+                    break;
 
-            case Stage.Observacion:
-                if (CheckObservation360()) CompleteStage(0);
-                break;
+                case Stage.Observacion:
+                    if (CheckObservation360()) CompleteStage(0);
+                    break;
 
-            case Stage.Controladores:
-                if (CheckControllersMoved()) CompleteStage(1);
-                break;
+                case Stage.Controladores:
+                    if (CheckControllersMoved()) CompleteStage(1);
+                    break;
 
-            case Stage.Rotacion:
-                if (CheckRotationAndLookUp()) CompleteStage(2);
-                break;
+                case Stage.Rotacion:
+                    if (CheckRotationAndLookUp()) CompleteStage(2);
+                    break;
 
-            case Stage.Agarre:
-                if (CheckGrabbedOnce()) CompleteStage(3);
-                break;
-
-            case Stage.Cierre:
-                break;
+                case Stage.Agarre:
+                    if (CheckGrabbedOnce()) CompleteStage(3);
+                    break;
+            }
+        }
+        else
+        {
+            // Detección simple por proximidad al portal 
+            if (portalTrigger && head && portalTrigger.enabled &&
+                portalTrigger.bounds.Contains(head.position))
+            {
+                TryLoadNextScene();
+            }
         }
     }
-
 
     private void GoToStage(Stage st)
     {
@@ -181,7 +180,7 @@ public class TutorialController : MonoBehaviour
                 AuraTrigger("ThumbsUp");
                 EnablePortal(true);
                 SetToggle(4, true);
-                tutorialFinished = true; 
+                tutorialFinished = true;
                 break;
         }
     }
@@ -194,7 +193,6 @@ public class TutorialController : MonoBehaviour
         _advancing = false;
         Advance();
     }
-    private bool _advancing = false;
 
     private void Advance()
     {
@@ -207,7 +205,6 @@ public class TutorialController : MonoBehaviour
         SetToggle(checklistIndex, true);
         Advance();
     }
-
 
     private void Say(string text)
     {
@@ -242,7 +239,7 @@ public class TutorialController : MonoBehaviour
         if (portalTrigger) portalTrigger.enabled = on;
     }
 
-   
+    // ---------- Observación 360 ----------
     private bool CheckObservation360()
     {
         if (!head) return false;
@@ -264,12 +261,14 @@ public class TutorialController : MonoBehaviour
         return fwd.normalized;
     }
 
+    // ---------- Controladores ----------
     private void InitControllers()
     {
         leftMoved = rightMoved = false;
         if (leftController) l0 = leftController.position;
         if (rightController) r0 = rightController.position;
     }
+
     private bool CheckControllersMoved()
     {
         if (leftController && Vector3.Distance(l0, leftController.position) >= minHandMovement) leftMoved = true;
@@ -277,10 +276,12 @@ public class TutorialController : MonoBehaviour
         return leftMoved && rightMoved;
     }
 
+    // ---------- Rotación + mirar arriba ----------
     private void InitRotation()
     {
         rotAccumYaw = 0f; rotYawDone = rotPitchDone = false;
     }
+
     private bool CheckRotationAndLookUp()
     {
         Vector2 rs = Vector2.zero;
@@ -289,7 +290,7 @@ public class TutorialController : MonoBehaviour
 #endif
         if (Mathf.Abs(rs.x) > 0.6f)
         {
-            rotAccumYaw += 60f * Time.deltaTime;
+            rotAccumYaw += 60f * Time.deltaTime; // simulación de yaw acumulado
             if (rotAccumYaw >= yawGoalDegrees) rotYawDone = true;
         }
 
@@ -305,37 +306,52 @@ public class TutorialController : MonoBehaviour
         return rotYawDone && rotPitchDone;
     }
 
+    // ---------- Agarre (cercano / a distancia / con manos) ----------
     private void InitGrab()
     {
         anyGrabRegistered = false;
-        if (grabbables == null) return;
-        lastGrabbed.Clear();
-        foreach (var g in grabbables) if (g) lastGrabbed[g] = g.isGrabbed;
     }
+
     private bool CheckGrabbedOnce()
     {
         if (anyGrabRegistered) return true;
-        if (grabbables == null) return false;
+        if (grabbables == null || grabbables.Count == 0) return false;
 
-        foreach (var g in grabbables)
+        foreach (var go in grabbables)
         {
-            if (!g) continue;
-            bool prev = lastGrabbed.ContainsKey(g) ? lastGrabbed[g] : false;
-            bool now = g.isGrabbed;
-            if (!prev && now) { anyGrabRegistered = true; break; }
-            lastGrabbed[g] = now;
+            if (!go) continue;
+            if (IsSelected(go)) { anyGrabRegistered = true; break; }
         }
         return anyGrabRegistered;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private static bool IsSelected(GameObject go)
+    {
+        if (!go) return false;
+
+        var gi = go.GetComponent<GrabInteractable>() ??
+                  go.GetComponentInChildren<GrabInteractable>(true);
+        if (gi && gi.State == InteractableState.Select) return true;
+
+        var hgi = go.GetComponent<HandGrabInteractable>() ??
+                  go.GetComponentInChildren<HandGrabInteractable>(true);
+        if (hgi && hgi.State == InteractableState.Select) return true;
+
+        var dgi = go.GetComponent<DistanceGrabInteractable>() ??
+                  go.GetComponentInChildren<DistanceGrabInteractable>(true);
+        if (dgi && dgi.State == InteractableState.Select) return true;
+
+        var dhgi = go.GetComponent<DistanceHandGrabInteractable>() ??
+                   go.GetComponentInChildren<DistanceHandGrabInteractable>(true);
+        if (dhgi && dhgi.State == InteractableState.Select) return true;
+
+        return false;
+    }
+
+    private void TryLoadNextScene()
     {
         if (!tutorialFinished) return;
-        if (!portalTrigger || other != portalTrigger) return; 
-
-        if (!portalTrigger.enabled) return;
-
-        if (!string.IsNullOrEmpty(sceneToLoad))
-            SceneManager.LoadScene(sceneToLoad);
+        if (string.IsNullOrEmpty(sceneToLoad)) return;
+        SceneManager.LoadScene(sceneToLoad);
     }
 }
