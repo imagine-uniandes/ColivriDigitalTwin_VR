@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -76,8 +77,11 @@ public class GameController : MonoBehaviour
     [Tooltip("Arrastra aquí los Animator de los modelos que quieres pausar/reproducir.")]
     [SerializeField] private List<Animator> animatorsToControl = new List<Animator>();
 
-    [Tooltip("Si lo dejas vacío, se reproducirá el estado por defecto del Animator.")]
+    [Tooltip("se reproducirá el estado por defecto del Animator.")]
     [SerializeField] private string stateToPlayOnSuccess = "";
+
+    [Header("Escenas")]
+    [SerializeField] private string tutorialSceneName = "TutorialScene";
 
     private void Awake()
     {
@@ -565,6 +569,16 @@ public class GameController : MonoBehaviour
             }
             a.speed = 1f;
         }
+    }
+    public void ReturnToTutorialScene()
+    {
+        StopSuspenseBed();
+        SetTeleportEnabled(false);
+
+      
+        Destroy(transform.root.gameObject);
+
+        SceneManager.LoadScene(tutorialSceneName, LoadSceneMode.Single);
     }
 
     public enum Difficulty
