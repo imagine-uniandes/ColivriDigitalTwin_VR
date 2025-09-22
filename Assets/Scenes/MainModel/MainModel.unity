@@ -18476,7 +18476,7 @@ MonoBehaviour:
   normalButton: {fileID: 1037903692}
   competitiveButton: {fileID: 1730945075}
   playButton: {fileID: 879654730}
-  debugMode: 1
+  debugMode: 0
   selectedDifficulty: 0
   difficultyChosen: 0
 --- !u!1001 &1055771095
@@ -36512,7 +36512,7 @@ MonoBehaviour:
       Value: -90
     MaxAngle:
       Constrain: 1
-      Value: 0
+      Value: 90
 --- !u!114 &1830194195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43126,7 +43126,7 @@ MonoBehaviour:
   normalButton: {fileID: 1037903692}
   competitiveButton: {fileID: 1730945075}
   playButton: {fileID: 879654730}
-  debugMode: 0
+  debugMode: 1
   selectedDifficulty: 0
   difficultyChosen: 0
 --- !u!1001 &2128777379

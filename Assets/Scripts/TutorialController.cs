@@ -43,29 +43,29 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private Animator portalAnimator;
     [SerializeField] private string sceneToLoad = "MainModel";
     [SerializeField] private Collider portalTrigger;  
-
     [Header("Refs del Rig / Jugador")]
     [SerializeField] private Transform head;               
     [SerializeField] private Transform leftController;    
     [SerializeField] private Transform rightController;  
     [SerializeField] private float nearHighlightRadius = 1.2f;
-
     [Header("Observación 360°")]
     [SerializeField] private float requiredYaw = 300f;
     [SerializeField] private float minAngularSpeed = 5f;
     private float obsAccumYaw;
     private Vector3 lastForwardFlat;
-
     [Header("Controladores (mover manos)")]
     [SerializeField] private float minHandMovement = 0.2f;
     private Vector3 l0, r0;
     private bool leftMoved, rightMoved;
+
+    /*
 
     [Header("Rotación con Joystick + Mirar arriba")]
     [SerializeField] private float yawGoalDegrees = 90f;
     [SerializeField] private float pitchGoalDegrees = 30f;
     private float rotAccumYaw;
     private bool rotYawDone, rotPitchDone;
+    */
 
     [Header("Agarre de objetos (Interaction SDK/ISDK)")]
 
@@ -125,11 +125,11 @@ public class TutorialController : MonoBehaviour
                 case Stage.Controladores:
                     if (CheckControllersMoved()) CompleteStage(1);
                     break;
-
+                /*
                 case Stage.Rotacion:
                     if (CheckRotationAndLookUp()) CompleteStage(2);
                     break;
-
+                */
                 case Stage.Agarre:
                     if (CheckGrabbedOnce()) CompleteStage(3);
                     break;
@@ -171,14 +171,14 @@ public class TutorialController : MonoBehaviour
                 PlayVoice(ctrlClip);
                 AuraTrigger("Talk");
                 break;
-
+            /*
             case Stage.Rotacion:
                 InitRotation();
                 Say("Practiquemos girar con el joystick derecho");
                 PlayVoice(rotClip);
                 AuraTrigger("Talk");
                 break;
-
+            */
             case Stage.Agarre:
                 InitGrab();
                 Say("Acércate y agarra un objeto con el gatillo o con tu mano virtual.");
@@ -216,7 +216,6 @@ public class TutorialController : MonoBehaviour
     {
         SetToggle(checklistIndex, true);
 
-        // Si ya están todos listos, mostrar el portal (opcional)
         if (AreAllTogglesOn()) EnablePortal(true);
 
         Advance();
@@ -299,7 +298,7 @@ public class TutorialController : MonoBehaviour
         if (rightController && Vector3.Distance(r0, rightController.position) >= minHandMovement) rightMoved = true;
         return leftMoved && rightMoved;
     }
-
+    /*
     private void InitRotation()
     {
         rotAccumYaw = 0f; rotYawDone = rotPitchDone = false;
@@ -328,7 +327,7 @@ public class TutorialController : MonoBehaviour
         }
         return rotYawDone && rotPitchDone;
     }
-
+    */
     private void InitGrab()
     {
         anyGrabRegistered = false;
