@@ -43126,7 +43126,7 @@ MonoBehaviour:
   normalButton: {fileID: 1037903692}
   competitiveButton: {fileID: 1730945075}
   playButton: {fileID: 879654730}
-  debugMode: 1
+  debugMode: 0
   selectedDifficulty: 0
   difficultyChosen: 0
 --- !u!1001 &2128777379
@@ -115420,7 +115420,7 @@ PrefabInstance:
     - target: {fileID: 8352427629181358492, guid: d794e7a2914572c4cbe5eff0d79ae4f7,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.7410904
+      value: 1.7179339
       objectReference: {fileID: 0}
     - target: {fileID: 8352427629181358492, guid: d794e7a2914572c4cbe5eff0d79ae4f7,
         type: 3}
@@ -115430,7 +115430,7 @@ PrefabInstance:
     - target: {fileID: 8352427629181358492, guid: d794e7a2914572c4cbe5eff0d79ae4f7,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.3554
+      value: 0.2392
       objectReference: {fileID: 0}
     - target: {fileID: 8358823479360415822, guid: d794e7a2914572c4cbe5eff0d79ae4f7,
         type: 3}
