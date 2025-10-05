@@ -10935,21 +10935,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageAnimations:
   - stage: 1
+    panel: {fileID: 0}
     animator: {fileID: 2018528181}
     onEnterTrigger: 
     onCompleteTrigger: 
+    autoShowOnEnter: 1
+    autoHideOnComplete: 1
+    hideDelay: 0.2
   - stage: 2
+    panel: {fileID: 0}
     animator: {fileID: 1347033064}
     onEnterTrigger: 
     onCompleteTrigger: 
+    autoShowOnEnter: 1
+    autoHideOnComplete: 1
+    hideDelay: 0.2
   - stage: 3
+    panel: {fileID: 0}
     animator: {fileID: 1634801405}
     onEnterTrigger: 
     onCompleteTrigger: 
+    autoShowOnEnter: 1
+    autoHideOnComplete: 1
+    hideDelay: 0.2
   - stage: 4
+    panel: {fileID: 0}
     animator: {fileID: 2065697273}
     onEnterTrigger: 
     onCompleteTrigger: 
+    autoShowOnEnter: 1
+    autoHideOnComplete: 1
+    hideDelay: 0.2
+  startPanelsInactive: 1
   startStage: 0
   instructionText: {fileID: 62558512}
   checklistToggles:
@@ -10959,7 +10976,7 @@ MonoBehaviour:
   - {fileID: 1932651217}
   checklistRoot: {fileID: 876657560}
   welcomePanel: {fileID: 1096251898}
-  welcomeDuration: 7
+  welcomeDuration: 6
   musicSource: {fileID: 0}
   musicClip: {fileID: 8300000, guid: b03c09c7cafa6b640b3a2b30082523cf, type: 3}
   voiceSource: {fileID: 1596263271}
@@ -12522,8 +12539,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -223, y: 219}
-  m_SizeDelta: {x: 616.7, y: 50}
+  m_AnchoredPosition: {x: -325.2, y: 199.3}
+  m_SizeDelta: {x: 412.4, y: 89.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1679297465
 MonoBehaviour:
@@ -12608,7 +12625,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: 2.933929}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

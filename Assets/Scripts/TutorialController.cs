@@ -12,29 +12,69 @@ using Oculus.Interaction.HandGrab;
 public class TutorialController : MonoBehaviour
 {
     public static TutorialController Instance { get; private set; }
+
     public enum Stage { Saludo, Observacion, Controladores, Rotacion, Agarre, Cierre }
 
     [System.Serializable]
     public class StageAnimation
     {
-        public Stage stage;                  
-        public Animator animator;            
-        public string onEnterTrigger = "Enter";
-        public string onCompleteTrigger = "Complete";
+        [Header("Etapa y referencias")]
+        public Stage stage;                    
+        public GameObject panel;               
+        public Animator animator;              
+
+        [Header("Triggers opcionales")]
+        public string onEnterTrigger = "Enter";    
+        public string onCompleteTrigger = "Complete"; 
+
+        [Header("Auto show/hide")]
+        public bool autoShowOnEnter = true;     
+        public bool autoHideOnComplete = true; 
+        [Tooltip("Retraso para ocultar tras Complete")]
+        public float hideDelay = 0.2f;
     }
+
     [Header("Animaciones por etapa")]
     [SerializeField] private List<StageAnimation> stageAnimations = new List<StageAnimation>();
+    [SerializeField, Tooltip("Al iniciar la escena, apaga todos los paneles de etapas")]
+    private bool startPanelsInactive = true;
+    private StageAnimation GetSA(Stage st)
+        => stageAnimations.Find(x => x.stage == st);
 
     private void PlayStageEnter(Stage st)
     {
-        var sa = stageAnimations.Find(x => x.stage == st && x.animator);
-        if (sa != null && sa.animator) sa.animator.SetTrigger(sa.onEnterTrigger);
+        var sa = GetSA(st);
+        if (sa == null) return;
+
+        if (sa.autoShowOnEnter && sa.panel && !sa.panel.activeSelf)
+            sa.panel.SetActive(true);
+
+        if (sa.animator && !string.IsNullOrEmpty(sa.onEnterTrigger))
+            sa.animator.SetTrigger(sa.onEnterTrigger);
     }
 
     private void PlayStageComplete(Stage st)
     {
-        var sa = stageAnimations.Find(x => x.stage == st && x.animator);
-        if (sa != null && sa.animator) sa.animator.SetTrigger(sa.onCompleteTrigger);
+        var sa = GetSA(st);
+        if (sa == null) return;
+
+        if (sa.animator && !string.IsNullOrEmpty(sa.onCompleteTrigger))
+            sa.animator.SetTrigger(sa.onCompleteTrigger);
+
+        if (sa.autoHideOnComplete && sa.panel)
+            StartCoroutine(HidePanelAfter(sa.panel, sa.hideDelay));
+    }
+
+    private IEnumerator HidePanelAfter(GameObject go, float delay)
+    {
+        if (delay > 0f) yield return new WaitForSeconds(delay);
+        if (go) go.SetActive(false);
+    }
+
+    private void HideAllStagePanels()
+    {
+        foreach (var sa in stageAnimations)
+            if (sa != null && sa.panel) sa.panel.SetActive(false);
     }
 
     [Header("Orden de etapas")]
@@ -115,6 +155,8 @@ public class TutorialController : MonoBehaviour
             musicSource.Play();
         }
 
+        if (startPanelsInactive) HideAllStagePanels();
+
         if (welcomePanel) welcomePanel.SetActive(true);
         if (checklistRoot) checklistRoot.SetActive(false);
         StartCoroutine(HideWelcomeThenShowChecklist());
@@ -179,7 +221,7 @@ public class TutorialController : MonoBehaviour
                 Say("¡Bienvenido al laboratorio! Aquí aprenderás a interactuar en Realidad Virtual y descubrirás cómo desenvolverte en este entorno.");
                 PlayVoice(saludoClip);
                 AuraTrigger("Salute");
-                PlayStageEnter(st); 
+                PlayStageEnter(st);
                 break;
 
             case Stage.Observacion:
@@ -188,7 +230,7 @@ public class TutorialController : MonoBehaviour
                 Say("Mira a tu alrededor para familiarizarte con el entorno. Cuando completes la observación,continúa con el tutorial.");
                 PlayVoice(obsClip);
                 AuraTrigger("Talk");
-                PlayStageEnter(st); 
+                PlayStageEnter(st);
                 break;
 
             case Stage.Controladores:
@@ -196,7 +238,7 @@ public class TutorialController : MonoBehaviour
                 Say("Ahora aprende a usar los controladores. Mueve ambas manos para ver tus controladores virtuales.");
                 PlayVoice(ctrlClip);
                 AuraTrigger("Talk");
-                PlayStageEnter(st); 
+                PlayStageEnter(st);
                 break;
 
             /*
@@ -205,7 +247,7 @@ public class TutorialController : MonoBehaviour
                 Say("Practiquemos girar con el joystick derecho");
                 PlayVoice(rotClip);
                 AuraTrigger("Talk");
-                PlayStageEnter(st); 
+                PlayStageEnter(st);
                 break;
             */
 
@@ -214,7 +256,7 @@ public class TutorialController : MonoBehaviour
                 Say("Acércate y agarra un objeto con el gatillo o con tu mano virtual.");
                 PlayVoice(agarreClip);
                 AuraTrigger("Talk");
-                PlayStageEnter(st); 
+                PlayStageEnter(st);
                 break;
 
             case Stage.Cierre:
@@ -330,6 +372,37 @@ public class TutorialController : MonoBehaviour
         if (rightController && Vector3.Distance(r0, rightController.position) >= minHandMovement) rightMoved = true;
         return leftMoved && rightMoved;
     }
+
+    /*
+    private void InitRotation()
+    {
+        rotAccumYaw = 0f; rotYawDone = rotPitchDone = false;
+    }
+
+    private bool CheckRotationAndLookUp()
+    {
+        Vector2 rs = Vector2.zero;
+    #if UNITY_ANDROID || UNITY_STANDALONE
+        rs = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+    #endif
+        if (Mathf.Abs(rs.x) > 0.6f)
+        {
+            rotAccumYaw += 60f * Time.deltaTime; // simulación de yaw acumulado
+            if (rotAccumYaw >= yawGoalDegrees) rotYawDone = true;
+        }
+
+        if (head)
+        {
+            float pitch = Vector3.SignedAngle(
+                Vector3.ProjectOnPlane(head.forward, Vector3.right),
+                head.forward,
+                Vector3.right
+            );
+            if (pitch > pitchGoalDegrees) rotPitchDone = true;
+        }
+        return rotYawDone && rotPitchDone;
+    }
+    */
 
     private void InitGrab()
     {
