@@ -5,27 +5,48 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-using Oculus.Interaction;                   
-using Oculus.Interaction.Grab;             
-using Oculus.Interaction.HandGrab;          
-
+using Oculus.Interaction;
+using Oculus.Interaction.Grab;
+using Oculus.Interaction.HandGrab;
 
 public class TutorialController : MonoBehaviour
 {
     public static TutorialController Instance { get; private set; }
-
     public enum Stage { Saludo, Observacion, Controladores, Rotacion, Agarre, Cierre }
 
-    [Header("Orden de etapas (opcional)")]
+    [System.Serializable]
+    public class StageAnimation
+    {
+        public Stage stage;                  
+        public Animator animator;            
+        public string onEnterTrigger = "Enter";
+        public string onCompleteTrigger = "Complete";
+    }
+    [Header("Animaciones por etapa")]
+    [SerializeField] private List<StageAnimation> stageAnimations = new List<StageAnimation>();
+
+    private void PlayStageEnter(Stage st)
+    {
+        var sa = stageAnimations.Find(x => x.stage == st && x.animator);
+        if (sa != null && sa.animator) sa.animator.SetTrigger(sa.onEnterTrigger);
+    }
+
+    private void PlayStageComplete(Stage st)
+    {
+        var sa = stageAnimations.Find(x => x.stage == st && x.animator);
+        if (sa != null && sa.animator) sa.animator.SetTrigger(sa.onCompleteTrigger);
+    }
+
+    [Header("Orden de etapas")]
     [SerializeField] private Stage startStage = Stage.Saludo;
 
     [Header("UI Principal")]
     [SerializeField] private TMP_Text instructionText;
-    [SerializeField] private Toggle[] checklistToggles;  
+    [SerializeField] private Toggle[] checklistToggles;
     [SerializeField] private GameObject checklistRoot;
 
     [Header("UI Extra")]
-    [Tooltip("Panel de bienvenida que aparece solo al inicio.")]
+    [Tooltip("Panel de bienvenida que aparece solo al inicio")]
     [SerializeField] private GameObject welcomePanel;
     [SerializeField] private float welcomeDuration = 5f;
 
@@ -35,31 +56,33 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private AudioSource voiceSource;
     [SerializeField] private AudioClip saludoClip, obsClip, ctrlClip, rotClip, agarreClip, cierreClip;
 
-    [Header("Aura / Feedback (opcional)")]
+    [Header("Aura / Feedback ")]
     [SerializeField] private Animator auraAnimator;
 
     [Header("Portal / Salida")]
     [SerializeField] private GameObject portalRoot;
     [SerializeField] private Animator portalAnimator;
     [SerializeField] private string sceneToLoad = "MainModel";
-    [SerializeField] private Collider portalTrigger;  
+    [SerializeField] private Collider portalTrigger;
+
     [Header("Refs del Rig / Jugador")]
-    [SerializeField] private Transform head;               
-    [SerializeField] private Transform leftController;    
-    [SerializeField] private Transform rightController;  
+    [SerializeField] private Transform head;
+    [SerializeField] private Transform leftController;
+    [SerializeField] private Transform rightController;
     [SerializeField] private float nearHighlightRadius = 1.2f;
+
     [Header("Observación 360°")]
     [SerializeField] private float requiredYaw = 300f;
     [SerializeField] private float minAngularSpeed = 5f;
     private float obsAccumYaw;
     private Vector3 lastForwardFlat;
+
     [Header("Controladores (mover manos)")]
     [SerializeField] private float minHandMovement = 0.2f;
     private Vector3 l0, r0;
     private bool leftMoved, rightMoved;
 
     /*
-
     [Header("Rotación con Joystick + Mirar arriba")]
     [SerializeField] private float yawGoalDegrees = 90f;
     [SerializeField] private float pitchGoalDegrees = 30f;
@@ -67,8 +90,7 @@ public class TutorialController : MonoBehaviour
     private bool rotYawDone, rotPitchDone;
     */
 
-    [Header("Agarre de objetos (Interaction SDK/ISDK)")]
-
+    [Header("Agarre de objetos (Interaction SDK)")]
     [SerializeField] private List<GameObject> grabbables = new List<GameObject>();
     private bool anyGrabRegistered;
 
@@ -125,11 +147,13 @@ public class TutorialController : MonoBehaviour
                 case Stage.Controladores:
                     if (CheckControllersMoved()) CompleteStage(1);
                     break;
+
                 /*
                 case Stage.Rotacion:
                     if (CheckRotationAndLookUp()) CompleteStage(2);
                     break;
                 */
+
                 case Stage.Agarre:
                     if (CheckGrabbedOnce()) CompleteStage(3);
                     break;
@@ -155,6 +179,7 @@ public class TutorialController : MonoBehaviour
                 Say("¡Bienvenido al laboratorio! Aquí aprenderás a interactuar en Realidad Virtual y descubrirás cómo desenvolverte en este entorno.");
                 PlayVoice(saludoClip);
                 AuraTrigger("Salute");
+                PlayStageEnter(st); 
                 break;
 
             case Stage.Observacion:
@@ -163,6 +188,7 @@ public class TutorialController : MonoBehaviour
                 Say("Mira a tu alrededor para familiarizarte con el entorno. Cuando completes la observación,continúa con el tutorial.");
                 PlayVoice(obsClip);
                 AuraTrigger("Talk");
+                PlayStageEnter(st); 
                 break;
 
             case Stage.Controladores:
@@ -170,29 +196,35 @@ public class TutorialController : MonoBehaviour
                 Say("Ahora aprende a usar los controladores. Mueve ambas manos para ver tus controladores virtuales.");
                 PlayVoice(ctrlClip);
                 AuraTrigger("Talk");
+                PlayStageEnter(st); 
                 break;
+
             /*
             case Stage.Rotacion:
                 InitRotation();
                 Say("Practiquemos girar con el joystick derecho");
                 PlayVoice(rotClip);
                 AuraTrigger("Talk");
+                PlayStageEnter(st); 
                 break;
             */
+
             case Stage.Agarre:
                 InitGrab();
                 Say("Acércate y agarra un objeto con el gatillo o con tu mano virtual.");
                 PlayVoice(agarreClip);
                 AuraTrigger("Talk");
+                PlayStageEnter(st); 
                 break;
 
             case Stage.Cierre:
                 Say("¡Excelente! Dirígete a la puerta holográfica para continuar al Gemelo Digital COLIVRI.");
                 PlayVoice(cierreClip);
                 AuraTrigger("ThumbsUp");
-                EnablePortal(true);       // por si el portal estaba oculto
+                EnablePortal(true);
                 SetToggle(4, true);
                 tutorialFinished = true;
+                PlayStageEnter(st);
                 break;
         }
     }
@@ -217,7 +249,7 @@ public class TutorialController : MonoBehaviour
         SetToggle(checklistIndex, true);
 
         if (AreAllTogglesOn()) EnablePortal(true);
-
+        PlayStageComplete(current);
         Advance();
     }
 
@@ -298,36 +330,7 @@ public class TutorialController : MonoBehaviour
         if (rightController && Vector3.Distance(r0, rightController.position) >= minHandMovement) rightMoved = true;
         return leftMoved && rightMoved;
     }
-    /*
-    private void InitRotation()
-    {
-        rotAccumYaw = 0f; rotYawDone = rotPitchDone = false;
-    }
 
-    private bool CheckRotationAndLookUp()
-    {
-        Vector2 rs = Vector2.zero;
-#if UNITY_ANDROID || UNITY_STANDALONE
-        rs = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
-#endif
-        if (Mathf.Abs(rs.x) > 0.6f)
-        {
-            rotAccumYaw += 60f * Time.deltaTime; // simulación de yaw acumulado
-            if (rotAccumYaw >= yawGoalDegrees) rotYawDone = true;
-        }
-
-        if (head)
-        {
-            float pitch = Vector3.SignedAngle(
-                Vector3.ProjectOnPlane(head.forward, Vector3.right),
-                head.forward,
-                Vector3.right
-            );
-            if (pitch > pitchGoalDegrees) rotPitchDone = true;
-        }
-        return rotYawDone && rotPitchDone;
-    }
-    */
     private void InitGrab()
     {
         anyGrabRegistered = false;
@@ -371,10 +374,8 @@ public class TutorialController : MonoBehaviour
 
     private void TryLoadNextScene()
     {
-        if (!AreAllTogglesOn()) return;              // seguridad extra
+        if (!AreAllTogglesOn()) return;
         if (string.IsNullOrEmpty(sceneToLoad)) return;
         SceneManager.LoadScene(sceneToLoad);
     }
-
-   
 }
