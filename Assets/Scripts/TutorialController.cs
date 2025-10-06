@@ -13,7 +13,7 @@ public class TutorialController : MonoBehaviour
 {
     public static TutorialController Instance { get; private set; }
 
-    public enum Stage { Saludo, Observacion, Controladores, Rotacion, Agarre, Cierre }
+    public enum Stage { Saludo, Observacion, Controladores, Agarre, Cierre }
 
     [System.Serializable]
     public class StageAnimation
@@ -94,7 +94,7 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioClip musicClip;
     [SerializeField] private AudioSource voiceSource;
-    [SerializeField] private AudioClip saludoClip, obsClip, ctrlClip, rotClip, agarreClip, cierreClip;
+    [SerializeField] private AudioClip saludoClip, obsClip, ctrlClip, agarreClip, cierreClip;
 
     [Header("Aura / Feedback ")]
     [SerializeField] private Animator auraAnimator;
@@ -154,13 +154,10 @@ public class TutorialController : MonoBehaviour
             musicSource.loop = true;
             musicSource.Play();
         }
-
         if (startPanelsInactive) HideAllStagePanels();
-
         if (welcomePanel) welcomePanel.SetActive(true);
         if (checklistRoot) checklistRoot.SetActive(false);
         StartCoroutine(HideWelcomeThenShowChecklist());
-
         EnablePortal(false);
         GoToStage(startStage);
     }
@@ -197,7 +194,7 @@ public class TutorialController : MonoBehaviour
                 */
 
                 case Stage.Agarre:
-                    if (CheckGrabbedOnce()) CompleteStage(3);
+                    if (CheckGrabbedOnce()) CompleteStage(2);
                     break;
             }
         }
@@ -264,13 +261,12 @@ public class TutorialController : MonoBehaviour
                 PlayVoice(cierreClip);
                 AuraTrigger("ThumbsUp");
                 EnablePortal(true);
-                SetToggle(4, true);
+                SetToggle(3, true);
                 tutorialFinished = true;
                 PlayStageEnter(st);
                 break;
         }
     }
-
     private IEnumerator AdvanceAfter(float seconds)
     {
         if (_advancing) yield break;

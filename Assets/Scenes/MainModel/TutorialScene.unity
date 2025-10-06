@@ -336,7 +336,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &64739473
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10935,7 +10935,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageAnimations:
   - stage: 1
-    panel: {fileID: 0}
+    panel: {fileID: 2018528179}
     animator: {fileID: 2018528181}
     onEnterTrigger: 
     onCompleteTrigger: 
@@ -10943,7 +10943,7 @@ MonoBehaviour:
     autoHideOnComplete: 1
     hideDelay: 0.2
   - stage: 2
-    panel: {fileID: 0}
+    panel: {fileID: 1347033062}
     animator: {fileID: 1347033064}
     onEnterTrigger: 
     onCompleteTrigger: 
@@ -10951,15 +10951,7 @@ MonoBehaviour:
     autoHideOnComplete: 1
     hideDelay: 0.2
   - stage: 3
-    panel: {fileID: 0}
-    animator: {fileID: 1634801405}
-    onEnterTrigger: 
-    onCompleteTrigger: 
-    autoShowOnEnter: 1
-    autoHideOnComplete: 1
-    hideDelay: 0.2
-  - stage: 4
-    panel: {fileID: 0}
+    panel: {fileID: 2065697271}
     animator: {fileID: 2065697273}
     onEnterTrigger: 
     onCompleteTrigger: 
@@ -10972,7 +10964,6 @@ MonoBehaviour:
   checklistToggles:
   - {fileID: 1344017250}
   - {fileID: 612187881}
-  - {fileID: 64739474}
   - {fileID: 1932651217}
   checklistRoot: {fileID: 876657560}
   welcomePanel: {fileID: 1096251898}
@@ -10983,7 +10974,6 @@ MonoBehaviour:
   saludoClip: {fileID: 8300000, guid: 269b878b048f72b419d9cde7d55d0dbb, type: 3}
   obsClip: {fileID: 8300000, guid: 1173db6815fe5024eba74da505670c76, type: 3}
   ctrlClip: {fileID: 8300000, guid: 2d693bb81771b704fbde37841bb6ff01, type: 3}
-  rotClip: {fileID: 8300000, guid: 74dd2810a0458a747abbe5c2a7906f8d, type: 3}
   agarreClip: {fileID: 8300000, guid: b81d1e983cf03b24faa341279c08b9ab, type: 3}
   cierreClip: {fileID: 8300000, guid: 4f6bbc666e1cd634d8030e9e66ada190, type: 3}
   auraAnimator: {fileID: 0}
@@ -10997,7 +10987,7 @@ MonoBehaviour:
   nearHighlightRadius: 1.2
   requiredYaw: 300
   minAngularSpeed: 5
-  minHandMovement: 0.2
+  minHandMovement: 0.5
   grabbables:
   - {fileID: 7259020604969661438}
   - {fileID: 8009407716501901839}
@@ -12308,7 +12298,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1634801404
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12338,7 +12328,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1634801403}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 8f970f1cef805c94293261f08a4d2a20, type: 2}
   m_CullingMode: 0
@@ -14020,7 +14010,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 445.99988, y: -246}
+  m_AnchoredPosition: {x: 445.99988, y: -184}
   m_SizeDelta: {x: 845.1, y: 164.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1932651217
