@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
 using Oculus.Interaction;
 using Oculus.Interaction.Grab;
 using Oculus.Interaction.HandGrab;
@@ -12,24 +11,23 @@ using Oculus.Interaction.HandGrab;
 public class TutorialController : MonoBehaviour
 {
     public static TutorialController Instance { get; private set; }
-
-    public enum Stage { Saludo, Observacion, Controladores, Agarre, Cierre }
+    public enum Stage { Saludo, Observacion, Controladores, Teleport, Agarre, Cierre }
 
     [System.Serializable]
     public class StageAnimation
     {
         [Header("Etapa y referencias")]
-        public Stage stage;                    
-        public GameObject panel;               
-        public Animator animator;              
+        public Stage stage;
+        public GameObject panel;
+        public Animator animator;
 
         [Header("Triggers opcionales")]
-        public string onEnterTrigger = "Enter";    
-        public string onCompleteTrigger = "Complete"; 
+        public string onEnterTrigger = "Enter";
+        public string onCompleteTrigger = "Complete";
 
         [Header("Auto show/hide")]
-        public bool autoShowOnEnter = true;     
-        public bool autoHideOnComplete = true; 
+        public bool autoShowOnEnter = true;
+        public bool autoHideOnComplete = true;
         [Tooltip("Retraso para ocultar tras Complete")]
         public float hideDelay = 0.2f;
     }
@@ -38,31 +36,23 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private List<StageAnimation> stageAnimations = new List<StageAnimation>();
     [SerializeField, Tooltip("Al iniciar la escena, apaga todos los paneles de etapas")]
     private bool startPanelsInactive = true;
-    private StageAnimation GetSA(Stage st)
-        => stageAnimations.Find(x => x.stage == st);
+
+    private StageAnimation GetSA(Stage st) => stageAnimations.Find(x => x.stage == st);
 
     private void PlayStageEnter(Stage st)
     {
         var sa = GetSA(st);
         if (sa == null) return;
-
-        if (sa.autoShowOnEnter && sa.panel && !sa.panel.activeSelf)
-            sa.panel.SetActive(true);
-
-        if (sa.animator && !string.IsNullOrEmpty(sa.onEnterTrigger))
-            sa.animator.SetTrigger(sa.onEnterTrigger);
+        if (sa.autoShowOnEnter && sa.panel && !sa.panel.activeSelf) sa.panel.SetActive(true);
+        if (sa.animator && !string.IsNullOrEmpty(sa.onEnterTrigger)) sa.animator.SetTrigger(sa.onEnterTrigger);
     }
 
     private void PlayStageComplete(Stage st)
     {
         var sa = GetSA(st);
         if (sa == null) return;
-
-        if (sa.animator && !string.IsNullOrEmpty(sa.onCompleteTrigger))
-            sa.animator.SetTrigger(sa.onCompleteTrigger);
-
-        if (sa.autoHideOnComplete && sa.panel)
-            StartCoroutine(HidePanelAfter(sa.panel, sa.hideDelay));
+        if (sa.animator && !string.IsNullOrEmpty(sa.onCompleteTrigger)) sa.animator.SetTrigger(sa.onCompleteTrigger);
+        if (sa.autoHideOnComplete && sa.panel) StartCoroutine(HidePanelAfter(sa.panel, sa.hideDelay));
     }
 
     private IEnumerator HidePanelAfter(GameObject go, float delay)
@@ -86,7 +76,6 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private GameObject checklistRoot;
 
     [Header("UI Extra")]
-    [Tooltip("Panel de bienvenida que aparece solo al inicio")]
     [SerializeField] private GameObject welcomePanel;
     [SerializeField] private float welcomeDuration = 5f;
 
@@ -111,6 +100,13 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private Transform rightController;
     [SerializeField] private float nearHighlightRadius = 1.2f;
 
+    [Header("Teleport Settings")]
+    [Tooltip("Arrastra aquí el hijo 'Locomotion' dentro de OVRCameraRigInteraction. No desactives el rig completo.")]
+    [SerializeField] private GameObject locomotionRoot;
+    private bool teleportEnabled = false;
+    private readonly List<Behaviour> cachedTeleportBehaviours = new List<Behaviour>();
+    private bool teleportCacheBuilt = false;
+
     [Header("Observación 360°")]
     [SerializeField] private float requiredYaw = 300f;
     [SerializeField] private float minAngularSpeed = 5f;
@@ -122,17 +118,19 @@ public class TutorialController : MonoBehaviour
     private Vector3 l0, r0;
     private bool leftMoved, rightMoved;
 
-    /*
-    [Header("Rotación con Joystick + Mirar arriba")]
-    [SerializeField] private float yawGoalDegrees = 90f;
-    [SerializeField] private float pitchGoalDegrees = 30f;
-    private float rotAccumYaw;
-    private bool rotYawDone, rotPitchDone;
-    */
-
     [Header("Agarre de objetos (Interaction SDK)")]
     [SerializeField] private List<GameObject> grabbables = new List<GameObject>();
     private bool anyGrabRegistered;
+
+    [Header("Teleport (joystick adelante)")]
+    [SerializeField] private float thumbstickForwardThreshold = 0.6f;
+    [SerializeField] private float holdTimeToConfirm = 0.5f;
+    [SerializeField] private float teleportTransitionTime = 0.35f;
+    [SerializeField] private AudioClip teleportClip;
+
+    private float thumbHoldTimer;
+    private int teleportStep;
+    private bool teleportDone;
 
     private Stage current;
     private bool tutorialFinished;
@@ -159,6 +157,9 @@ public class TutorialController : MonoBehaviour
         if (checklistRoot) checklistRoot.SetActive(false);
         StartCoroutine(HideWelcomeThenShowChecklist());
         EnablePortal(false);
+
+        SetTeleportActive(false);
+
         GoToStage(startStage);
     }
 
@@ -180,21 +181,19 @@ public class TutorialController : MonoBehaviour
                     break;
 
                 case Stage.Observacion:
-                    if (CheckObservation360()) CompleteStage(0);
+                    if (CheckObservation360()) CompleteCurrentStage();
                     break;
 
                 case Stage.Controladores:
-                    if (CheckControllersMoved()) CompleteStage(1);
+                    if (CheckControllersMoved()) CompleteCurrentStage();
                     break;
 
-                /*
-                case Stage.Rotacion:
-                    if (CheckRotationAndLookUp()) CompleteStage(2);
+                case Stage.Teleport:
+                    if (UpdateTeleport()) CompleteCurrentStage();
                     break;
-                */
 
                 case Stage.Agarre:
-                    if (CheckGrabbedOnce()) CompleteStage(2);
+                    if (CheckGrabbedOnce()) CompleteCurrentStage();
                     break;
             }
         }
@@ -215,58 +214,100 @@ public class TutorialController : MonoBehaviour
         switch (st)
         {
             case Stage.Saludo:
-                Say("¡Bienvenido al laboratorio! Aquí aprenderás a interactuar en Realidad Virtual y descubrirás cómo desenvolverte en este entorno.");
+                Say("¡Bienvenido al laboratorio! Aquí aprenderás a interactuar en Realidad Virtual.");
                 PlayVoice(saludoClip);
                 AuraTrigger("Salute");
                 PlayStageEnter(st);
+                SetTeleportActive(false);
                 break;
 
             case Stage.Observacion:
                 obsAccumYaw = 0f;
                 lastForwardFlat = FlatForward(head ? head.forward : Vector3.forward);
-                Say("Mira a tu alrededor para familiarizarte con el entorno. Cuando completes la observación,continúa con el tutorial.");
+                Say("Mira a tu alrededor para familiarizarte con el entorno.");
                 PlayVoice(obsClip);
                 AuraTrigger("Talk");
                 PlayStageEnter(st);
+                SetTeleportActive(false);
                 break;
 
             case Stage.Controladores:
                 InitControllers();
-                Say("Ahora aprende a usar los controladores. Mueve ambas manos para ver tus controladores virtuales.");
+                Say("Mueve ambas manos para ver tus controladores virtuales.");
                 PlayVoice(ctrlClip);
                 AuraTrigger("Talk");
                 PlayStageEnter(st);
+                SetTeleportActive(false);
                 break;
 
-            /*
-            case Stage.Rotacion:
-                InitRotation();
-                Say("Practiquemos girar con el joystick derecho");
-                PlayVoice(rotClip);
+            case Stage.Teleport:
+                teleportDone = false;
+                teleportStep = 0;
+                thumbHoldTimer = 0f;
+                Say("Empuja el joystick derecho hacia adelante y mantenlo para activar el rayo de teletransporte hacia el frente.");
+                PlayVoice(teleportClip);
                 AuraTrigger("Talk");
                 PlayStageEnter(st);
+                SetTeleportActive(true);
                 break;
-            */
 
             case Stage.Agarre:
                 InitGrab();
-                Say("Acércate y agarra un objeto con el gatillo o con tu mano virtual.");
+                Say("Apunta al objeto y aprieta el gatillo para sujetarlo. Mantén presionado para sostenerlo y suelta para dejarlo.");
                 PlayVoice(agarreClip);
                 AuraTrigger("Talk");
                 PlayStageEnter(st);
+                SetTeleportActive(true);
                 break;
 
             case Stage.Cierre:
-                Say("¡Excelente! Dirígete a la puerta holográfica para continuar al Gemelo Digital COLIVRI.");
+                Say("¡Excelente! Dirígete a la puerta holográfica para continuar.");
                 PlayVoice(cierreClip);
                 AuraTrigger("ThumbsUp");
                 EnablePortal(true);
-                SetToggle(3, true);
+                SetToggle(4, true);
                 tutorialFinished = true;
                 PlayStageEnter(st);
+                SetTeleportActive(true);
                 break;
         }
     }
+
+    private void BuildTeleportCacheIfNeeded()
+    {
+        if (teleportCacheBuilt) return;
+        teleportCacheBuilt = true;
+        cachedTeleportBehaviours.Clear();
+
+        if (!locomotionRoot) return;
+
+        var behaviours = locomotionRoot.GetComponentsInChildren<Behaviour>(true);
+        foreach (var b in behaviours)
+        {
+            if (b == null) continue;
+            var typeName = b.GetType().Name;
+            if (typeName.Contains("Teleport"))
+            {
+                cachedTeleportBehaviours.Add(b);
+            }
+        }
+    }
+
+    private void SetTeleportActive(bool on)
+    {
+        teleportEnabled = on;
+        BuildTeleportCacheIfNeeded();
+
+        if (locomotionRoot)
+            locomotionRoot.SetActive(on);
+
+        if (cachedTeleportBehaviours.Count > 0)
+        {
+            foreach (var b in cachedTeleportBehaviours)
+                if (b) b.enabled = on;
+        }
+    }
+
     private IEnumerator AdvanceAfter(float seconds)
     {
         if (_advancing) yield break;
@@ -282,10 +323,22 @@ public class TutorialController : MonoBehaviour
         GoToStage(current + 1);
     }
 
-    private void CompleteStage(int checklistIndex)
+    private int GetChecklistIndexFor(Stage st)
     {
-        SetToggle(checklistIndex, true);
+        switch (st)
+        {
+            case Stage.Observacion: return 0;
+            case Stage.Controladores: return 1;
+            case Stage.Teleport: return 2;
+            case Stage.Agarre: return 3;
+            default: return -1;
+        }
+    }
 
+    private void CompleteCurrentStage()
+    {
+        int idx = GetChecklistIndexFor(current);
+        if (idx >= 0) SetToggle(idx, true);
         if (AreAllTogglesOn()) EnablePortal(true);
         PlayStageComplete(current);
         Advance();
@@ -295,16 +348,11 @@ public class TutorialController : MonoBehaviour
     {
         if (checklistToggles == null || checklistToggles.Length == 0) return false;
         for (int i = 0; i < checklistToggles.Length; i++)
-        {
             if (checklistToggles[i] == null || !checklistToggles[i].isOn) return false;
-        }
         return true;
     }
 
-    private void Say(string text)
-    {
-        if (instructionText) instructionText.text = text;
-    }
+    private void Say(string text) { if (instructionText) instructionText.text = text; }
 
     private void PlayVoice(AudioClip clip)
     {
@@ -337,7 +385,6 @@ public class TutorialController : MonoBehaviour
     private bool CheckObservation360()
     {
         if (!head) return false;
-
         Vector3 now = FlatForward(head.forward);
         float delta = Vector3.SignedAngle(lastForwardFlat, now, Vector3.up);
         if (Mathf.Abs(delta) > minAngularSpeed * Time.deltaTime)
@@ -369,41 +416,7 @@ public class TutorialController : MonoBehaviour
         return leftMoved && rightMoved;
     }
 
-    /*
-    private void InitRotation()
-    {
-        rotAccumYaw = 0f; rotYawDone = rotPitchDone = false;
-    }
-
-    private bool CheckRotationAndLookUp()
-    {
-        Vector2 rs = Vector2.zero;
-    #if UNITY_ANDROID || UNITY_STANDALONE
-        rs = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
-    #endif
-        if (Mathf.Abs(rs.x) > 0.6f)
-        {
-            rotAccumYaw += 60f * Time.deltaTime; // simulación de yaw acumulado
-            if (rotAccumYaw >= yawGoalDegrees) rotYawDone = true;
-        }
-
-        if (head)
-        {
-            float pitch = Vector3.SignedAngle(
-                Vector3.ProjectOnPlane(head.forward, Vector3.right),
-                head.forward,
-                Vector3.right
-            );
-            if (pitch > pitchGoalDegrees) rotPitchDone = true;
-        }
-        return rotYawDone && rotPitchDone;
-    }
-    */
-
-    private void InitGrab()
-    {
-        anyGrabRegistered = false;
-    }
+    private void InitGrab() { anyGrabRegistered = false; }
 
     private bool CheckGrabbedOnce()
     {
@@ -413,38 +426,74 @@ public class TutorialController : MonoBehaviour
         foreach (var go in grabbables)
         {
             if (!go) continue;
-            if (IsSelected(go)) { anyGrabRegistered = true; break; }
+
+            var gi = go.GetComponent<GrabInteractable>() ?? go.GetComponentInChildren<GrabInteractable>(true);
+            var hgi = go.GetComponent<HandGrabInteractable>() ?? go.GetComponentInChildren<HandGrabInteractable>(true);
+            var dgi = go.GetComponent<DistanceGrabInteractable>() ?? go.GetComponentInChildren<DistanceGrabInteractable>(true);
+            var dhg = go.GetComponent<DistanceHandGrabInteractable>() ?? go.GetComponentInChildren<DistanceHandGrabInteractable>(true);
+
+            if ((gi && gi.State == InteractableState.Select) ||
+                (hgi && hgi.State == InteractableState.Select) ||
+                (dgi && dgi.State == InteractableState.Select) ||
+                (dhg && dhg.State == InteractableState.Select))
+            {
+                anyGrabRegistered = true; break;
+            }
         }
         return anyGrabRegistered;
     }
 
-    private static bool IsSelected(GameObject go)
+    private bool UpdateTeleport()
     {
-        if (!go) return false;
+        if (!teleportEnabled) return false;
 
-        var gi = go.GetComponent<GrabInteractable>() ??
-                 go.GetComponentInChildren<GrabInteractable>(true);
-        if (gi && gi.State == InteractableState.Select) return true;
+        Vector2 rs = Vector2.zero;
+#if UNITY_ANDROID || UNITY_STANDALONE
+        rs = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+#endif
+        if (rs.y > thumbstickForwardThreshold)
+        {
+            thumbHoldTimer += Time.deltaTime;
 
-        var hgi = go.GetComponent<HandGrabInteractable>() ??
-                  go.GetComponentInChildren<HandGrabInteractable>(true);
-        if (hgi && hgi.State == InteractableState.Select) return true;
-
-        var dgi = go.GetComponent<DistanceGrabInteractable>() ??
-                  go.GetComponentInChildren<DistanceGrabInteractable>(true);
-        if (dgi && dgi.State == InteractableState.Select) return true;
-
-        var dhgi = go.GetComponent<DistanceHandGrabInteractable>() ??
-                   go.GetComponentInChildren<DistanceHandGrabInteractable>(true);
-        if (dhgi && dhgi.State == InteractableState.Select) return true;
-
-        return false;
+            if (teleportStep == 0 && thumbHoldTimer > 0.05f)
+            {
+                TeleportAnimTrigger("Push");
+                teleportStep = 1;
+            }
+            if (teleportStep == 1 && thumbHoldTimer >= holdTimeToConfirm)
+            {
+                TeleportAnimTrigger("Charge");
+                teleportStep = 2;
+                StartCoroutine(TeleportBeamFinishAfter(teleportTransitionTime));
+            }
+        }
+        else
+        {
+            if (teleportStep < 2)
+            {
+                thumbHoldTimer = 0f;
+                teleportStep = 0;
+            }
+        }
+        return teleportDone;
     }
 
+    private IEnumerator TeleportBeamFinishAfter(float t)
+    {
+        yield return new WaitForSeconds(t);
+        TeleportAnimTrigger("Beam");
+        teleportDone = true;
+    }
+    private void TeleportAnimTrigger(string trig)
+    {
+        var sa = GetSA(Stage.Teleport);
+        if (sa != null && sa.animator && !string.IsNullOrEmpty(trig))
+            sa.animator.SetTrigger(trig);
+    }
     private void TryLoadNextScene()
     {
         if (!AreAllTogglesOn()) return;
         if (string.IsNullOrEmpty(sceneToLoad)) return;
         SceneManager.LoadScene(sceneToLoad);
     }
-}
+}
