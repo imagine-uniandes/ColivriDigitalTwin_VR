@@ -36,9 +36,9 @@ public class PlayerRegistrationManager : MonoBehaviour
         playButton.onClick.AddListener(OnPlayClicked);
     }
 
-   
-  
-    
+
+
+
     public void OnDifficultySelected(Difficulty diff, Button btn)
     {
         selectedDifficulty = diff;

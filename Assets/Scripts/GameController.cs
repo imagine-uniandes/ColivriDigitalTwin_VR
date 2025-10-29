@@ -575,7 +575,7 @@ public class GameController : MonoBehaviour
         StopSuspenseBed();
         SetTeleportEnabled(false);
 
-      
+
         Destroy(transform.root.gameObject);
 
         SceneManager.LoadScene(tutorialSceneName, LoadSceneMode.Single);
