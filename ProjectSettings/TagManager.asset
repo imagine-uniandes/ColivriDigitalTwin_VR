@@ -12,6 +12,7 @@ TagManager:
   - QDSUITextInputField
   - QDSUITextSecondaryColor
   - HelperTeleport
+  - Hand
   layers:
   - Default
   - TransparentFX
