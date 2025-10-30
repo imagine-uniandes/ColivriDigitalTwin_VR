@@ -264,9 +264,16 @@ public class GameController : MonoBehaviour
             stats.ShowEndGameStatistics(PlayerPrefs.GetString("PlayerName"), elapsedTime);
             Debug.Log($"[Stats] Tiempo mostrado: {elapsedTime:F2} -> {TimerDef.FormatMMSS(elapsedTime)}");
         }
-
-        //Cargar escena de registro
-        SceneManager.LoadSceneAsync("RegistrationScene");
+        Quaternion originalCamRotation = Quaternion.identity;
+        if (Camera.main != null)
+        {
+            originalCamRotation = Camera.main.transform.rotation;
+            if (highScoreFocusPoint != null)
+            {
+                Vector3 dir = (highScoreFocusPoint.position - Camera.main.transform.position).normalized;
+                Camera.main.transform.rotation = Quaternion.LookRotation(dir);
+            }
+        }
 
         yield return new WaitForSeconds(rankingDisplayDuration);
         if (cameraBlink != null)
