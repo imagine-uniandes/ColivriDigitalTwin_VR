@@ -49,7 +49,6 @@ public class GameController : MonoBehaviour
     [Header("Gameplay Objects")]
     [SerializeField] public List<GameObject> teleportHotspots;
     public Color helpColor = Color.green;
-    private Difficulty difficulty;
     private Vector3 playerStartPos;
 
     [Header("Audio")]
@@ -63,6 +62,7 @@ public class GameController : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float suspenseVolume = 0.6f;
     private bool suspenseActive = false;
     private Coroutine suspenseGuardRoutine;
+
     [Header("Locomotion / Teleport")]
     [SerializeField] private GameObject locomotionControllerRoot;
 
@@ -77,12 +77,13 @@ public class GameController : MonoBehaviour
 
     [Header("Escenas")]
     [SerializeField] private string tutorialSceneName = "TutorialScene";
+    [SerializeField] private string registrationSceneName = "RegistrationScene";
+    [SerializeField] private Difficulty difficulty = Difficulty.Easy;
 
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        DontDestroyOnLoad(transform.root.gameObject);
         EnsureSuspenseSource();
     }
 
@@ -91,34 +92,45 @@ public class GameController : MonoBehaviour
         var player = GameObject.FindWithTag("Player");
         if (player != null) playerStartPos = player.transform.position;
 
-        initialPanel.SetActive(true);
-        registrationPanel.SetActive(false);
-        instructionsPanel.SetActive(true);
-        codePanel.SetActive(false);
-        gameOverPanel.SetActive(false);
-        statsRankingPanel.SetActive(false);
-        highScorePanel.SetActive(true);
+        if (initialPanel) initialPanel.SetActive(true);
+        if (registrationPanel) registrationPanel.SetActive(false);
+        if (instructionsPanel) instructionsPanel.SetActive(true);
+        if (codePanel) codePanel.SetActive(false);
+        if (gameOverPanel) gameOverPanel.SetActive(false);
+        if (statsRankingPanel) statsRankingPanel.SetActive(false);
+        if (highScorePanel) highScorePanel.SetActive(true);
         if (timerPanelDefault) timerPanelDefault.SetActive(false);
         if (timerPanelCompetitive) timerPanelCompetitive.SetActive(false);
+
+        // Autostart si venimos de RegistrationScene
+        if (PlayerPrefs.GetInt("PendingAutostart", 0) == 1)
+        {
+            PlayerPrefs.SetInt("PendingAutostart", 0);
+            StartGameFromRegistration();
+        }
+
         SetTeleportEnabled(false);
         FreezeModelAnimators();
 
-        startGameButton.onClick.AddListener(OnStartButtonClicked);
+        if (startGameButton) startGameButton.onClick.AddListener(OnStartButtonClicked);
 
         difficulty = (Difficulty)PlayerPrefs.GetInt("difficulty", (int)Difficulty.Easy);
-        easyButton.onClick.AddListener(() => SelectDifficulty(Difficulty.Easy));
-        normalButton.onClick.AddListener(() => SelectDifficulty(Difficulty.Normal));
-        competitiveButton.onClick.AddListener(() => SelectDifficulty(Difficulty.Competitive));
-        playButton.onClick.AddListener(OnPlayClicked);
-        retryButton.onClick.AddListener(OnRetryClicked);
+        if (easyButton) easyButton.onClick.AddListener(() => SelectDifficulty(Difficulty.Easy));
+        if (normalButton) normalButton.onClick.AddListener(() => SelectDifficulty(Difficulty.Normal));
+        if (competitiveButton) competitiveButton.onClick.AddListener(() => SelectDifficulty(Difficulty.Competitive));
+        if (playButton) playButton.onClick.AddListener(OnPlayClicked);
+        if (retryButton) retryButton.onClick.AddListener(OnRetryClicked);
 
         CodeManager.OnCodeSuccessEvent += OnCodeSuccess;
-        timerDef.OnTimerFinished.AddListener(OnTimerFinished);
+
+        if (timerDef) timerDef.OnTimerFinished.AddListener(OnTimerFinished);
+        else Debug.LogWarning("GameController: timerDef no asignado.");
     }
 
     private void OnDestroy()
     {
         CodeManager.OnCodeSuccessEvent -= OnCodeSuccess;
+        if (timerDef) timerDef.OnTimerFinished.RemoveListener(OnTimerFinished);
     }
 
     public Difficulty GetCurrentDifficulty() => difficulty;
@@ -126,70 +138,59 @@ public class GameController : MonoBehaviour
     public void OnTimerFinished()
     {
         StopSuspenseBed();
-        timerDef.StopTimer();
+        timerDef?.StopTimer();
         var player = GameObject.FindWithTag("Player");
         if (player != null) player.transform.position = playerStartPos;
-        gameOverPanel.SetActive(true);
-        gameOverMessage.text = "¡Se acabó el tiempo!";
+        if (gameOverPanel) gameOverPanel.SetActive(true);
+        if (gameOverMessage) gameOverMessage.text = "¡Se acabó el tiempo!";
         SetTeleportEnabled(false);
         FreezeModelAnimators();
     }
 
-    public void OnStartButtonClicked()
+    private void StartGameFromRegistration()
     {
-        initialPanel.SetActive(false);
-        registrationPanel.SetActive(true);
-        instructionsPanel.SetActive(true);
-        highScorePanel.SetActive(true);
-        SetTeleportEnabled(false);
-        FreezeModelAnimators();
-    }
-
-    public void SelectDifficulty(Difficulty d)
-    {
-        difficulty = d;
-        PlayerPrefs.SetInt("difficulty", (int)d);
-    }
-
-    public void OnPlayClicked()
-    {
-        string playerName = nameInput.text.Trim();
+        string playerName = PlayerPrefs.GetString("PlayerName", "").Trim();
         if (string.IsNullOrEmpty(playerName))
         {
-            Debug.LogWarning("Debes ingresar un nombre de jugador.");
+            Debug.LogWarning("No hay PlayerName en PlayerPrefs. No se puede autoiniciar.");
             return;
         }
 
-        PlayerPrefs.SetString("PlayerName", playerName);
         PlayerDataManager.Instance.CreateOrSelectPlayer(playerName);
+        difficulty = (Difficulty)PlayerPrefs.GetInt("difficulty", (int)Difficulty.Easy);
+
         SetTeleportEnabled(true);
         FreezeModelAnimators();
 
-        registrationPanel.SetActive(false);
-        instructionsPanel.SetActive(false);
-        highScorePanel.SetActive(false);
-        codePanel.SetActive(true);
-        gameOverPanel.SetActive(false);
+        if (registrationPanel) registrationPanel.SetActive(false);
+        if (instructionsPanel) instructionsPanel.SetActive(false);
+        if (highScorePanel) highScorePanel.SetActive(false);
+        if (codePanel) codePanel.SetActive(true);
+        if (gameOverPanel) gameOverPanel.SetActive(false);
         if (timerPanelDefault) timerPanelDefault.SetActive(false);
         if (timerPanelCompetitive) timerPanelCompetitive.SetActive(false);
+
         ApplyHotspotHelp(difficulty == Difficulty.Easy);
         extraTimeGiven = false;
+
         switch (difficulty)
         {
             case Difficulty.Easy:
-                foreach (var hotspot in teleportHotspots) hotspot.SetActive(true);
+                if (teleportHotspots != null)
+                    foreach (var h in teleportHotspots) if (h) h.SetActive(true);
                 if (timerPanelDefault) timerPanelDefault.SetActive(true);
                 if (timerDef && timerTextDefault) timerDef.BindLabel(timerTextDefault);
                 if (timerDef)
                 {
-                    timerDef.SetUrgentColorsEnabled(true);                
-                    timerDef.SetColorOverride(false, Color.white);        
+                    timerDef.SetUrgentColorsEnabled(true);
+                    timerDef.SetColorOverride(false, Color.white);
                     timerDef.SetTimerMode(TimerDef.TimerMode.CountUp);
                 }
                 break;
 
             case Difficulty.Normal:
-                foreach (var hotspot in teleportHotspots) hotspot.SetActive(false);
+                if (teleportHotspots != null)
+                    foreach (var h in teleportHotspots) if (h) h.SetActive(false);
                 if (timerPanelDefault) timerPanelDefault.SetActive(true);
                 if (timerDef && timerTextDefault) timerDef.BindLabel(timerTextDefault);
                 if (timerDef)
@@ -206,8 +207,8 @@ public class GameController : MonoBehaviour
                 if (timerDef)
                 {
                     float firstTime = GetFirstPlaceTimeOrDefault(60f);
-                    timerDef.SetUrgentColorsEnabled(false);         
-                    timerDef.SetColorOverride(true, Color.white);        
+                    timerDef.SetUrgentColorsEnabled(false);
+                    timerDef.SetColorOverride(true, Color.white);
                     timerDef.SetTimerMode(TimerDef.TimerMode.CountDown);
                     timerDef.SetCountdownTime(firstTime);
                 }
@@ -215,11 +216,14 @@ public class GameController : MonoBehaviour
         }
 
         if (timerDef) timerDef.ResetTimer();
+
         if (retoLoader == null) retoLoader = FindObjectOfType<RetoLoader>();
         if (retoLoader != null)
         {
+            // 👇 Si la firma de ConfigureModeByDifficulty no es Difficulty, castea:
+            // retoLoader.ConfigureModeByDifficulty((int)difficulty);
             retoLoader.ConfigureModeByDifficulty(difficulty);
-            retoLoader.PrepareForNewSession(); 
+            retoLoader.PrepareForNewSession();
         }
         else
         {
@@ -228,33 +232,145 @@ public class GameController : MonoBehaviour
 
         var cm = FindObjectOfType<CodeManager>();
         cm?.BeginSession(shuffle: false);
+
         StartSuspenseBed();
     }
+
+    public void OnStartButtonClicked()
+    {
+        if (initialPanel) initialPanel.SetActive(false);
+        if (registrationPanel) registrationPanel.SetActive(true);
+        if (instructionsPanel) instructionsPanel.SetActive(true);
+        if (highScorePanel) highScorePanel.SetActive(true);
+        SetTeleportEnabled(false);
+        FreezeModelAnimators();
+    }
+
+    public void SelectDifficulty(Difficulty d)
+    {
+        difficulty = d;
+        PlayerPrefs.SetInt("difficulty", (int)d);
+    }
+
+    public void OnPlayClicked()
+    {
+        if (nameInput == null)
+        {
+            Debug.LogWarning("nameInput no asignado en esta escena.");
+            return;
+        }
+
+        string playerName = nameInput.text.Trim();
+        if (string.IsNullOrEmpty(playerName))
+        {
+            Debug.LogWarning("Debes ingresar un nombre de jugador.");
+            return;
+        }
+
+        PlayerPrefs.SetString("PlayerName", playerName);
+        PlayerDataManager.Instance.CreateOrSelectPlayer(playerName);
+
+        SetTeleportEnabled(true);
+        FreezeModelAnimators();
+
+        if (registrationPanel) registrationPanel.SetActive(false);
+        if (instructionsPanel) instructionsPanel.SetActive(false);
+        if (highScorePanel) highScorePanel.SetActive(false);
+        if (codePanel) codePanel.SetActive(true);
+        if (gameOverPanel) gameOverPanel.SetActive(false);
+        if (timerPanelDefault) timerPanelDefault.SetActive(false);
+        if (timerPanelCompetitive) timerPanelCompetitive.SetActive(false);
+
+        ApplyHotspotHelp(difficulty == Difficulty.Easy);
+        extraTimeGiven = false;
+
+        switch (difficulty)
+        {
+            case Difficulty.Easy:
+                if (teleportHotspots != null)
+                    foreach (var hotspot in teleportHotspots) if (hotspot) hotspot.SetActive(true);
+                if (timerPanelDefault) timerPanelDefault.SetActive(true);
+                if (timerDef && timerTextDefault) timerDef.BindLabel(timerTextDefault);
+                if (timerDef)
+                {
+                    timerDef.SetUrgentColorsEnabled(true);
+                    timerDef.SetColorOverride(false, Color.white);
+                    timerDef.SetTimerMode(TimerDef.TimerMode.CountUp);
+                }
+                break;
+
+            case Difficulty.Normal:
+                if (teleportHotspots != null)
+                    foreach (var hotspot in teleportHotspots) if (hotspot) hotspot.SetActive(false);
+                if (timerPanelDefault) timerPanelDefault.SetActive(true);
+                if (timerDef && timerTextDefault) timerDef.BindLabel(timerTextDefault);
+                if (timerDef)
+                {
+                    timerDef.SetUrgentColorsEnabled(true);
+                    timerDef.SetColorOverride(false, Color.white);
+                    timerDef.SetTimerMode(TimerDef.TimerMode.CountUp);
+                }
+                break;
+
+            case Difficulty.Competitive:
+                if (timerPanelCompetitive) timerPanelCompetitive.SetActive(true);
+                if (timerDef && timerTextCompetitive) timerDef.BindLabel(timerTextCompetitive);
+                if (timerDef)
+                {
+                    float firstTime = GetFirstPlaceTimeOrDefault(60f);
+                    timerDef.SetUrgentColorsEnabled(false);
+                    timerDef.SetColorOverride(true, Color.white);
+                    timerDef.SetTimerMode(TimerDef.TimerMode.CountDown);
+                    timerDef.SetCountdownTime(firstTime);
+                }
+                break;
+        }
+
+        if (timerDef) timerDef.ResetTimer();
+
+        if (retoLoader == null) retoLoader = FindObjectOfType<RetoLoader>();
+        if (retoLoader != null)
+        {
+            // 👇 Castea si tu firma no es Difficulty:
+            // retoLoader.ConfigureModeByDifficulty((int)difficulty);
+            retoLoader.ConfigureModeByDifficulty(difficulty);
+            retoLoader.PrepareForNewSession();
+        }
+        else
+        {
+            Debug.LogError("GameController: RetoLoader no asignado ni encontrado en escena.");
+        }
+
+        var cm = FindObjectOfType<CodeManager>();
+        cm?.BeginSession(shuffle: false);
+
+        StartSuspenseBed();
+    }
+
     public void OnCodeSuccess(float elapsedTimeParam)
     {
         PlayModelAnimatorsFromStart();
         StopSuspenseBed();
-        if (timerDef) timerDef.StopTimer();
-        float tFromTimer = timerDef ? timerDef.GetTimeForStats() : elapsedTimeParam;
-        float elapsedTime = tFromTimer;
+        timerDef?.StopTimer();
+
+        float elapsedTime = timerDef ? timerDef.GetTimeForStats() : elapsedTimeParam;
+
         if (audioSource != null && successClip != null)
             audioSource.PlayOneShot(successClip);
-        timerDef.StopTimer();
-        PlayerDataManager.Instance.UpdateCurrentSessionStats(
-            elapsedTime, $"Partida {System.DateTime.Now:HH:mm:ss}");
-        highScoreTable.RefreshTable();
-        StartCoroutine(ShowStatsAndReturnToRegister(elapsedTime));
 
+        PlayerDataManager.Instance.UpdateCurrentSessionStats(
+            elapsedTime, $"Partida {DateTime.Now:HH:mm:ss}");
+
+        if (highScoreTable) highScoreTable.RefreshTable();
+
+        StartCoroutine(ShowStatsAndReturnToRegister(elapsedTime));
     }
 
     private IEnumerator ShowStatsAndReturnToRegister(float elapsedTime)
     {
-        statsRankingPanel.SetActive(true);
-        /*
-        var stats = statsRankingPanel.GetComponent<GameStatistics>();
-        stats?.ShowEndGameStatistics(PlayerPrefs.GetString("PlayerName"), elapsedTime);
-        */
-        var stats = statsRankingPanel.GetComponentInChildren<GameStatistics>(true);
+        if (statsRankingPanel) statsRankingPanel.SetActive(true);
+
+        var stats = statsRankingPanel ? statsRankingPanel.GetComponentInChildren<GameStatistics>(true) : null;
         if (stats == null)
         {
             Debug.LogError("GameController: GameStatistics no encontrado en StatsRankingPanel ni en sus hijos.");
@@ -264,6 +380,7 @@ public class GameController : MonoBehaviour
             stats.ShowEndGameStatistics(PlayerPrefs.GetString("PlayerName"), elapsedTime);
             Debug.Log($"[Stats] Tiempo mostrado: {elapsedTime:F2} -> {TimerDef.FormatMMSS(elapsedTime)}");
         }
+
         Quaternion originalCamRotation = Quaternion.identity;
         if (Camera.main != null)
         {
@@ -276,49 +393,38 @@ public class GameController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(rankingDisplayDuration);
-        if (cameraBlink != null)
-            yield return cameraBlink.DoFadeIn();
+
+        if (cameraBlink != null) yield return cameraBlink.DoFadeIn();
+
         var player = GameObject.FindWithTag("Player");
         if (player != null) player.transform.position = playerStartPos;
         if (Camera.main != null) Camera.main.transform.rotation = originalCamRotation;
-        statsRankingPanel.SetActive(false);
-        if (retoLoader != null)
-        {
-            if (difficulty == Difficulty.Competitive)
-            {
-                bool avanzado = retoLoader.LoadNextReto();
-                retoLoader.UpdatePistasUI();
-                if (!avanzado) { retoLoader.ResetSequence(shuffle: false); retoLoader.UpdatePistasUI(); }
-            }
-        }
-        ResetToRegistration();
-        if (cameraBlink != null)
-            yield return cameraBlink.DoFadeOut();
-    }
 
-    private void ResetToRegistration()
-    {
-        FindObjectOfType<CodeManager>()?.ResetSession();
-        if (timerDef) timerDef.InitializeTimer();
-        StopSuspenseBed();
-        codePanel.SetActive(false);
-        if (timerPanelDefault) timerPanelDefault.SetActive(false);
-        if (timerPanelCompetitive) timerPanelCompetitive.SetActive(false);
-        registrationPanel.SetActive(true);
-        instructionsPanel.SetActive(true);
-        highScorePanel.SetActive(true);
-        SetTeleportEnabled(false);
-        FreezeModelAnimators();
+        if (statsRankingPanel) statsRankingPanel.SetActive(false);
+
+        if (retoLoader != null && difficulty == Difficulty.Competitive)
+        {
+            bool avanzado = retoLoader.LoadNextReto();
+            retoLoader.UpdatePistasUI();
+            if (!avanzado) { retoLoader.ResetSequence(shuffle: false); retoLoader.UpdatePistasUI(); }
+        }
+
+        if (cameraBlink != null) yield return cameraBlink.DoFadeOut();
+        var currentName = PlayerDataManager.Instance.CurrentPlayerName ?? "";
+        PlayerPrefs.SetString("PlayerName", currentName);
+        PlayerPrefs.SetInt("PendingAutostart", 0);   
+        PlayerPrefs.Save();
+        SceneLoader.LoadRegistration();
     }
 
     public void TriggerGameOver()
     {
         StopSuspenseBed();
-        timerDef.StopTimer();
+        timerDef?.StopTimer();
         var player = GameObject.FindWithTag("Player");
         if (player != null) player.transform.position = playerStartPos;
-        gameOverPanel.SetActive(true);
-        gameOverMessage.text = "¡Se acabó el tiempo!";
+        if (gameOverPanel) gameOverPanel.SetActive(true);
+        if (gameOverMessage) gameOverMessage.text = "¡Se acabó el tiempo!";
         SetTeleportEnabled(false);
         FreezeModelAnimators();
     }
@@ -340,9 +446,8 @@ public class GameController : MonoBehaviour
     public void OnRetryClicked()
     {
         StopSuspenseBed();
-        gameOverPanel.SetActive(false);
         if (timerDef) timerDef.InitializeTimer();
-        ResetToRegistration();
+        SceneLoader.LoadRegistration();
     }
 
     public void ResetSession()
@@ -352,7 +457,7 @@ public class GameController : MonoBehaviour
 
         if (timerDef) timerDef.InitializeTimer();
 
-        codePanel.SetActive(true);
+        if (codePanel) codePanel.SetActive(true);
         if (timerPanelDefault) timerPanelDefault.SetActive(false);
         if (timerPanelCompetitive) timerPanelCompetitive.SetActive(false);
 
@@ -382,28 +487,28 @@ public class GameController : MonoBehaviour
                 break;
         }
 
-        statsRankingPanel.SetActive(false);
-        gameOverPanel.SetActive(false);
+        if (statsRankingPanel) statsRankingPanel.SetActive(false);
+        if (gameOverPanel) gameOverPanel.SetActive(false);
 
         ApplyHotspotHelp(difficulty == Difficulty.Easy);
 
-        registrationPanel.SetActive(false);
-        instructionsPanel.SetActive(false);
+        if (registrationPanel) registrationPanel.SetActive(false);
+        if (instructionsPanel) instructionsPanel.SetActive(false);
 
-        nameInput.text = "";
+        if (nameInput) nameInput.text = "";
 
         var player = GameObject.FindWithTag("Player");
-        if (player != null)
-            player.transform.position = playerStartPos;
+        if (player != null) player.transform.position = playerStartPos;
     }
 
     public void ApplyHotspotHelp(bool show)
     {
+        if (teleportHotspots == null) return;
         foreach (var go in teleportHotspots)
         {
+            if (!go) continue;
             var rend = go.GetComponent<Renderer>();
-            if (rend != null)
-                rend.material.color = show ? helpColor : Color.white;
+            if (rend != null) rend.material.color = show ? helpColor : Color.white;
         }
     }
 
@@ -413,10 +518,10 @@ public class GameController : MonoBehaviour
         {
             suspenseSource = gameObject.AddComponent<AudioSource>();
             suspenseSource.playOnAwake = false;
-            suspenseSource.loop = true;        
-            suspenseSource.spatialBlend = 0f; 
+            suspenseSource.loop = true;
+            suspenseSource.spatialBlend = 0f;
             suspenseSource.volume = suspenseVolume;
-            suspenseSource.dopplerLevel = 0f;  
+            suspenseSource.dopplerLevel = 0f;
         }
     }
 
@@ -479,6 +584,7 @@ public class GameController : MonoBehaviour
             }
         }
     }
+
     private void FreezeModelAnimators()
     {
         foreach (var a in animatorsToControl)
@@ -496,28 +602,15 @@ public class GameController : MonoBehaviour
         {
             if (!a) continue;
             if (!string.IsNullOrEmpty(stateToPlayOnSuccess))
-                a.Play(stateToPlayOnSuccess, 0, 0f); 
-            else
-            {
-            }
+                a.Play(stateToPlayOnSuccess, 0, 0f);
             a.speed = 1f;
         }
     }
+
     public void ReturnToTutorialScene()
     {
         StopSuspenseBed();
         SetTeleportEnabled(false);
-
-
-        Destroy(transform.root.gameObject);
-
         SceneManager.LoadScene(tutorialSceneName, LoadSceneMode.Single);
-    }
-
-    public enum Difficulty
-    {
-        Easy,
-        Normal,
-        Competitive
     }
 }

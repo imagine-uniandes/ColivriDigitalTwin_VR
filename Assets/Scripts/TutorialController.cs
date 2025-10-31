@@ -184,7 +184,7 @@ public class TutorialController : MonoBehaviour
 
     [SerializeField] private Animator portalAnimator;
 
-    [SerializeField] private string sceneToLoad = "MainModel";
+    [SerializeField] private string sceneToLoad = "RegistrationScene";
 
     [SerializeField] private Collider portalTrigger;
 

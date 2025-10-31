@@ -10,10 +10,6 @@ public class SessionData {
     public string sessionName;
     public float tiempoJugado;
 }
-
-
-//Contiene la lista de sesiones de un jugador concreto
-
 [Serializable]
 public class PlayerData
 {
@@ -122,4 +118,6 @@ public class PlayerDataManager : MonoBehaviour
     {
         CreateOrSelectPlayer(playerName);
     }
+    public string CurrentPlayerName => currentPlayer?.playerName;
+
 }

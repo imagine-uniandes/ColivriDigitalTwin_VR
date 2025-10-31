@@ -15,25 +15,23 @@ public class CodeManager : MonoBehaviour
     private string respuestaActual;
 
     [Header("UI de dígitos (input del jugador)")]
-    [SerializeField] private TMP_Text[] digitTexts; // 3 TMP_Text del display del jugador
+    [SerializeField] private TMP_Text[] digitTexts; 
     private int[] digitValues = new int[3];
 
     [Header("Feedback")]
-    [SerializeField] private GameObject panelCorrecto; // se muestra cuando acierta
+    [SerializeField] private GameObject panelCorrecto; 
     [SerializeField] private GameObject panelCorrecto1;
-    [SerializeField] private GameObject panelCerca;    // feedback de “cerca”
-    [SerializeField] private GameObject panelClave;    // panel con los controles de ingreso
-    [SerializeField] private TextMeshProUGUI txtPosiciones; // dígitos bien posicionados
-    [SerializeField] private TextMeshProUGUI txtWrongPos;   // dígitos correctos en pos. equivocada
+    [SerializeField] private GameObject panelCerca;    
+    [SerializeField] private GameObject panelClave;    
+    [SerializeField] private TextMeshProUGUI txtPosiciones; 
+    [SerializeField] private TextMeshProUGUI txtWrongPos;   
 
     [Header("Timing")]
     [Tooltip("Tiempo que se muestra el feedback 'correcto' ANTES de mostrar estadísticas y volver a registro.")]
     [SerializeField] private float perRetoFeedbackDelay = 1.2f;
 
-    // Evento cuando se completa EL RETO (una partida)
     public static event Action<float> OnCodeSuccessEvent;
 
-    // Tiempos
     private float sessionStartTime;  // inicio de la partida (un reto)
     private float retoStartTime;     // alias por si quieres métricas por reto
 
@@ -68,10 +66,6 @@ public class CodeManager : MonoBehaviour
         sessionStartTime = Time.time;
         retoStartTime = Time.time;
     }
-
-    /// <summary>
-    /// Llamado por GameController al volver al registro u otros resets globales.
-    /// </summary>
     public void ResetSession()
     {
         ResetVisualsOnly();
@@ -160,30 +154,24 @@ public class CodeManager : MonoBehaviour
 
         if (currentInput == respuestaActual)
         {
-            // 1) Mostrar feedback de acierto SIEMPRE
             panelCorrecto.SetActive(true);
             panelCorrecto1.SetActive(true);
             panelClave.SetActive(false);
-
-            // Tiempo de la partida (un reto)
             float totalElapsed;
             if (timerDef != null)
             {
-                timerDef.StopTimer();                         // congela el label
-                totalElapsed = timerDef.GetTimeForStats();    // misma definición que el label
+                timerDef.StopTimer();                         
+                totalElapsed = timerDef.GetTimeForStats();    
             }
             else
             {
-                // Respaldo si no hubiera TimerDef asignado
                 totalElapsed = Time.time - sessionStartTime;
             }
 
-            // 3) Tras el delay, notificar a GameController con ese MISMO tiempo
             StartCoroutine(NotifySuccessAfterDelay(perRetoFeedbackDelay, totalElapsed));
         }
         else
         {
-            // Feedback “cerca”
             int good = 0, wrong = 0;
             for (int i = 0; i < 3; i++)
             {

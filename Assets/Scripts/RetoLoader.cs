@@ -30,12 +30,12 @@ public class TripleDigits
 
 public class RetoLoader : MonoBehaviour
 {
-    // === NUEVO: modo de carga según dificultad ===
+    // === Modo de carga según dificultad ===
     public enum LoadMode
     {
         EasyOnlyFirst,  // siempre idReto = 1
         RandomOne,      // uno aleatorio por sesión
-        Sequential      // avanza 1,2,3,... (lo que ya tenías)
+        Sequential      // avanza 1,2,3,...
     }
 
     [Header("UI Pistas (texto completo)")]
@@ -55,7 +55,7 @@ public class RetoLoader : MonoBehaviour
     public RetosList retosList;
     private int currentIndex = 0;
 
-    // === NUEVO: estado de modo y RNG ===
+    // === estado de modo y RNG ===
     private LoadMode mode = LoadMode.Sequential;
     private readonly SysRandom rng = new SysRandom();
 
@@ -83,24 +83,30 @@ public class RetoLoader : MonoBehaviour
         }
     }
 
-    // === NUEVO: configurar el modo desde GameController ===
-    public void ConfigureModeByDifficulty(GameController.Difficulty difficulty)
+    // === Configurar el modo desde GameController (usa el enum global) ===
+    public void ConfigureModeByDifficulty(Difficulty difficulty)
     {
         switch (difficulty)
         {
-            case GameController.Difficulty.Easy:
+            case Difficulty.Easy:
                 mode = LoadMode.EasyOnlyFirst;
                 break;
-            case GameController.Difficulty.Normal:
+            case Difficulty.Normal:
                 mode = LoadMode.RandomOne;
                 break;
-            case GameController.Difficulty.Competitive:
+            case Difficulty.Competitive:
                 mode = LoadMode.Sequential;
                 break;
         }
     }
 
-    // === NUEVO: fijar el reto actual al iniciar una sesión (al darle Play) ===
+    // (Opcional) Overload por si alguna llamada te pasa un int:
+    public void ConfigureModeByDifficulty(int difficultyValue)
+    {
+        ConfigureModeByDifficulty((Difficulty)difficultyValue);
+    }
+
+    // === Fijar el reto actual al iniciar una sesión (al darle Play) ===
     public void PrepareForNewSession()
     {
         if (TotalRetos == 0) return;
@@ -117,15 +123,13 @@ public class RetoLoader : MonoBehaviour
 
             case LoadMode.Sequential:
                 // no tocar currentIndex (continúa donde iba la secuencia)
-                // si prefieres reiniciar cada sesión descomenta:
-                // currentIndex = 0;
                 break;
         }
 
         UpdatePistasUI();
     }
 
-    // === NUEVO: helper para ir directo por idReto ===
+    // === helper para ir directo por idReto ===
     public void SetCurrentByIdReto(int idReto)
     {
         if (retosList?.retos == null || retosList.retos.Count == 0) return;
@@ -200,7 +204,6 @@ public class RetoLoader : MonoBehaviour
 
     private void Shuffle(List<Reto> list)
     {
-        // Mantengo tu shuffle con UnityEngine.Random (independiente del SysRandom)
         for (int i = 0; i < list.Count; i++)
         {
             int j = Random.Range(i, list.Count);

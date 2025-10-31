@@ -52,4 +52,10 @@ public class HighScoreTable : MonoBehaviour
             }
         }
     }
+
+    private void OnEnable()
+    {
+        RefreshTable();
+    }
+
 }
