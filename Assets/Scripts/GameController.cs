@@ -486,7 +486,6 @@ public class GameController : MonoBehaviour
                 }
                 break;
         }
-
         if (statsRankingPanel) statsRankingPanel.SetActive(false);
         if (gameOverPanel) gameOverPanel.SetActive(false);
 
