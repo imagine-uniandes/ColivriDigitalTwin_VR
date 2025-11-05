@@ -106,6 +106,7 @@ public class GameController : MonoBehaviour
         if (PlayerPrefs.GetInt("PendingAutostart", 0) == 1)
         {
             PlayerPrefs.SetInt("PendingAutostart", 0);
+            PlayerPrefs.Save();
             StartGameFromRegistration();
         }
 
@@ -220,8 +221,7 @@ public class GameController : MonoBehaviour
         if (retoLoader == null) retoLoader = FindObjectOfType<RetoLoader>();
         if (retoLoader != null)
         {
-            // 👇 Si la firma de ConfigureModeByDifficulty no es Difficulty, castea:
-            // retoLoader.ConfigureModeByDifficulty((int)difficulty);
+            
             retoLoader.ConfigureModeByDifficulty(difficulty);
             retoLoader.PrepareForNewSession();
         }
@@ -331,8 +331,7 @@ public class GameController : MonoBehaviour
         if (retoLoader == null) retoLoader = FindObjectOfType<RetoLoader>();
         if (retoLoader != null)
         {
-            // 👇 Castea si tu firma no es Difficulty:
-            // retoLoader.ConfigureModeByDifficulty((int)difficulty);
+            
             retoLoader.ConfigureModeByDifficulty(difficulty);
             retoLoader.PrepareForNewSession();
         }
@@ -381,41 +380,41 @@ public class GameController : MonoBehaviour
             Debug.Log($"[Stats] Tiempo mostrado: {elapsedTime:F2} -> {TimerDef.FormatMMSS(elapsedTime)}");
         }
 
-        Quaternion originalCamRotation = Quaternion.identity;
-        if (Camera.main != null)
-        {
-            originalCamRotation = Camera.main.transform.rotation;
-            if (highScoreFocusPoint != null)
-            {
-                Vector3 dir = (highScoreFocusPoint.position - Camera.main.transform.position).normalized;
-                Camera.main.transform.rotation = Quaternion.LookRotation(dir);
-            }
-        }
-
         yield return new WaitForSeconds(rankingDisplayDuration);
 
-        if (cameraBlink != null) yield return cameraBlink.DoFadeIn();
+        if (cameraBlink != null)
+            yield return cameraBlink.DoFadeIn();
 
         var player = GameObject.FindWithTag("Player");
-        if (player != null) player.transform.position = playerStartPos;
-        if (Camera.main != null) Camera.main.transform.rotation = originalCamRotation;
 
-        if (statsRankingPanel) statsRankingPanel.SetActive(false);
+
+        if (statsRankingPanel)
+            statsRankingPanel.SetActive(false);
 
         if (retoLoader != null && difficulty == Difficulty.Competitive)
         {
             bool avanzado = retoLoader.LoadNextReto();
             retoLoader.UpdatePistasUI();
-            if (!avanzado) { retoLoader.ResetSequence(shuffle: false); retoLoader.UpdatePistasUI(); }
+            if (!avanzado)
+            {
+                retoLoader.ResetSequence(shuffle: false);
+                retoLoader.UpdatePistasUI();
+            }
         }
 
-        if (cameraBlink != null) yield return cameraBlink.DoFadeOut();
+        if (cameraBlink != null)
+            yield return cameraBlink.DoFadeOut();
         var currentName = PlayerDataManager.Instance.CurrentPlayerName ?? "";
         PlayerPrefs.SetString("PlayerName", currentName);
-        PlayerPrefs.SetInt("PendingAutostart", 0);   
+        PlayerPrefs.SetInt("PendingAutostart", 0);
+        //PlayerPrefs.Save();
+
+        PlayerPrefs.SetInt("ShowRankingOnReturn", 1);
         PlayerPrefs.Save();
+
         SceneLoader.LoadRegistration();
     }
+
 
     public void TriggerGameOver()
     {
