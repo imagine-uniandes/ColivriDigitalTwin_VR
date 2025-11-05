@@ -184,7 +184,7 @@ public class TutorialController : MonoBehaviour
 
     [SerializeField] private Animator portalAnimator;
 
-    [SerializeField] private string sceneToLoad = "RegistrationScene";
+    [SerializeField] private string sceneToLoad = "MainModel";
 
     [SerializeField] private Collider portalTrigger;
 
@@ -203,8 +203,6 @@ public class TutorialController : MonoBehaviour
 
 
     [Header("Teleport Settings")]
-
-    [Tooltip("Arrastra aquí el hijo 'Locomotion' dentro de OVRCameraRigInteraction. No desactives el rig completo.")]
 
     [SerializeField] private GameObject locomotionRoot;
 
