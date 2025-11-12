@@ -61,22 +61,64 @@
 
 ## Características importantes para desarrolladores
 
-A continuación se describen brevemente la responsabilidad principal de cada script encontrado en el proyecto. Esto ayuda a los desarrolladores a identificar rápidamente el propósito y función de cada componente clave.
+## I. Módulo Core del Juego (Lógica y Control)
 
-- **Assets/Scripts/CodeManager.cs**  
-  *Responsabilidad:* Gestiona el flujo de la partida (reto), incluyendo el control de la entrada del jugador, validación de respuestas, manejo de feedback visual, y el tiempo transcurrido en cada reto.
+Esta sección contiene la inteligencia central del juego: la gestión del puzle, el tiempo, la dificultad y la persistencia.
 
 - **Assets/Scripts/RetoLoader.cs**  
-  *Responsabilidad:* Administra la carga y gestión de los retos disponibles. Selecciona el reto actual según el modo de dificultad (fácil, normal, competitivo), actualiza la interfaz de pistas y permite avanzar entre retos en modo secuencial.
+  *Responsabilidad:* Gestor de contenido que carga los desafíos desde *Resources/Retos.json*. Determina el reto actual basándose en el nivel de dificultad (Easy, Normal, Competitive) definido en `Difficulty.cs`. Implementa modos de carga como secuencial, aleatorio o primer reto fijo. Además, parsea y expone los dígitos de las pistas (`TripleDigits`) y actualiza la UI de las mismas.
 
-- **Assets/Scripts/GameController.cs**  
-  *Responsabilidad:* Controla el ciclo principal del juego: inicia la partida, gestiona la transición entre paneles, configura la dificultad y coordina la interacción entre los distintos managers (por ejemplo, registro de jugador, retos, estadísticas).
+- **Assets/Scripts/Reto.cs**  
+  *Responsabilidad:* Modelo de datos serializable que define la estructura de cada reto (`idReto`, `pista1..pista5`, `respuesta`).
 
-- **Assets/Scripts/PlayerRegistration.cs**  
-  *Responsabilidad:* Maneja el registro de jugadores, verifica la entrada del nombre y la selección de dificultad, y coordina el inicio de la partida desde la interfaz de usuario.
+- **Assets/Scripts/CodeManager.cs**  
+  *Responsabilidad:* Controlador principal del reto. Gestiona la entrada de 3 dígitos del jugador, valida la respuesta frente al reto activo (`RetoLoader`) y genera el feedback correspondiente (correcto, cercano o clave). Emite el evento `OnCodeSuccessEvent` al completarse el código e integra el tiempo medido por el temporizador.
+
+- **Assets/Scripts/TimerDef.cs**  
+  *Responsabilidad:* Temporizador reutilizable con modos *CountUp* y *CountDown*. Permite iniciar, detener y resetear el tiempo, formateándolo en `MM:SS` mediante `FormatMMSS()`. Dispara un evento `OnTimerFinished` y usa señales visuales (colores) para indicar urgencia.
 
 - **Assets/Scripts/PlayerDataManager.cs**  
-  *Responsabilidad:* Administra los datos persistentes de los jugadores, incluyendo la creación, selección y registro de estadísticas para cada sesión de juego.
+  *Responsabilidad:* Singleton de persistencia encargado de crear y seleccionar jugadores (`CreateOrSelectPlayer`), registrar estadísticas (`UpdateCurrentSessionStats`) y serializar/deserializar los datos (`PlayerDataList`) a JSON con `PlayerPrefs` como almacenamiento local.
+
+- **Assets/Scripts/HighScoreTable.cs**  
+  *Responsabilidad:* Controla la visualización del ranking. Recupera la lista ordenada de jugadores (`GetRanking`) desde `PlayerDataManager`, instancia las filas de la plantilla (`rowTemplate`) y aplica formato de tiempo con `TimerDef.FormatMMSS()`.
+
+
+## II. Módulo de Flujo y Navegación
+
+Esta sección gestiona las transiciones entre estados y escenas.
+
+- **Assets/Scripts/GameController.cs**  
+  *Responsabilidad:* Orquestador global del flujo del juego (Singleton). Controla la sesión (inicio, fin, pausa), enlaza eventos entre `TimerDef`, `CodeManager` y `PlayerDataManager`, y regula la lógica general de la partida.
+
+- **Assets/Scripts/PlayerRegistration.cs**  
+  *Responsabilidad:* Controla la interfaz de registro y selección de jugador. Valida nombre y dificultad, y almacena las preferencias iniciales en `PlayerPrefs` antes de iniciar la partida.
+
+- **Assets/Scripts/RegistrationFlow.cs**  
+  *Responsabilidad:* Controla los paneles de la escena de registro (Inicial, Registro, Instrucciones, Highscore). Decide qué mostrar al inicio según si ya existe un jugador guardado.
+
+- **Assets/Scripts/SceneLoader.cs**  
+  *Responsabilidad:* Helper estático para la gestión de escenas. Centraliza la carga por nombre (`LoadRegistration()`, `LoadMain()`), evitando redundancia en llamadas a `SceneManager`.
+
+
+## III. Módulo de Interacción Inmersiva y UI
+
+Estos componentes controlan el movimiento del jugador, el feedback contextual y las transiciones visuales.
+
+- **Assets/Scripts/TeleportHotspot.cs**  
+  *Responsabilidad:* Define un punto de destino de teletransporte. Usa detección por *trigger* con tag de jugador, activa efectos visuales/sonoros y mueve al jugador mediante `TeleportPlayer.cs` al presionar una tecla.
+
+- **Assets/Scripts/TeleportManager.cs**  
+  *Responsabilidad:* Singleton que gestiona todos los puntos de teletransporte de la escena, permitiendo activarlos o desactivarlos en conjunto como hint general.
+
+- **Assets/Scripts/CameraBlink.cs**  
+  *Responsabilidad:* Aplica efectos de transición visual mediante corrutinas (`FadeIn()`, `FadeOut()`) ajustando la alpha de una imagen UI para simular parpadeos o transiciones rápidas.
+
+- **Assets/Scripts/ProximacionImagen.cs / HintActivation.cs**  
+  *Responsabilidad:* Controlan la visibilidad de objetos o pistas (`imageObject`, `hint`) basándose en la proximidad del jugador o la activación de *triggers* de cámara (`CenterEyeAnchor`).
+
+- **Assets/Scripts/TutorialController.cs**  
+  *Responsabilidad:* Singleton que coordina el flujo del tutorial guiado. Escucha eventos de interacción (por ejemplo, `NotifyFaceProximity` del `HandTrigger`) y guía al jugador paso a paso en las etapas del aprendizaje inicial.
 ---
 
 ## Tecnologías utilizadas
