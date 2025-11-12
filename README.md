@@ -106,16 +106,13 @@ Esta sección gestiona las transiciones entre estados y escenas.
 
 Estos componentes controlan el movimiento del jugador, el feedback contextual y las transiciones visuales.
 
-- **Assets/Scripts/TeleportHotspot.cs**  
-  *Responsabilidad:* Define un punto de destino de teletransporte. Usa detección por *trigger* con tag de jugador, activa efectos visuales/sonoros y mueve al jugador mediante `TeleportPlayer.cs` al presionar una tecla.
-
 - **Assets/Scripts/TeleportManager.cs**  
   *Responsabilidad:* Singleton que gestiona todos los puntos de teletransporte de la escena, permitiendo activarlos o desactivarlos en conjunto como hint general.
 
 - **Assets/Scripts/CameraBlink.cs**  
   *Responsabilidad:* Aplica efectos de transición visual mediante corrutinas (`FadeIn()`, `FadeOut()`) ajustando la alpha de una imagen UI para simular parpadeos o transiciones rápidas.
 
-- **Assets/Scripts/ProximacionImagen.cs / HintActivation.cs**  
+- **Assets/Scripts/HintActivation.cs**  
   *Responsabilidad:* Controlan la visibilidad de objetos o pistas (`imageObject`, `hint`) basándose en la proximidad del jugador o la activación de *triggers* de cámara (`CenterEyeAnchor`).
 
 - **Assets/Scripts/TutorialController.cs**  
