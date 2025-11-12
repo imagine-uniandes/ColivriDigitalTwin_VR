@@ -26,6 +26,7 @@
 - [Características importantes para desarrolladores](#características-importantes-para-desarrolladores)
 - [Tecnologías utilizadas](#tecnologías-utilizadas)
 - [Arquitectura y estructura](#arquitectura-y-estructura)
+- [Módulo de Optimización](#módulo-de-optimización)
 - [Requisitos](#requisitos)
 - [Debug con Quest Link](#debug-con-quest-link)
 - [Guía de instalación y ejecución](#guía-de-instalación-y-ejecución)
@@ -143,6 +144,45 @@ Estos componentes controlan el movimiento del jugador, el feedback contextual y 
   <img width="500" height="600" alt="image" src="https://github.com/user-attachments/assets/64f2fbb6-1795-49d1-a2bd-163964bf95b5" />
 </p>
 
+
+---
+
+## Módulo de Optimización
+
+Este módulo agrupa las estrategias aplicadas para reducir el uso excesivo de GPU y mejorar la fluidez general del demo en Meta Quest y PC, manteniendo la fidelidad visual sin comprometer el rendimiento.
+
+---
+
+### Ajustes de Sombras
+
+- **Desactivación de Cast Shadows**  
+  Se desactivó la opción **Cast Shadows** en varios objetos del gemelo digital donde las sombras proyectadas no aportaban información visual relevante (mesas, sillas,etc).  
+  Esto reduce el cálculo de iluminación en tiempo real y libera GPU.
+
+- **Desactivación de Receive Shadows en materiales**  
+  En materiales no críticos se deshabilitó **Receive Shadows**, evitando cálculos de sombreado innecesarios y mejorando el frame rate.
+
+---
+
+### Optimización de Materiales y Render
+
+- **Oclusión Culling activada**  
+  Se habilitó **Occlusion Culling** para que Unity oculte automáticamente objetos fuera del campo de visión del jugador.  
+  Esto reduce significativamente el número de polígonos renderizados por cuadro.
+
+- **Subpixel Rendering**  
+  En el objeto `CenterEyeAnchor` se habilitó la opción **Subpixel Rendering**, lo que mejora la nitidez de los bordes en VR sin requerir un supersampling costoso.
+
+---
+
+### Configuración de Calidad en Project Settings
+
+- En **Edit → Project Settings → Quality**:
+  - Se modificó el perfil **High Fidelity** desactivando **Texture Streaming**, evitando sobrecargas en memoria de video cuando se alternan texturas de alta resolución.
+- En el mismo panel se revisó la opción **Render Shadows**, ajustando su activación según la necesidad del entorno para lograr un balance entre realismo y rendimiento.
+
+> [!TIP]  
+> Para mantener la estabilidad, se recomienda aplicar un *Frame Debugger* o el *Profiler* de Unity tras cada actualización de materiales o geometrías importadas al gemelo.
 
 ---
 
