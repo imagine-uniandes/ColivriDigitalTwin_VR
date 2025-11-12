@@ -136,19 +136,12 @@ Estos componentes controlan el movimiento del jugador, el feedback contextual y 
 ---
 
 ## Arquitectura y estructura
-
-- **GameController:** Contiene los paneles de la UI, display del ranking, timer, elementos específicos de UI, objetos del juego (Teleports) y Audio source.
-- **CodeManager:** Entrada y validación de la clave
-- **TimerDef:** Cronómetro CountUp/CountDown y eventos de finalización
-- **PlayerDataManager:** Persistencia y cálculo de mejores tiempos
-- **PlayerDataRegistration:** Manejo de selección modo de juego
-- **HighScoreTable:** Renderiza Top 10 con posición, nombre y tiempo
-- **GameStatistics:** Estadísticas de la partida finalizada
-- **CameraBlink:** Fundidos de pantalla con panel UI
 <p align="center">
-  <img width="400" height="600" alt="Untitled diagram | Mermaid Chart-2025-09-05-163751" src="https://github.com/user-attachments/assets/0e764af5-d469-41f1-8854-98161697fabe" />
+<img width="500" height="600" alt="image" src="https://github.com/user-attachments/assets/161af3bf-cf06-4a81-acae-3eef17d5604a" />
 </p>
-
+<p align="center">
+  <img width="500" height="600" alt="image" src="https://github.com/user-attachments/assets/64f2fbb6-1795-49d1-a2bd-163964bf95b5" />
+</p>
 
 
 ---
