@@ -26,6 +26,7 @@
 - [Características importantes para desarrolladores](#características-importantes-para-desarrolladores)
 - [Tecnologías utilizadas](#tecnologías-utilizadas)
 - [Arquitectura y estructura](#arquitectura-y-estructura)
+- [Módulo de Optimización](#módulo-de-optimización)
 - [Requisitos](#requisitos)
 - [Debug con Quest Link](#debug-con-quest-link)
 - [Guía de instalación y ejecución](#guía-de-instalación-y-ejecución)
@@ -61,22 +62,61 @@
 
 ## Características importantes para desarrolladores
 
-A continuación se describen brevemente la responsabilidad principal de cada script encontrado en el proyecto. Esto ayuda a los desarrolladores a identificar rápidamente el propósito y función de cada componente clave.
+## I. Módulo Core del Juego (Lógica y Control)
 
-- **Assets/Scripts/CodeManager.cs**  
-  *Responsabilidad:* Gestiona el flujo de la partida (reto), incluyendo el control de la entrada del jugador, validación de respuestas, manejo de feedback visual, y el tiempo transcurrido en cada reto.
+Esta sección contiene la inteligencia central del juego: la gestión del puzle, el tiempo, la dificultad y la persistencia.
 
 - **Assets/Scripts/RetoLoader.cs**  
-  *Responsabilidad:* Administra la carga y gestión de los retos disponibles. Selecciona el reto actual según el modo de dificultad (fácil, normal, competitivo), actualiza la interfaz de pistas y permite avanzar entre retos en modo secuencial.
+  *Responsabilidad:* Gestor de contenido que carga los desafíos desde *Resources/Retos.json*. Determina el reto actual basándose en el nivel de dificultad (Easy, Normal, Competitive) definido en `Difficulty.cs`. Implementa modos de carga como secuencial, aleatorio o primer reto fijo. Además, parsea y expone los dígitos de las pistas (`TripleDigits`) y actualiza la UI de las mismas.
 
-- **Assets/Scripts/GameController.cs**  
-  *Responsabilidad:* Controla el ciclo principal del juego: inicia la partida, gestiona la transición entre paneles, configura la dificultad y coordina la interacción entre los distintos managers (por ejemplo, registro de jugador, retos, estadísticas).
+- **Assets/Scripts/Reto.cs**  
+  *Responsabilidad:* Modelo de datos serializable que define la estructura de cada reto (`idReto`, `pista1..pista5`, `respuesta`).
 
-- **Assets/Scripts/PlayerRegistration.cs**  
-  *Responsabilidad:* Maneja el registro de jugadores, verifica la entrada del nombre y la selección de dificultad, y coordina el inicio de la partida desde la interfaz de usuario.
+- **Assets/Scripts/CodeManager.cs**  
+  *Responsabilidad:* Controlador principal del reto. Gestiona la entrada de 3 dígitos del jugador, valida la respuesta frente al reto activo (`RetoLoader`) y genera el feedback correspondiente (correcto, cercano o clave). Emite el evento `OnCodeSuccessEvent` al completarse el código e integra el tiempo medido por el temporizador.
+
+- **Assets/Scripts/TimerDef.cs**  
+  *Responsabilidad:* Temporizador reutilizable con modos *CountUp* y *CountDown*. Permite iniciar, detener y resetear el tiempo, formateándolo en `MM:SS` mediante `FormatMMSS()`. Dispara un evento `OnTimerFinished` y usa señales visuales (colores) para indicar urgencia.
 
 - **Assets/Scripts/PlayerDataManager.cs**  
-  *Responsabilidad:* Administra los datos persistentes de los jugadores, incluyendo la creación, selección y registro de estadísticas para cada sesión de juego.
+  *Responsabilidad:* Singleton de persistencia encargado de crear y seleccionar jugadores (`CreateOrSelectPlayer`), registrar estadísticas (`UpdateCurrentSessionStats`) y serializar/deserializar los datos (`PlayerDataList`) a JSON con `PlayerPrefs` como almacenamiento local.
+
+- **Assets/Scripts/HighScoreTable.cs**  
+  *Responsabilidad:* Controla la visualización del ranking. Recupera la lista ordenada de jugadores (`GetRanking`) desde `PlayerDataManager`, instancia las filas de la plantilla (`rowTemplate`) y aplica formato de tiempo con `TimerDef.FormatMMSS()`.
+
+
+## II. Módulo de Flujo y Navegación
+
+Esta sección gestiona las transiciones entre estados y escenas.
+
+- **Assets/Scripts/GameController.cs**  
+  *Responsabilidad:* Orquestador global del flujo del juego (Singleton). Controla la sesión (inicio, fin, pausa), enlaza eventos entre `TimerDef`, `CodeManager` y `PlayerDataManager`, y regula la lógica general de la partida.
+
+- **Assets/Scripts/PlayerRegistration.cs**  
+  *Responsabilidad:* Controla la interfaz de registro y selección de jugador. Valida nombre y dificultad, y almacena las preferencias iniciales en `PlayerPrefs` antes de iniciar la partida.
+
+- **Assets/Scripts/RegistrationFlow.cs**  
+  *Responsabilidad:* Controla los paneles de la escena de registro (Inicial, Registro, Instrucciones, Highscore). Decide qué mostrar al inicio según si ya existe un jugador guardado.
+
+- **Assets/Scripts/SceneLoader.cs**  
+  *Responsabilidad:* Helper estático para la gestión de escenas. Centraliza la carga por nombre (`LoadRegistration()`, `LoadMain()`), evitando redundancia en llamadas a `SceneManager`.
+
+
+## III. Módulo de Interacción Inmersiva y UI
+
+Estos componentes controlan el movimiento del jugador, el feedback contextual y las transiciones visuales.
+
+- **Assets/Scripts/TeleportManager.cs**  
+  *Responsabilidad:* Singleton que gestiona todos los puntos de teletransporte de la escena, permitiendo activarlos o desactivarlos en conjunto como hint general.
+
+- **Assets/Scripts/CameraBlink.cs**  
+  *Responsabilidad:* Aplica efectos de transición visual mediante corrutinas (`FadeIn()`, `FadeOut()`) ajustando la alpha de una imagen UI para simular parpadeos o transiciones rápidas.
+
+- **Assets/Scripts/HintActivation.cs**  
+  *Responsabilidad:* Controlan la visibilidad de objetos o pistas (`imageObject`, `hint`) basándose en la proximidad del jugador o la activación de *triggers* de cámara (`CenterEyeAnchor`).
+
+- **Assets/Scripts/TutorialController.cs**  
+  *Responsabilidad:* Singleton que coordina el flujo del tutorial guiado. Escucha eventos de interacción (por ejemplo, `NotifyFaceProximity` del `HandTrigger`) y guía al jugador paso a paso en las etapas del aprendizaje inicial.
 ---
 
 ## Tecnologías utilizadas
@@ -94,20 +134,52 @@ A continuación se describen brevemente la responsabilidad principal de cada scr
 ---
 
 ## Arquitectura y estructura
-
-- **GameController:** Contiene los paneles de la UI, display del ranking, timer, elementos específicos de UI, objetos del juego (Teleports) y Audio source.
-- **CodeManager:** Entrada y validación de la clave
-- **TimerDef:** Cronómetro CountUp/CountDown y eventos de finalización
-- **PlayerDataManager:** Persistencia y cálculo de mejores tiempos
-- **PlayerDataRegistration:** Manejo de selección modo de juego
-- **HighScoreTable:** Renderiza Top 10 con posición, nombre y tiempo
-- **GameStatistics:** Estadísticas de la partida finalizada
-- **CameraBlink:** Fundidos de pantalla con panel UI
 <p align="center">
-  <img width="400" height="600" alt="Untitled diagram | Mermaid Chart-2025-09-05-163751" src="https://github.com/user-attachments/assets/0e764af5-d469-41f1-8854-98161697fabe" />
+<img width="500" height="600" alt="image" src="https://github.com/user-attachments/assets/161af3bf-cf06-4a81-acae-3eef17d5604a" />
+</p>
+<p align="center">
+  <img width="500" height="600" alt="image" src="https://github.com/user-attachments/assets/64f2fbb6-1795-49d1-a2bd-163964bf95b5" />
 </p>
 
 
+---
+
+## Módulo de Optimización
+
+Este módulo agrupa las estrategias aplicadas para reducir el uso excesivo de GPU y mejorar la fluidez general del demo en Meta Quest y PC, manteniendo la fidelidad visual sin comprometer el rendimiento.
+
+---
+
+### Ajustes de Sombras
+
+- **Desactivación de Cast Shadows**  
+  Se desactivó la opción **Cast Shadows** en varios objetos del gemelo digital donde las sombras proyectadas no aportaban información visual relevante (mesas, sillas,etc).  
+  Esto reduce el cálculo de iluminación en tiempo real y libera GPU.
+
+- **Desactivación de Receive Shadows en materiales**  
+  En materiales no críticos se deshabilitó **Receive Shadows**, evitando cálculos de sombreado innecesarios y mejorando el frame rate.
+
+---
+
+### Optimización de Materiales y Render
+
+- **Oclusión Culling activada**  
+  Se habilitó **Occlusion Culling** para que Unity oculte automáticamente objetos fuera del campo de visión del jugador.  
+  Esto reduce significativamente el número de polígonos renderizados por cuadro.
+
+- **Subpixel Rendering**  
+  En el objeto `CenterEyeAnchor` se habilitó la opción **Subpixel Rendering**, lo que mejora la nitidez de los bordes en VR sin requerir un supersampling costoso.
+
+---
+
+### Configuración de Calidad en Project Settings
+
+- En **Edit → Project Settings → Quality**:
+  - Se modificó el perfil **High Fidelity** desactivando **Texture Streaming**, evitando sobrecargas en memoria de video cuando se alternan texturas de alta resolución.
+- En el mismo panel se revisó la opción **Render Shadows**, ajustando su activación según la necesidad del entorno para lograr un balance entre realismo y rendimiento.
+
+> [!TIP]  
+> Para mantener la estabilidad, se recomienda aplicar un *Frame Debugger* o el *Profiler* de Unity tras cada actualización de materiales o geometrías importadas al gemelo.
 
 ---
 
