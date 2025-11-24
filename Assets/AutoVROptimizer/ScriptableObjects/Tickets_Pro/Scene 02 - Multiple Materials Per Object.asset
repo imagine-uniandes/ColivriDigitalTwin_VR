@@ -1,0 +1,296 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f851f310b170d46a2387d5cc9d7008, type: 3}
+  m_Name: Scene 02 - Multiple Materials Per Object
+  m_EditorClassIdentifier: 
+  data:
+    name: Avoid Having Multiple Materials on the Same Object.
+    description: "<b>\u2022 What It Does:</b> Having more than one material per mesh
+      increases draw calls.\n\n<b>\u2022 Our Modification: </b>Limiting objects to
+      one material keeps rendering fast and avoids batching issues."
+    state: 0
+    level: 1
+    tags: 16960
+    functionName: MultipleMaterials
+    noFix: 1
+    noRestore: 0
+    hide: 0
+    concernedObjects:
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3421800070660583497-6709727476190722743
+      toggle: 0
+      value: 13
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-483623797175658747-6709727476190722743
+      toggle: 0
+      value: 10
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2759337442074960512-6709727476190722743
+      toggle: 0
+      value: 6
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7199964733402636971-6709727476190722743
+      toggle: 0
+      value: 5
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8379853061689061718-6709727476190722743
+      toggle: 0
+      value: 5
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2943578609048787329-6709727476190722743
+      toggle: 0
+      value: 4
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-9121259383583207142-6709727476190722743
+      toggle: 0
+      value: 4
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6765522523671591615-6709727476190722743
+      toggle: 0
+      value: 4
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8123006284963829528-6709727476190722743
+      toggle: 0
+      value: 4
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1108816193097183021-6709727476190722743
+      toggle: 0
+      value: 3
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3729710069823198127-6709727476190722743
+      toggle: 0
+      value: 3
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4396256226384754240-6709727476190722743
+      toggle: 0
+      value: 3
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-16008280122074393-6709727476190722743
+      toggle: 0
+      value: 3
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-768155816558918955-6709727476190722743
+      toggle: 0
+      value: 3
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-12401943436346641-6709727476190722743
+      toggle: 0
+      value: 3
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3850442427607166479-6709727476190722743
+      toggle: 0
+      value: 3
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7514986324111371827-6709727476190722743
+      toggle: 0
+      value: 3
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-897643629598807117-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4701801852656349366-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5565699414218840712-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5160674815889327659-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2178934153564677865-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4361299541289769920-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1856718710946632426-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8729283840184797143-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7701874194800039082-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5475677146201949814-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5275459053450369570-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-984137721595957960-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3844940370427125127-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7584796252732813967-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7435178506255228526-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7312784721428500126-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1508752217136694552-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4088866158847438466-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3843467448921217198-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3304098397691744018-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6567323771153073921-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8254361184373819658-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2235901974967640973-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2479972542989141983-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4091164692093156524-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6650492341122375927-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2178165825058330732-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-796012089824233089-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-561542067123044831-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5554674847695499030-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4756710918015776586-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1337126366656124747-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-9003060226050579429-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7133344846169366458-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5635013806676731797-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1482513608306496283-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1928662894635351971-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6521826942320113340-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6913801501201984756-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6142119821154395036-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6962475563341888524-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6071853416412155063-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-783104882137625118-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8788485535560130538-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4035691673736887786-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1931211993996972593-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5365637790543794752-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4291194229964666995-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7893808425202695861-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7347966683723654276-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4539957225368253723-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5218872882641375246-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1867721038816747556-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8185824650422426672-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6279801265571684323-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2948878466881874205-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5788682092695546692-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2913154738522939402-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3949648238928694965-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4179897068010056432-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3964005877045413903-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-31026812230847043-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2569000519910352626-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4904560225839955121-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3913241075839898135-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2853724604185314677-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-138077516623428639-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7065063474541527699-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4648313656758154695-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2031837483368247544-6709727476190722743
+      toggle: 0
+      value: 2
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3066424181600735166-6709727476190722743
+      toggle: 0
+      value: 2
+    ticketValue: 0
+    savedInFixAll: 0
+    lastValues: []
+    lastObjects: []
+  IsBigTicket: 0

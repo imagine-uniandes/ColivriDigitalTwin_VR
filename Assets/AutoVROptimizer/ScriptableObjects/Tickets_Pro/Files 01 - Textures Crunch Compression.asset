@@ -1,0 +1,404 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f851f310b170d46a2387d5cc9d7008, type: 3}
+  m_Name: Files 01 - Textures Crunch Compression
+  m_EditorClassIdentifier: 
+  data:
+    name: Use Texture Crunch Compression
+    description: "<b>\u2022 What It Does:</b> Uses advanced compression to reduce
+      texture file size and memory usage with minimal quality loss. \n\n<b>\u2022
+      Our Modification: </b>Enabling Crunch Compression reduces load times and overall
+      memory footprint, which is crucial for mobile VR.\n\nNote that crunch compression
+      can produce some slight artefacts, while some textures, such as UI or fonts,
+      need to remain precise. For this reason, we ignore Sprites (2D and UI) and
+      Normal maps in the search."
+    state: 0
+    level: 1
+    tags: 16672
+    functionName: TextureCrunchCompression
+    noFix: 0
+    noRestore: 0
+    hide: 0
+    concernedObjects:
+    - guid: Assets/Materials/BaseMaterials/Seamless-Wood-Texture-3.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/TutorialInfo/Icons/URP.png
+      toggle: 0
+      value: -1
+    ticketValue: 0
+    savedInFixAll: 0
+    lastValues:
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    lastObjects:
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Chair1.fbm/Cadeira.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Chair1.fbm/Metal012_1K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Chair1.fbm/Metal041A_1K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Chair1.fbm/Metal041A_1K_Metalness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Chair1.fbm/Metal041A_1K_Roughness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Chair1.fbm/Plastic006_1K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Cadeira 1.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Cadeira 2.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Cadeira.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Metal012_1K_Color 1.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Metal012_1K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Metal012_1K_Color.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Metal041A_1K_Color
+      1.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Metal041A_1K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Metal041A_1K_Color.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Metal041A_1K_Metalness
+      1.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Metal041A_1K_Metalness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Metal041A_1K_Metalness.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Metal041A_1K_Roughness
+      1.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Metal041A_1K_Roughness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Metal041A_1K_Roughness.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Plastic006_1K_Color
+      1.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Plastic006_1K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Textures/Plastic006_1K_Color.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Chair2.fbm/Fabric042_1K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Chair2.fbm/Fabric042_1K_Roughness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Chair2.fbm/Leather026_1K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Chair2.fbm/Leather026_1K_Roughness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Chair2.fbm/Metal046B_1K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Chair2.fbm/Metal046B_1K_Metalness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Chair2.fbm/Plastic006_1K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Textures/Fabric042_1K_Color.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Textures/Fabric042_1K_Roughness.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Textures/Leather026_1K_Color.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Textures/Leather026_1K_Roughness.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Textures/Metal046B_1K_Color.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Textures/Metal046B_1K_Metalness.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Textures/Plastic006_1K_Color.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Chair3.fbm/Fabric023_1K_BlackColor.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Chair3.fbm/Fabric023_1K_Roughness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Chair3.fbm/Leather027_2K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Chair3.fbm/Leather027_2K_Roughness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Chair3.fbm/Metal041A_1K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Chair3.fbm/Metal041A_1K_Metalness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Chair3.fbm/Metal041A_1K_Roughness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Fabric023_1K_BlackColor.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Fabric023_1K_BlackColor.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Fabric023_1K_Roughness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Fabric023_1K_Roughness.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Leather027_2K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Leather027_2K_Color.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Leather027_2K_Roughness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Leather027_2K_Roughness.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Metal041A_1K_Color.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Metal041A_1K_Color.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Metal041A_1K_Metalness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Metal041A_1K_Metalness.png
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Metal041A_1K_Roughness.jpg
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Textures/Metal041A_1K_Roughness.png
+    - Assets/3d Objects/Office Chair Pack 1.0/PreviewImages/1.png
+    - Assets/3d Objects/Office Chair Pack 1.0/PreviewImages/2.png
+    - Assets/3d Objects/Office Chair Pack 1.0/PreviewImages/3.png
+    - Assets/3d Objects/Office Chair Pack 1.0/PreviewImages/4.png
+    - Assets/Materials/afuera.jpeg
+    - Assets/Materials/BaseMaterials/FotoPisoS1.jpeg
+    - Assets/Materials/Poliigon_WoodVeneerOak_7760/4K/Poliigon_WoodVeneerOak_7760_BaseColor.jpg
+    - Assets/Materials/Poliigon_WoodVeneerOak_7760/4K/Poliigon_WoodVeneerOak_7760_Displacement.tiff
+    - Assets/Materials/Poliigon_WoodVeneerOak_7760/4K/Poliigon_WoodVeneerOak_7760_Metallic.jpg
+    - Assets/Materials/Poliigon_WoodVeneerOak_7760/4K/Poliigon_WoodVeneerOak_7760_Normal.png
+    - Assets/Materials/Poliigon_WoodVeneerOak_7760/4K/Poliigon_WoodVeneerOak_7760_Roughness.jpg
+    - Assets/Materials/Poliigon_WoodVeneerOak_7760/4K/Textura Def Madera.jpg
+    - Assets/Materials/Poliigon_WoodVeneerOak_7760/Poliigon_WoodVeneerOak_7760_Preview1.png
+    - Assets/Materials/TEXPISO5.png
+    - Assets/Models/ElementsLab/LedScreenShaderMain/LEDScreenShader-main/Assets/LEDScreenShader/Textures/SampleImage.png
+    - Assets/Models/ElementsLab/LedScreenShaderMain/LEDScreenShader-main/Assets/LEDScreenShader/Textures/SimpleLED/LED_pixels_01.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/artic_ice.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/city.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/cyberspace.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/desert.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/desert_sunset.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/forest.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/forest_night.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/forest_sunset.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/hills_art.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/hills_art_sunset.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/mountains.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/mountains_art.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/mountains_art_sunset.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/mushrooms.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/mushrooms_night.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/mushrooms_sunset.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/snow_village_night.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/space.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/storm.png
+    - Assets/Resources/Surreal-Skyboxes/Textures/underwater.png
+    - Assets/Scenes/MainModel/TutorialScene/ReflectionProbe-0.exr
+    - Assets/TextMesh Pro/Examples & Extras/Sprites/Default Sprites.png
+    - Assets/TextMesh Pro/Examples & Extras/Sprites/DropCap Numbers.psd
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Brushed Metal 3.jpg
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Floor Cement.jpg
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Floor Tiles 1 - diffuse.jpg
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Fruit Jelly (B&W).jpg
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Diagonal (Color).jpg
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Horizontal (Color).jpg
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Vertical (Color).jpg
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Mask Zig-n-Zag.psd
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Small Crate_diffuse.jpg
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Sunny Days - Seamless.jpg
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text
+      Image 1.png
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text
+      UI Screenshot.png
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Circle.psd
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Diagonal.psd
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Radial Double.psd
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Radial Quad.psd
+    - Assets/TextMesh Pro/Sprites/EmojiOne.png
+    - Assets/Textures/AnounceTextures/CautionTape.jpeg
+    - Assets/Textures/AnounceTextures/logo-uniandes.png
+    - Assets/Textures/AnounceTextures/TableroControlAlumbrado.png
+    - Assets/Textures/BasicTextures/afuera.jpeg
+    - Assets/Textures/BasicTextures/CastIronA.png
+    - Assets/Textures/BasicTextures/CastIronH.png
+    - Assets/Textures/BasicTextures/CastIronM.png
+    - Assets/Textures/BasicTextures/concrete_floor_02_diff_4k.jpg
+    - Assets/Textures/BasicTextures/FotoAfuera.jpeg
+    - Assets/Textures/BasicTextures/MeshBlackA.png
+    - Assets/Textures/BasicTextures/MeshBlackN.png
+    - Assets/Textures/BasicTextures/panoramica 1.jpg
+    - Assets/Textures/BasicTextures/Plastic01A.png
+    - Assets/Textures/BasicTextures/PlasticH.png
+    - Assets/Textures/BasicTextures/T30Diffuse.tga
+    - Assets/Textures/BasicTextures/T30Specular.tga
+    - Assets/Textures/ChairTextures/ChairDefaultH.png
+    - Assets/Textures/ChairTextures/ChairDefaultM.png
+    - Assets/Textures/ChairTextures/ChairDefaultRoughness.png
+    - Assets/Textures/ComputerTextures/apple_leopard_desktop_test 1.jpg
+    - Assets/Textures/ComputerTextures/cropped-Colibri.png
+    - Assets/Textures/ComputerTextures/ImagineLogo.png
+    - Assets/Textures/ComputerTextures/KeyboardA.png
+    - Assets/Textures/ComputerTextures/KeyboardN.png
+    - Assets/Textures/ComputerTextures/material_33.jpeg
+    - Assets/Textures/ComputerTextures/pantallaNegro.jpg
+    - Assets/Textures/ComputerTextures/server_Metalness.png
+    - Assets/Textures/ComputerTextures/server_Normal.png
+    - Assets/Textures/ComputerTextures/server_Roughness.png
+    - Assets/Textures/ComputerTextures/TecladoApple.jpg
+    - Assets/Textures/FloorTextures/Tile 2_Albedo.jpg
+    - Assets/Textures/FloorTextures/Tile 2_Height.jpg
+    - Assets/Textures/FloorTextures/Tile 2_Metallic.jpg
+    - Assets/Textures/FloorTextures/Tile 2_Occlusion.jpg
+    - Assets/Textures/MetalTextures/Metal_Corrugated_Shiny.jpeg
+    - Assets/Textures/ModifiedTextures/Texturas.png
+    - Assets/Textures/ModifiedTextures/textured_0_ZjTTJxwY.jpg
+    - Assets/Textures/ModifiedTextures/textured_2_a2Eb4jTt.jpg
+    - Assets/Textures/ModifiedTextures/textured_2_ZjTTJxwY.jpg
+    - Assets/Textures/ModifiedTextures/textured_3_ZjTTJxwY.jpg
+    - Assets/Textures/texturesPiso/granite_tile_diff_4k.jpg
+    - Assets/Textures/TutorialFloor/TCom_Scifi_Panel_2K_albedo.tif
+    - Assets/Textures/TutorialFloor/TCom_Scifi_Panel_2K_height.tif
+    - Assets/Textures/TutorialFloor/TCom_Scifi_Panel_2K_metallic.tif
+    - Assets/TutorialInfo/Icons/URP.png
+    - Assets/UI/cfrente.jpg
+    - Assets/UI/panoramica.jpg
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_11_Diffuse.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_11_Specular.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_13_Diffuse.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_13_Specular.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_18_Diffuse.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_18_Specular.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_21_Diffuse.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_21_Specular.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_24_Diffuse.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_24_Specular.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_27_Diffuse.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_27_Specular.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_35_Diffuse.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_35_Specular.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_47_Diffuse.tga
+    - Assets/YughuesFreeMetalMaterials/Materials/Textures/T_47_Specular.tga
+  IsBigTicket: 0

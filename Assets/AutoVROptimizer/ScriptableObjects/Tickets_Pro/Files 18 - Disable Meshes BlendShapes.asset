@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f851f310b170d46a2387d5cc9d7008, type: 3}
+  m_Name: Files 18 - Disable Meshes BlendShapes
+  m_EditorClassIdentifier: 
+  data:
+    name: Disable Meshes BlendShapes
+    description: "<b>\u2022 What It Does:</b> Controls the use of blend shapes for
+      mesh animations.\n\n<b>\u2022 Our Modification: </b>Disabling blend shapes,
+      if needed, reduces animation data, decreasing CPU load and improving performance."
+    state: 0
+    level: 1
+    tags: 18464
+    functionName: MeshesBlendShapes
+    noFix: 0
+    noRestore: 0
+    hide: 0
+    concernedObjects:
+    - guid: Assets/Models/Furniture/stul.fbx
+      toggle: 0
+      value: -1
+    ticketValue: 0
+    savedInFixAll: 0
+    lastValues:
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    - True
+    lastObjects:
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair1/Chair1.fbx
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair2/Chair2.fbx
+    - Assets/3d Objects/Office Chair Pack 1.0/Chair3/Chair3.fbx
+    - Assets/Animations/Pepper/Gangnam Style.fbx
+    - Assets/Models/ColivriLaboratoryBase.obj
+    - Assets/Models/ElementsLab/basement.fbx
+    - Assets/Models/ElementsLab/Bin.fbx
+    - Assets/Models/ElementsLab/devotid/Folding Table and Chair/Model/Folding Table
+      and Chair FBX.FBX
+    - Assets/Models/ElementsLab/fire_extinguisher_co2.fbx
+    - Assets/Models/ElementsLab/ImageToStl.com_buscket.fbx
+    - Assets/Models/ElementsLab/Lab inicial v10.obj
+    - Assets/Models/ElementsLab/Lockers/Low-Poly 3D Lockers/Mesh/M.C.C.obj
+    - Assets/Models/ElementsLab/Open_Small_Box.fbx
+    - Assets/Models/ElementsLab/uploads_files_4557872_CONVEYOR+OBJ.obj
+    - Assets/Models/Furniture/AptFurniture01.fbx
+    - Assets/Models/Furniture/AptProps01.fbx
+    - Assets/Models/Furniture/ArchitectureExample.fbx
+    - Assets/Models/Furniture/Chair.fbx
+    - Assets/Models/Furniture/ChairLowLevel.FBX
+    - Assets/Models/Furniture/ChairMidLevel.FBX
+    - Assets/Models/Furniture/Desk.fbx
+    - Assets/Models/Furniture/escaleraOptimizada.fbx
+    - Assets/Models/Furniture/heistWhiteboard.fbx
+    - Assets/Models/Furniture/pillars.fbx
+    - Assets/Models/Furniture/temp_export.dae
+    - Assets/Models/Furniture/uploads_files_2773334_door.fbx
+    - Assets/Models/Furniture/Wardrobe_Low_L_01.fbx
+    - Assets/Models/Glass Door.fbx
+    - Assets/Models/Headsets/DoorP1.fbx
+    - Assets/Models/Headsets/Dron.fbx
+    - Assets/Models/Headsets/Hololus.fbx
+    - Assets/Models/Headsets/HTCGlasses.fbx
+    - Assets/Models/Headsets/ModelCazaTie.fbx
+    - Assets/Models/Headsets/Oculus.obj
+    - Assets/Models/OficinaS1/20888_Plug_Socket_v2.obj
+    - Assets/Models/OficinaS1/OficinaVivian/BoardOfficeP1.obj
+    - Assets/Models/OficinaS1/OficinaVivian/MI SMART TV.obj
+    - Assets/Models/OficinaS1/OficinaVivian/table.obj
+    - Assets/Models/OficinaS1/OficinaVivian/WorkStation.fbx
+    - Assets/Models/Robotics/ApplePc.fbx
+    - Assets/Models/Robotics/brazoRobotico.fbx
+    - Assets/Models/Robotics/Fony.fbx
+    - Assets/Models/Robotics/montagem.obj
+    - Assets/Models/Robotics/omni_00.fbx
+    - Assets/Models/Robotics/Peppers.fbx
+    - Assets/Models/Robotics/Server.fbx
+    - Assets/Prefabs/Pepper/PepperProbNoFinal.fbx
+  IsBigTicket: 0
