@@ -1,0 +1,752 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f851f310b170d46a2387d5cc9d7008, type: 3}
+  m_Name: Scene 09 - Negative Scales
+  m_EditorClassIdentifier: 
+  data:
+    name: Some Objects have Negative Scales
+    description: "<b>\u2022 What It Does:</b> Applying a negative scale (e.g., -1)
+      to objects can break lighting calculations and frustrate GPU-based culling
+      systems. It can also interfere with physics colliders.\n\n<b>\u2022 Our Modification:
+      </b>Always avoid negative scales. Instead, flip models in 3D modeling software
+      or adjust orientation using rotation. This ensures stable rendering, correct
+      lighting, and physics behavior."
+    state: 0
+    level: 1
+    tags: 16448
+    functionName: NegativeScales
+    noFix: 0
+    noRestore: 0
+    hide: 0
+    concernedObjects:
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2960527658566946442-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-9024085332420065616-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-14189257994221206150-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3331923869607287232-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-271441585886125373-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5431012725048674235-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-11232484110590502857-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6941468664699041002-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2717512871415736844-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-18127613400128811738-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-13486958733407712257-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6364322488448181589-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8503684967429616812-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7120435933261446473-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-10667315564477850223-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2633868103521078721-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1225559487039878286-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2362079141474524791-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-16617633868406848235-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7276147874706277604-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4334690198522705241-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4751056355806225996-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-12939095925887400376-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7042835365945297458-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3885929900075832660-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8423086256553336624-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2271840341691781853-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-13089181127432950289-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-14540319886594120751-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1696547273431210225-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5255518587089662192-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2126843189654354890-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7922969050797063359-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4577048280559598854-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3513800445621060177-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-11225008545576435030-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3791406709711613580-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5176901643813001088-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-18000821103158313096-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8644833280064685177-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2728759419754803963-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2466782443025368610-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-18333958873908626603-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2205104265940364000-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-17996299474508322387-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2142843649182370068-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-17007146139931789038-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-512158014550368898-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4190180726569580115-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-301219349527397174-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4047934139715462717-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-916704202616459224-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2670505113204283315-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-16568773341413367939-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-9478345997309705141-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-18098956457503683611-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6207625467482700154-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-14699019015353486861-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6589342742252448403-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8764187828521310546-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8204836550457869568-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7565314751631490075-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4909359053878759500-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4241691690256738490-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-12040586876104371626-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6958551432512344551-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8851633356537027790-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-17894270519374165024-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-16899590421681239646-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8672284759975480052-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1101221616496140434-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-17220800765246840228-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7814952700967219935-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5848138770946659677-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4869934886198620438-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5369853496683626421-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-16262905703704512489-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-18065226941733624130-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4567584659323303671-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-10097726832688701868-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-16663599798166821779-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-13126048371803596809-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5935632128516856463-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6874581584157207021-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5551896908530103980-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3736361068660908789-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4577963885297170149-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-13163446011557609194-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1884236694524450546-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-14404345266599338882-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4759063565515948981-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2834098092424737599-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8692455507209769505-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7465115634548054834-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-9191975863740735380-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-9449599651803441257-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2788992479793221999-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3107661836260502512-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6247242299655546994-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1240784993756873603-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2971324808705110297-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3654667844894037155-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4275160454934545584-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4704035643006152163-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-16113103962855622737-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2583520533885161642-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2775026088489350461-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4692222396336505908-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3382401147301369606-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3382401146913369654-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6156049334052535212-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3762662891810028880-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-17211811945434059409-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-362719592024101322-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6816799175080525022-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-16524203604162134160-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-11436796474481128317-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1639324921606650825-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4183849022127731035-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-15096735297951707873-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-13289718132395305567-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2846142315839641496-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4976515874745952294-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-16646708018546819513-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4610388282586245965-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6232458881036563823-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-12342832842593114997-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1338065400204434692-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1661460150706272599-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-15009362253228184100-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-930586276877910613-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-9605631632408461878-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1008646888181770515-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4270495624735112159-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5908974658278494635-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-979800831360282806-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-9201777689859521487-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-13184158843599692305-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-977492413568733370-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6718907252042813989-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-622697664695799631-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4990786680564941589-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6266777991531769478-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6470550685428595352-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-13710718263373502446-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8827778989625880951-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8553199811803678266-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1045121611009313031-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-15373568817879683373-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-17749060055542767785-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3397299174483127048-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3382401147928801384-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7406963145328285206-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-474122951564550675-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3737020889231088006-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-414770700985060971-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2771724845965420099-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2410182961894153519-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3786650435260489513-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2051267136917940772-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2165302148899182883-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-11017528715740138598-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-11452937929763438244-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-11949623848613197193-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8339638807573675130-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-17709585924804342588-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1281649638593929382-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-458387160202607631-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-13586691204712400124-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1830004894055718940-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6703645993849607251-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3764105617450109232-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1353942641494011454-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-11573644855548800058-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6166604965607005765-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-984241943000469237-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4445717558037946105-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7767501506865976800-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4543210529292520056-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3385657592284749110-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2225033378354500723-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4148392196989411322-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4637378643381065243-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4690398331394159083-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-985852934972209086-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5772675054705178846-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-13704405821841388104-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-15715469022263631604-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1358216520649160050-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6570694244180878061-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-18158921410959015584-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-14480294850789102645-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6839320526053588176-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6158849977277294576-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7117607080173478165-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2447543342995596637-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4104507385290778231-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-8243343074777207137-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-16501699734532252636-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-13399746013516940240-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5602240382933691329-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1443285792395353633-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2593935012618547538-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-17327033848231320366-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5607734481099564236-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5652496825452185197-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6662448887557280517-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3631008294397924562-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-12402981263357970656-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3382401147545045336-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6435267140216266847-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6211389040828215257-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-12006798234818874303-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1443104362375127144-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-15459267587677125576-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2859174281854030401-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-18130490681037344491-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-16262692917128987147-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7781126619335247998-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7301621221379519467-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-4196503591691875958-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-18079067267751595035-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2493951132942439271-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-2573914422116838128-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7212331553992802417-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-6558855092076808550-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-92880266428097780-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-5578026045172472363-0
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1865832811541101977-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-10564237496683876895-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-15483294788299832210-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-7232587804442677925-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-16646392128045095636-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-14525163308216508957-974500988
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-14998987455916482007-1367090577
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-830578318038683920-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-1335786713197322123-6709727476190722743
+      toggle: 0
+      value: -1
+    ticketValue: 0
+    savedInFixAll: 0
+    lastValues:
+    - 
+    - 
+    - (1.00, -1.00, 1.00)
+    lastObjects:
+    - 
+    - 
+    - GlobalObjectId_V1-2-cb004e92d5025f24eb03ac2fda9c5691-1495181753-0
+  IsBigTicket: 0

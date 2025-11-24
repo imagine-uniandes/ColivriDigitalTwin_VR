@@ -1,0 +1,264 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f851f310b170d46a2387d5cc9d7008, type: 3}
+  m_Name: Files 21 - Textures Power of 2
+  m_EditorClassIdentifier: 
+  data:
+    name: Some Textures Height or Width are Non Power of 2
+    description: "<b>\u2022 What It Does:</b> Ensures that texture dimensions are
+      powers of two (e.g. 256, 512, 1024), which is a GPU-friendly format that improves
+      texture streaming, mipmapping, and overall performance.\n\n<b>\u2022 Our Modification:
+      </b>We adjust non-compliant textures to the nearest power-of-two size where
+      visual quality is preserved, helping reduce runtime memory usage and improve
+      rendering efficiency on mobile VR devices."
+    state: 0
+    level: 0
+    tags: 288
+    functionName: TexturesPower
+    noFix: 1
+    noRestore: 0
+    hide: 0
+    concernedObjects:
+    - guid: Assets/Models/RobotsColivri/NaoRobot.glb
+      toggle: 0
+      value: -1
+    - guid: Assets/Models/RobotsColivri/PepperRobot.glb
+      toggle: 0
+      value: -1
+    - guid: Assets/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked
+        Text UI Screenshot.png
+      toggle: 0
+      value: -1
+    - guid: Assets/Textures/BasicTextures/panoramica 1.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/Textures/FloorTextures/texturadef.png
+      toggle: 0
+      value: -1
+    - guid: Assets/TutorialInfo/Icons/URP.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/2.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/3.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/3corregido.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/3corregidodef.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/4.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/5.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/6def.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/7.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/7defdef.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/8.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/9.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/10.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/AnuncioLab.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/buttondef.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/BuzoDisc.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/cfrente.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/cladoderecho.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/cladoizq.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/ColivriBirthday.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/derecha.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/DoorFont.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Extintoranuncio.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Fireworks 1.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/FondoPuertaIzquierda.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/ImagenInicialTeleport.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/LegoDisc.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/LogoDisc.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/ManoDef1.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/ManoDef2.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Matrix.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Matrix0.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Matrix1.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Matrix2.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Matrix3.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Matrix4.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Mesa de trabajo 3 (1).png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Mesa de trabajo 4 (1).png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Mesa de trabajo 5 (1).png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Mesa de trabajo 6 (1).png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Mesa de trabajo 7 (1).png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Mesa de trabajo 8 (1).png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Mesa de trabajo 9 (1).png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Mesa de trabajo 10 (1).png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Mesa de trabajo 11 (1).png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/NuevaPista.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Pista1.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/PISTA1SINNUM (2).png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/PISTA1SINUM.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Pista2Marker.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/PISTA2SINNUM.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Pista3Neon.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Pista4.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Pista4.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/PISTA4SINNUM.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Pista5.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Pista5.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Pista5Xr.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/puertader1.jpeg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/PuertaDerecha 1.jpeg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/PuertaDerecha.jpeg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/puertaizq1.jpeg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Rutaevacuacion.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/rutaevacuacion2.jpg
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/seneca 2-8.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Seneca.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/Seneca_singotto.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/SenecaBug.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/SenecaMarkerBoard.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/SenecaPensando.png
+      toggle: 0
+      value: -1
+    - guid: Assets/UI/SenecaPistaVacia.png
+      toggle: 0
+      value: -1
+    ticketValue: 0
+    savedInFixAll: 0
+    lastValues: []
+    lastObjects: []
+  IsBigTicket: 0

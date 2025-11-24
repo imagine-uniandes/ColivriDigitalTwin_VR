@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f851f310b170d46a2387d5cc9d7008, type: 3}
+  m_Name: Files 09 - Textures Aniso Level
+  m_EditorClassIdentifier: 
+  data:
+    name: Some Textures Have Aniso Level higher than 1
+    description: "<b>\u2022 What It Does:</b> Enhances texture clarity at steep viewing
+      angles, particularly for ground or wall surfaces.\n\n<b>\u2022 Our Modification:
+      </b>Lowering this setting reduces GPU cost, while still preserving enough clarity
+      for VR comfort."
+    state: 1
+    level: 0
+    tags: 16672
+    functionName: TexturesAnisoLevel
+    noFix: 0
+    noRestore: 0
+    hide: 0
+    concernedObjects: []
+    ticketValue: 0
+    savedInFixAll: 0
+    lastValues:
+    - 16
+    - 16
+    - 16
+    - 16
+    - 16
+    - 16
+    - 16
+    - 16
+    - 16
+    - 16
+    - 16
+    - 16
+    - 10
+    lastObjects:
+    - Assets/TextMesh Pro/Examples & Extras/Sprites/Default Sprites.png
+    - Assets/TextMesh Pro/Examples & Extras/Sprites/DropCap Numbers.psd
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Diagonal (Color).jpg
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Small Crate_diffuse.jpg
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Small Crate_normal.jpg
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Sunny Days - Seamless.jpg
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text
+      Image 1.png
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text
+      UI Screenshot.png
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Circle.psd
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Diagonal.psd
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Radial Double.psd
+    - Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Radial Quad.psd
+    - Assets/Materials/afuera.jpeg
+  IsBigTicket: 0

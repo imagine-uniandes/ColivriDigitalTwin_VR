@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f851f310b170d46a2387d5cc9d7008, type: 3}
+  m_Name: Files 02 - Audios Force To Mono
+  m_EditorClassIdentifier: 
+  data:
+    name: Set Audios to Force To Mono
+    description: "<b>\u2022 What It Does:</b> Converts stereo audio clips into mono,
+      reducing file size and the number of audio channels processed at runtime.\n\n<b>\u2022
+      Our Modification: </b>We force audio clips to mono wherever spatialization
+      or stereo panning is not required. This lowers memory use and reduces audio
+      processing overhead, which is critical on performance-limited VR devices."
+    state: 0
+    level: 1
+    tags: 1056
+    functionName: AudiosForceToMono
+    noFix: 0
+    noRestore: 0
+    hide: 0
+    concernedObjects:
+    - guid: Assets/Audio/AgarreObjeto.mp3
+      toggle: 0
+      value: -1
+    - guid: Assets/Audio/AgarreObjetoDef.mp3
+      toggle: 0
+      value: -1
+    - guid: Assets/Audio/AudioCelebrationDef.wav
+      toggle: 0
+      value: -1
+    - guid: Assets/Audio/AudioSuspenso.wav
+      toggle: 0
+      value: -1
+    - guid: Assets/Audio/AudioTeleport.mp3
+      toggle: 0
+      value: -1
+    - guid: Assets/Audio/AudioTutorial.wav
+      toggle: 0
+      value: -1
+    - guid: Assets/Audio/ElevenLabs_2025-09-21T17_12_26_Rachel_pre_sp100_s50_sb75_se0_b_m2.mp3
+      toggle: 0
+      value: -1
+    - guid: Assets/Audio/ElevenLabs_2025-09-21T17_12_54_Rachel_pre_sp100_s50_sb75_se0_b_m2.mp3
+      toggle: 0
+      value: -1
+    - guid: Assets/Audio/ElevenLabs_2025-09-21T17_13_15_Rachel_pre_sp100_s50_sb75_se0_b_m2.mp3
+      toggle: 0
+      value: -1
+    - guid: Assets/Audio/ElevenLabs_2025-09-21T17_13_45_Rachel_pre_sp100_s50_sb75_se0_b_m2.mp3
+      toggle: 0
+      value: -1
+    - guid: Assets/Audio/ElevenLabs_2025-09-21T17_13_59_Rachel_pre_sp100_s50_sb75_se0_b_m2.mp3
+      toggle: 0
+      value: -1
+    - guid: Assets/Audio/ElevenLabs_2025-09-21T17_14_17_Rachel_pre_sp100_s50_sb75_se0_b_m2.mp3
+      toggle: 0
+      value: -1
+    ticketValue: 0
+    savedInFixAll: 0
+    lastValues:
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    lastObjects:
+    - Assets/Audio/AgarreObjeto.mp3
+    - Assets/Audio/AgarreObjetoDef.mp3
+    - Assets/Audio/AudioCelebrationDef.wav
+    - Assets/Audio/AudioSuspenso.wav
+    - Assets/Audio/AudioTeleport.mp3
+    - Assets/Audio/AudioTutorial.wav
+    - Assets/Audio/ElevenLabs_2025-09-21T17_12_26_Rachel_pre_sp100_s50_sb75_se0_b_m2.mp3
+    - Assets/Audio/ElevenLabs_2025-09-21T17_12_54_Rachel_pre_sp100_s50_sb75_se0_b_m2.mp3
+    - Assets/Audio/ElevenLabs_2025-09-21T17_13_15_Rachel_pre_sp100_s50_sb75_se0_b_m2.mp3
+    - Assets/Audio/ElevenLabs_2025-09-21T17_13_45_Rachel_pre_sp100_s50_sb75_se0_b_m2.mp3
+    - Assets/Audio/ElevenLabs_2025-09-21T17_13_59_Rachel_pre_sp100_s50_sb75_se0_b_m2.mp3
+    - Assets/Audio/ElevenLabs_2025-09-21T17_14_17_Rachel_pre_sp100_s50_sb75_se0_b_m2.mp3
+  IsBigTicket: 0

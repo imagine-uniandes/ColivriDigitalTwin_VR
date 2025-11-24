@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f851f310b170d46a2387d5cc9d7008, type: 3}
+  m_Name: Scene 17 - One Main Camera
+  m_EditorClassIdentifier: 
+  data:
+    name: Avoid Having more than One Main Camera Tagged
+    description: "<b>\u2022 What It Does:</b> Ensures that the scene uses the main
+      camera tag for rendering.\n\n<b>\u2022 Our Modification: </b>Using only one
+      main camera tag simplifies the scene and improves rendering performance by
+      ensuring that only the designated camera is active."
+    state: 0
+    level: 2
+    tags: 64
+    functionName: OneMainCamera
+    noFix: 1
+    noRestore: 0
+    hide: 0
+    concernedObjects:
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3149597553578803639-6709727476190722743
+      toggle: 0
+      value: -1
+    - guid: GlobalObjectId_V1-2-a86671cb9facb0c46aa0a021640e3e0e-3149597553578803635-6709727476190722743
+      toggle: 0
+      value: -1
+    ticketValue: 0
+    savedInFixAll: 0
+    lastValues: []
+    lastObjects: []
+  IsBigTicket: 0
