@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI; 
+using UnityEngine.SceneManagement;
 
 public class RegistrationFlow : MonoBehaviour
 {
@@ -7,10 +9,17 @@ public class RegistrationFlow : MonoBehaviour
     public GameObject registrationPanel;
     public GameObject instructionsPanel;
     public GameObject highScorePanel;
-    public HighScoreTable highScoreTable; 
+    public HighScoreTable highScoreTable;
+    [Header("Configuración Tutorial")]
+    public Button tutorialButton;
+    public string tutorialSceneName = "TutorialScene";
 
     void Start()
     {
+        if (tutorialButton != null)
+        {
+            tutorialButton.onClick.AddListener(OnTutorialClicked);
+        }
         bool showRanking = PlayerPrefs.GetInt("ShowRankingOnReturn", 0) == 1;
 
         if (showRanking)
@@ -50,6 +59,10 @@ public class RegistrationFlow : MonoBehaviour
 
         if (highScoreTable) highScoreTable.RefreshTable();
 
+    }
+    public void OnTutorialClicked()
+    {
+        SceneManager.LoadScene(tutorialSceneName);
     }
 
 }
