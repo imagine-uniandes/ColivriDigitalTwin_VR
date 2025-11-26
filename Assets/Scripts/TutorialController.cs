@@ -91,7 +91,13 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private AudioClip teleportTargetClip;
 
     [Header("Aura / Feedback ")]
-    [SerializeField] private Animator auraAnimator;
+    [SerializeField, Tooltip("Animator del Aura principal (para hablar/loop)")]
+    private Animator auraAnimator;
+
+    [SerializeField, Tooltip("Animator para la animación de Cierre/Celebración (modelo secundario)")]
+    private Animator celebrationAnimator;
+
+
     private bool _isAuraTalking = false;
 
     [Header("Portal / Salida")]
@@ -172,7 +178,23 @@ public class TutorialController : MonoBehaviour
         SetTeleportActive(false);
         if (tutorialTeleportHotspot) tutorialTeleportHotspot.SetActive(false);
 
+        SetCelebrationModelActive(false);
+
         GoToStage(startStage);
+    }
+
+    private void SetCelebrationModelActive(bool active)
+    {
+        if (celebrationAnimator && celebrationAnimator.gameObject)
+        {
+            celebrationAnimator.gameObject.SetActive(active);
+        }
+
+        if (auraAnimator && auraAnimator.gameObject)
+        {
+          
+            auraAnimator.gameObject.SetActive(!active);
+        }
     }
 
     private IEnumerator HideWelcomeThenShowChecklist()
@@ -222,8 +244,9 @@ public class TutorialController : MonoBehaviour
             }
         }
 
-       
-        if (auraAnimator && current != Stage.Cierre)
+
+        
+        if (auraAnimator && current != Stage.Cierre && auraAnimator.gameObject.activeSelf)
         {
             if (voiceSource && voiceSource.isPlaying)
             {
@@ -240,12 +263,17 @@ public class TutorialController : MonoBehaviour
     {
         current = st;
 
+        if (st != Stage.Cierre)
+        {
+            SetCelebrationModelActive(false);
+        }
+
         switch (st)
         {
             case Stage.Saludo:
                 Say("¡Bienvenido al laboratorio! Aquí aprenderás a interactuar en Realidad Virtual.");
                 PlayVoice(saludoClip);
-                AuraTrigger("Salute"); 
+                AuraTrigger("Salute");
                 PlayStageEnter(st);
                 SetTeleportActive(false);
                 break;
@@ -291,7 +319,16 @@ public class TutorialController : MonoBehaviour
             case Stage.Cierre:
                 Say("¡Excelente! Dirígete a la puerta holográfica para continuar.");
                 PlayVoice(cierreClip);
-                AuraTrigger("ThumbsUp"); 
+
+                SetCelebrationModelActive(true);
+
+                if (celebrationAnimator)
+                {
+                    celebrationAnimator.speed = 1f;
+                   
+                }
+
+
                 EnablePortal(true);
                 SetToggle(4, true);
                 tutorialFinished = true;
