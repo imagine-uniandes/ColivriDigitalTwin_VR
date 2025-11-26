@@ -31,7 +31,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.18333334
+        time: 0.25
         value: 0
         inSlope: Infinity
         outSlope: Infinity
@@ -40,7 +40,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.56666666
+        time: 0.68333334
         value: 1
         inSlope: Infinity
         outSlope: Infinity
@@ -52,7 +52,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_IsActive
-    path: ImageAgarre1
+    path: Primer
     classID: 1
     script: {fileID: 0}
     flags: 16
@@ -70,7 +70,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.18333334
+        time: 0.25
         value: 1
         inSlope: Infinity
         outSlope: Infinity
@@ -79,7 +79,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.38333333
+        time: 0.46666667
         value: 0
         inSlope: Infinity
         outSlope: Infinity
@@ -88,7 +88,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.56666666
+        time: 0.68333334
         value: 1
         inSlope: Infinity
         outSlope: Infinity
@@ -100,7 +100,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_IsActive
-    path: ImageAgarre2
+    path: Segundo
     classID: 1
     script: {fileID: 0}
     flags: 16
@@ -118,7 +118,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.38333333
+        time: 0.46666667
         value: 1
         inSlope: Infinity
         outSlope: Infinity
@@ -127,7 +127,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.56666666
+        time: 0.68333334
         value: 1
         inSlope: Infinity
         outSlope: Infinity
@@ -139,7 +139,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_IsActive
-    path: ImageAgarre3
+    path: Tercero
     classID: 1
     script: {fileID: 0}
     flags: 16
@@ -152,7 +152,7 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 1606150638
+      path: 2667476467
       attribute: 2086281974
       script: {fileID: 0}
       typeID: 1
@@ -161,7 +161,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 3333601364
+      path: 1045331214
       attribute: 2086281974
       script: {fileID: 0}
       typeID: 1
@@ -170,7 +170,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 2981464258
+      path: 911608071
       attribute: 2086281974
       script: {fileID: 0}
       typeID: 1
@@ -184,7 +184,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.56666666
+    m_StopTime: 0.68333334
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -214,7 +214,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.18333334
+        time: 0.25
         value: 0
         inSlope: Infinity
         outSlope: Infinity
@@ -223,7 +223,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.56666666
+        time: 0.68333334
         value: 1
         inSlope: Infinity
         outSlope: Infinity
@@ -235,7 +235,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_IsActive
-    path: ImageAgarre1
+    path: Primer
     classID: 1
     script: {fileID: 0}
     flags: 16
@@ -253,7 +253,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.18333334
+        time: 0.25
         value: 1
         inSlope: Infinity
         outSlope: Infinity
@@ -262,7 +262,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.38333333
+        time: 0.46666667
         value: 0
         inSlope: Infinity
         outSlope: Infinity
@@ -271,7 +271,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.56666666
+        time: 0.68333334
         value: 1
         inSlope: Infinity
         outSlope: Infinity
@@ -283,7 +283,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_IsActive
-    path: ImageAgarre2
+    path: Segundo
     classID: 1
     script: {fileID: 0}
     flags: 16
@@ -301,7 +301,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.38333333
+        time: 0.46666667
         value: 1
         inSlope: Infinity
         outSlope: Infinity
@@ -310,7 +310,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.56666666
+        time: 0.68333334
         value: 1
         inSlope: Infinity
         outSlope: Infinity
@@ -322,7 +322,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_IsActive
-    path: ImageAgarre3
+    path: Tercero
     classID: 1
     script: {fileID: 0}
     flags: 16
