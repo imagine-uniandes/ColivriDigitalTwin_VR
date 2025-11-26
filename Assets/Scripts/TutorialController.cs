@@ -86,12 +86,13 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private AudioClip saludoClip, obsClip, ctrlClip, agarreClip, cierreClip;
 
     [Header("Audio Teleport Secuencia")]
-    [SerializeField] private AudioClip teleportIntroClip;  
-    [SerializeField] private AudioClip teleportClip;       
-    [SerializeField] private AudioClip teleportTargetClip;  
+    [SerializeField] private AudioClip teleportIntroClip;
+    [SerializeField] private AudioClip teleportClip;
+    [SerializeField] private AudioClip teleportTargetClip;
 
     [Header("Aura / Feedback ")]
     [SerializeField] private Animator auraAnimator;
+    private bool _isAuraTalking = false;
 
     [Header("Portal / Salida")]
     [SerializeField] private GameObject portalRoot;
@@ -107,8 +108,8 @@ public class TutorialController : MonoBehaviour
 
     [Header("Teleport Settings")]
     [SerializeField] private GameObject locomotionRoot;
-    [SerializeField] private GameObject tutorialTeleportHotspot; 
-    [SerializeField] private float hotspotArrivalRadius = 0.8f; 
+    [SerializeField] private GameObject tutorialTeleportHotspot;
+    [SerializeField] private float hotspotArrivalRadius = 0.8f;
     private bool teleportEnabled = false;
     private readonly List<Behaviour> cachedTeleportBehaviours = new List<Behaviour>();
     private bool teleportCacheBuilt = false;
@@ -200,8 +201,8 @@ public class TutorialController : MonoBehaviour
                     break;
 
                 case Stage.Teleport:
-                    UpdateTeleportLogic(); 
-                    if (CheckTeleportArrival()) 
+                    UpdateTeleportLogic();
+                    if (CheckTeleportArrival())
                     {
                         CompleteCurrentStage();
                     }
@@ -220,6 +221,19 @@ public class TutorialController : MonoBehaviour
                 TryLoadNextScene();
             }
         }
+
+       
+        if (auraAnimator && current != Stage.Cierre)
+        {
+            if (voiceSource && voiceSource.isPlaying)
+            {
+                auraAnimator.speed = 1f;
+            }
+            else
+            {
+                auraAnimator.speed = 0f;
+            }
+        }
     }
 
     private void GoToStage(Stage st)
@@ -231,7 +245,7 @@ public class TutorialController : MonoBehaviour
             case Stage.Saludo:
                 Say("¡Bienvenido al laboratorio! Aquí aprenderás a interactuar en Realidad Virtual.");
                 PlayVoice(saludoClip);
-                AuraTrigger("Salute");
+                AuraTrigger("Salute"); 
                 PlayStageEnter(st);
                 SetTeleportActive(false);
                 break;
@@ -241,7 +255,6 @@ public class TutorialController : MonoBehaviour
                 lastForwardFlat = FlatForward(head ? head.forward : Vector3.forward);
                 Say("Mira a tu alrededor para familiarizarte con el entorno.");
                 PlayVoice(obsClip);
-                AuraTrigger("Talk");
                 PlayStageEnter(st);
                 SetTeleportActive(false);
                 break;
@@ -250,7 +263,6 @@ public class TutorialController : MonoBehaviour
                 InitControllers();
                 Say("Mueve ambas manos para ver tus controladores virtuales.");
                 PlayVoice(ctrlClip);
-                AuraTrigger("Talk");
                 PlayStageEnter(st);
                 SetTeleportActive(false);
                 break;
@@ -264,8 +276,6 @@ public class TutorialController : MonoBehaviour
                 if (tutorialTeleportHotspot) tutorialTeleportHotspot.SetActive(true);
 
                 StartCoroutine(PlayTeleportSequence());
-
-                AuraTrigger("Talk");
                 PlayStageEnter(st);
                 SetTeleportActive(true);
                 break;
@@ -274,7 +284,6 @@ public class TutorialController : MonoBehaviour
                 InitGrab();
                 Say("Apunta al objeto y aprieta el gatillo para sujetarlo. Mantén presionado para sostenerlo y suelta para dejarlo.");
                 PlayVoice(agarreClip);
-                AuraTrigger("Talk");
                 PlayStageEnter(st);
                 SetTeleportActive(true);
                 break;
@@ -282,7 +291,7 @@ public class TutorialController : MonoBehaviour
             case Stage.Cierre:
                 Say("¡Excelente! Dirígete a la puerta holográfica para continuar.");
                 PlayVoice(cierreClip);
-                AuraTrigger("ThumbsUp");
+                AuraTrigger("ThumbsUp"); 
                 EnablePortal(true);
                 SetToggle(4, true);
                 tutorialFinished = true;
