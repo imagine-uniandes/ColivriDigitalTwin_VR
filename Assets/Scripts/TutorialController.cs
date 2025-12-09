@@ -18,8 +18,11 @@ public class TutorialController : MonoBehaviour
     {
         [Header("Etapa y referencias")]
         public Stage stage;
+        [Tooltip("Panel principal de instrucciones de la etapa")]
         public GameObject panel;
+        [Tooltip("Animator principal de la etapa (e.g., para la guía del panel)")]
         public Animator animator;
+
 
         [Header("Triggers opcionales")]
         public string onEnterTrigger = "Enter";
@@ -36,6 +39,8 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private List<StageAnimation> stageAnimations = new List<StageAnimation>();
     [SerializeField, Tooltip("Al iniciar la escena, apaga todos los paneles de etapas")]
     private bool startPanelsInactive = true;
+
+    private HashSet<Stage> completedStages = new HashSet<Stage>();
 
     private StageAnimation GetSA(Stage st) => stageAnimations.Find(x => x.stage == st);
 
@@ -72,8 +77,12 @@ public class TutorialController : MonoBehaviour
 
     [Header("UI Principal")]
     [SerializeField] private TMP_Text instructionText;
-    [SerializeField] private Toggle[] checklistToggles;
-    [SerializeField] private GameObject checklistRoot;
+
+    [Header("Progreso de Etapas (Animators)")]
+    [Tooltip("Lista de Animators que representan los íconos de progreso (Observación, Controladores, Teleport, Agarre) en orden.")]
+    [SerializeField] private Animator[] progressAnimators;
+    [Tooltip("Trigger a activar en el Animator de progreso cuando una etapa se completa (e.g., 'Activate' o 'Check').")]
+    [SerializeField] private string progressTrigger = "Activate";
 
     [Header("UI Extra")]
     [SerializeField] private GameObject welcomePanel;
@@ -83,26 +92,21 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioClip musicClip;
     [SerializeField] private AudioSource voiceSource;
+    [SerializeField] private AudioClip completionCheckClip;
     [SerializeField] private AudioClip saludoClip, obsClip, ctrlClip, agarreClip, cierreClip;
+
+    [Header("Audio Feedback")]
+    [SerializeField] private AudioSource feedbackSource;
 
     [Header("Audio Teleport Secuencia")]
     [SerializeField] private AudioClip teleportIntroClip;
     [SerializeField] private AudioClip teleportClip;
     [SerializeField] private AudioClip teleportTargetClip;
 
-    [Header("Aura / Feedback ")]
-    [SerializeField, Tooltip("Animator del Aura principal (para hablar/loop)")]
-    private Animator auraAnimator;
-
-    [SerializeField, Tooltip("Animator para la animación de Cierre/Celebración (modelo secundario)")]
-    private Animator celebrationAnimator;
-
-
-    private bool _isAuraTalking = false;
+  
 
     [Header("Portal / Salida")]
     [SerializeField] private GameObject portalRoot;
-    [SerializeField] private Animator portalAnimator;
     [SerializeField] private string sceneToLoad = "RegistrationScene";
     [SerializeField] private Collider portalTrigger;
 
@@ -138,11 +142,11 @@ public class TutorialController : MonoBehaviour
     private bool leftNearFace, rightNearFace;
     private Vector3 l0, r0;
 
-
     [Header("Teleport (joystick adelante)")]
     [SerializeField] private float thumbstickForwardThreshold = 0.6f;
     [SerializeField] private float holdTimeToConfirm = 0.5f;
     [SerializeField] private float teleportTransitionTime = 0.35f;
+
 
     private float thumbHoldTimer;
     private int teleportStep;
@@ -152,6 +156,7 @@ public class TutorialController : MonoBehaviour
     private Stage current;
     private bool tutorialFinished;
     private bool _advancing = false;
+    private bool initialDelayPassed = false;
 
     private void Awake()
     {
@@ -169,39 +174,28 @@ public class TutorialController : MonoBehaviour
             musicSource.loop = true;
             musicSource.Play();
         }
+
         if (startPanelsInactive) HideAllStagePanels();
+
         if (welcomePanel) welcomePanel.SetActive(true);
-        if (checklistRoot) checklistRoot.SetActive(false);
         StartCoroutine(HideWelcomeThenShowChecklist());
+
         EnablePortal(false);
 
         SetTeleportActive(false);
         if (tutorialTeleportHotspot) tutorialTeleportHotspot.SetActive(false);
 
-        SetCelebrationModelActive(false);
+
+        completedStages.Clear();
 
         GoToStage(startStage);
     }
 
-    private void SetCelebrationModelActive(bool active)
-    {
-        if (celebrationAnimator && celebrationAnimator.gameObject)
-        {
-            celebrationAnimator.gameObject.SetActive(active);
-        }
-
-        if (auraAnimator && auraAnimator.gameObject)
-        {
-          
-            auraAnimator.gameObject.SetActive(!active);
-        }
-    }
 
     private IEnumerator HideWelcomeThenShowChecklist()
     {
         yield return new WaitForSeconds(welcomeDuration);
         if (welcomePanel) welcomePanel.SetActive(false);
-        if (checklistRoot) checklistRoot.SetActive(true);
     }
 
     private void Update()
@@ -211,11 +205,11 @@ public class TutorialController : MonoBehaviour
             switch (current)
             {
                 case Stage.Saludo:
-                    if (!voiceSource || !voiceSource.isPlaying) StartCoroutine(AdvanceAfter(1.0f));
+                    if (voiceSource == null || !voiceSource.isPlaying) StartCoroutine(AdvanceAfter(1.0f));
                     break;
 
                 case Stage.Observacion:
-                    if (CheckObservation360()) CompleteCurrentStage();
+                    if (initialDelayPassed && CheckObservation360()) CompleteCurrentStage();
                     break;
 
                 case Stage.Controladores:
@@ -236,7 +230,7 @@ public class TutorialController : MonoBehaviour
             }
         }
 
-        if (portalTrigger && head && portalTrigger.enabled && AreAllTogglesOn())
+        if (portalTrigger && head && portalTrigger.enabled && AreAllRequiredStagesCompleted())
         {
             if (portalTrigger.bounds.Contains(head.position))
             {
@@ -244,36 +238,18 @@ public class TutorialController : MonoBehaviour
             }
         }
 
-
-        
-        if (auraAnimator && current != Stage.Cierre && auraAnimator.gameObject.activeSelf)
-        {
-            if (voiceSource && voiceSource.isPlaying)
-            {
-                auraAnimator.speed = 1f;
-            }
-            else
-            {
-                auraAnimator.speed = 0f;
-            }
-        }
     }
 
     private void GoToStage(Stage st)
     {
         current = st;
 
-        if (st != Stage.Cierre)
-        {
-            SetCelebrationModelActive(false);
-        }
 
         switch (st)
         {
             case Stage.Saludo:
                 Say("¡Bienvenido al laboratorio! Aquí aprenderás a interactuar en Realidad Virtual.");
                 PlayVoice(saludoClip);
-                AuraTrigger("Salute");
                 PlayStageEnter(st);
                 SetTeleportActive(false);
                 break;
@@ -320,17 +296,9 @@ public class TutorialController : MonoBehaviour
                 Say("¡Excelente! Dirígete a la puerta holográfica para continuar.");
                 PlayVoice(cierreClip);
 
-                SetCelebrationModelActive(true);
 
-                if (celebrationAnimator)
-                {
-                    celebrationAnimator.speed = 1f;
-                   
-                }
+                if (AreAllRequiredStagesCompleted()) EnablePortal(true);
 
-
-                EnablePortal(true);
-                SetToggle(4, true);
                 tutorialFinished = true;
                 PlayStageEnter(st);
                 SetTeleportActive(true);
@@ -454,6 +422,10 @@ public class TutorialController : MonoBehaviour
         _advancing = true;
         yield return new WaitForSeconds(seconds);
         _advancing = false;
+        if (current == Stage.Saludo)
+        {
+            initialDelayPassed = true;
+        }
         Advance();
     }
 
@@ -463,7 +435,7 @@ public class TutorialController : MonoBehaviour
         GoToStage(current + 1);
     }
 
-    private int GetChecklistIndexFor(Stage st)
+    private int GetProgressIndexFor(Stage st)
     {
         switch (st)
         {
@@ -475,6 +447,25 @@ public class TutorialController : MonoBehaviour
         }
     }
 
+    private void ActivateProgressAnimator(Stage st)
+    {
+        int index = GetProgressIndexFor(st);
+
+        if (index >= 0 && progressAnimators != null && index < progressAnimators.Length)
+        {
+            var anim = progressAnimators[index];
+            if (anim != null && !string.IsNullOrEmpty(progressTrigger))
+            {
+                
+                if (!anim.gameObject.activeSelf)
+                {
+                    anim.gameObject.SetActive(true);
+                }
+                anim.SetTrigger(progressTrigger);
+            }
+        }
+    }
+
     private void CompleteCurrentStage()
     {
         if (current == Stage.Teleport && tutorialTeleportHotspot)
@@ -482,19 +473,32 @@ public class TutorialController : MonoBehaviour
             tutorialTeleportHotspot.SetActive(false);
         }
 
-        int idx = GetChecklistIndexFor(current);
-        if (idx >= 0) SetToggle(idx, true);
-        if (AreAllTogglesOn()) EnablePortal(true);
+        if (!completedStages.Contains(current))
+        {
+            completedStages.Add(current);
+            if (current != Stage.Saludo && current != Stage.Cierre)
+            {
+                ActivateProgressAnimator(current);
+                if (feedbackSource && completionCheckClip)
+                {
+                    feedbackSource.PlayOneShot(completionCheckClip);
+                }
+            }
+
+        }
+
+        if (AreAllRequiredStagesCompleted()) EnablePortal(true);
+
         PlayStageComplete(current);
         Advance();
     }
 
-    private bool AreAllTogglesOn()
+    private bool AreAllRequiredStagesCompleted()
     {
-        if (checklistToggles == null || checklistToggles.Length == 0) return false;
-        for (int i = 0; i < checklistToggles.Length; i++)
-            if (checklistToggles[i] == null || !checklistToggles[i].isOn) return false;
-        return true;
+        return completedStages.Contains(Stage.Observacion) &&
+               completedStages.Contains(Stage.Controladores) &&
+               completedStages.Contains(Stage.Teleport) &&
+               completedStages.Contains(Stage.Agarre);
     }
 
     private void Say(string text) { if (instructionText) instructionText.text = text; }
@@ -507,23 +511,11 @@ public class TutorialController : MonoBehaviour
         voiceSource.Play();
     }
 
-    private void AuraTrigger(string trigger)
-    {
-        if (auraAnimator && !string.IsNullOrEmpty(trigger))
-            auraAnimator.SetTrigger(trigger);
-    }
-
-    private void SetToggle(int index, bool on)
-    {
-        if (checklistToggles == null || index < 0 || index >= checklistToggles.Length) return;
-        var t = checklistToggles[index];
-        if (t) t.isOn = on;
-    }
+   
 
     private void EnablePortal(bool on)
     {
         if (portalRoot) portalRoot.SetActive(on);
-        if (portalAnimator) portalAnimator.SetBool("Open", on);
         if (portalTrigger) portalTrigger.enabled = on;
     }
 
@@ -555,6 +547,7 @@ public class TutorialController : MonoBehaviour
         if (leftController) l0 = leftController.position;
         if (rightController) r0 = rightController.position;
     }
+
     public void NotifyFaceProximity(bool isLeft)
     {
         if (isLeft) leftNearFace = true;
@@ -565,13 +558,17 @@ public class TutorialController : MonoBehaviour
 
     private bool CheckControllersMoved()
     {
+        if (head == null || leftController == null || rightController == null) return false;
+
         if (leftController && Vector3.Distance(l0, leftController.position) >= moveDelta) leftMoved = true;
         if (rightController && Vector3.Distance(r0, rightController.position) >= moveDelta) rightMoved = true;
+
         if (!useTriggersForFace && head)
         {
             if (leftController && Vector3.Distance(leftController.position, head.position) <= faceRadius) leftNearFace = true;
             if (rightController && Vector3.Distance(rightController.position, head.position) <= faceRadius) rightNearFace = true;
         }
+
         bool leftOk = leftMoved || leftNearFace;
         bool rightOk = rightMoved || rightNearFace;
 
@@ -621,8 +618,10 @@ public class TutorialController : MonoBehaviour
 
     private void TryLoadNextScene()
     {
-        if (!AreAllTogglesOn()) return;
+        if (!AreAllRequiredStagesCompleted()) return;
         if (string.IsNullOrEmpty(sceneToLoad)) return;
+
         SceneManager.LoadScene(sceneToLoad);
     }
+
 }
