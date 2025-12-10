@@ -3776,7 +3776,7 @@ MonoBehaviour:
   normalButton: {fileID: 1328881102}
   competitiveButton: {fileID: 743913278}
   playButton: {fileID: 347317067}
-  debugMode: 0
+  debugMode: 1
   selectedDifficulty: 0
   difficultyChosen: 0
 --- !u!114 &645068881

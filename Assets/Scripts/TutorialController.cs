@@ -82,6 +82,7 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private Animator auraAnimator;
     [SerializeField] private string talkingBoolName = "talking"; 
     [SerializeField] private string clappingTriggerName = "clapping";
+    [SerializeField] private string greetingName = "greeting";
 
     [Header("Progreso de Etapas (Animators)")]
     [Tooltip("Lista de Animators que representan los íconos de progreso (Observación, Controladores, Teleport, Agarre) en orden.")]
@@ -99,9 +100,10 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private AudioSource voiceSource;
     [SerializeField] private AudioClip completionCheckClip;
     [SerializeField] private AudioClip saludoClip, obsClip, ctrlClip, agarreClip, cierreClip;
-
     [Header("Audio Feedback")]
     [SerializeField] private AudioSource feedbackSource;
+    [SerializeField] private AudioClip completionCelebrationClip;
+    [SerializeField] private AudioSource celebrationSource;
 
     [Header("Audio Teleport Secuencia")]
     [SerializeField] private AudioClip teleportIntroClip;
@@ -119,7 +121,6 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private Transform head;
     [SerializeField] private Transform leftController;
     [SerializeField] private Transform rightController;
-    [SerializeField] private float nearHighlightRadius = 1.2f;
 
     [Header("Teleport Settings")]
     [SerializeField] private GameObject locomotionRoot;
@@ -189,7 +190,6 @@ public class TutorialController : MonoBehaviour
         EnablePortal(false);
 
         SetTeleportActive(false);
-        // if (tutorialTeleportHotspot) tutorialTeleportHotspot.SetActive(false); // <--- ELIMINADO
 
 
         completedStages.Clear();
@@ -224,11 +224,7 @@ public class TutorialController : MonoBehaviour
 
                 case Stage.Teleport:
                     UpdateTeleportLogic();
-                    // if (CheckTeleportArrival()) // <--- ELIMINADO
-                    // {
-                    //     CompleteCurrentStage();
-                    // }
-                    break; // <--- LA COMPLETACIÓN SE HACE AHORA EN NotifyTeleportTargetReached()
+                    break; 
 
                 case Stage.Agarre:
                     if (CheckGrabbedOnce()) CompleteCurrentStage();
@@ -258,7 +254,8 @@ public class TutorialController : MonoBehaviour
             case Stage.Saludo:
                 Say("¡Bienvenido al laboratorio! Aquí aprenderás a interactuar en Realidad Virtual.");
                 PlayVoice(saludoClip);
-                PlayStageEnter(st);
+                var sa_saludo = GetSA(st);
+                if (sa_saludo != null && sa_saludo.panel != null) sa_saludo.panel.SetActive(false);
                 SetTeleportActive(false);
                 break;
 
@@ -284,9 +281,9 @@ public class TutorialController : MonoBehaviour
                 teleportStep = 0;
                 thumbHoldTimer = 0f;
                 hasPlayedTargetAudio = false;
-                teleportTargetReached = false; // <--- REINICIAR FLAG
+                teleportTargetReached = false;
 
-                if (teleportTargetTrigger) teleportTargetTrigger.SetActive(true); // <--- ACTIVAR NUEVO TARGET
+                if (teleportTargetTrigger) teleportTargetTrigger.SetActive(true); 
 
                 StartCoroutine(PlayTeleportSequence());
                 PlayStageEnter(st);
@@ -304,10 +301,6 @@ public class TutorialController : MonoBehaviour
             case Stage.Cierre:
                 Say("¡Excelente! Dirígete a la puerta holográfica para continuar.");
                 PlayVoice(cierreClip);
-                if (auraAnimator && !string.IsNullOrEmpty(clappingTriggerName))
-                {
-                    auraAnimator.SetTrigger(clappingTriggerName);
-                }
 
 
                 if (AreAllRequiredStagesCompleted()) EnablePortal(true);
@@ -379,7 +372,6 @@ public class TutorialController : MonoBehaviour
         }
     }
 
-    // private bool CheckTeleportArrival() { ... } // <--- ELIMINADO
 
 
     private void BuildTeleportCacheIfNeeded()
@@ -447,7 +439,6 @@ public class TutorialController : MonoBehaviour
             default: return -1;
         }
     }
-
     private void ActivateProgressAnimator(Stage st)
     {
         int index = GetProgressIndexFor(st);
@@ -488,8 +479,41 @@ public class TutorialController : MonoBehaviour
 
         }
 
-        if (AreAllRequiredStagesCompleted()) EnablePortal(true);
+        if (current == Stage.Agarre && AreAllRequiredStagesCompleted()) 
+        {
+           
+            StartCoroutine(PlayCelebrationSequence());
+        }
+        else 
+        {
+            if (AreAllRequiredStagesCompleted()) EnablePortal(true);
 
+            PlayStageComplete(current);
+            Advance();
+        }
+    }
+    private IEnumerator PlayCelebrationSequence()
+    {
+        const float celebrationDuration = 8.0f;
+        float waitTime = celebrationDuration;
+        yield return new WaitForSeconds(0.1f);
+        if (auraAnimator && !string.IsNullOrEmpty(clappingTriggerName))
+        {
+            auraAnimator.SetTrigger(clappingTriggerName);
+        }
+        if (celebrationSource && completionCelebrationClip)
+        {
+            celebrationSource.PlayOneShot(completionCelebrationClip);
+            waitTime = Mathf.Min(completionCelebrationClip.length, celebrationDuration);
+        }
+
+
+        yield return new WaitForSeconds(waitTime);
+
+        if (celebrationSource != null && celebrationSource.isPlaying)
+        {
+            celebrationSource.Stop();
+        }
         PlayStageComplete(current);
         Advance();
     }
@@ -508,7 +532,7 @@ public class TutorialController : MonoBehaviour
     {
         if (!voiceSource || !clip) return;
         voiceSource.Stop();
-        if (auraAnimator && !string.IsNullOrEmpty(talkingBoolName))
+        if (auraAnimator)
         {
             auraAnimator.SetBool(talkingBoolName, true);
         }
@@ -518,8 +542,10 @@ public class TutorialController : MonoBehaviour
     }
     private IEnumerator StopTalkingAfterClip(float clipLength)
     {
+        
         yield return new WaitForSeconds(clipLength);
-        if (auraAnimator && !string.IsNullOrEmpty(talkingBoolName))
+        print("acabó el audio");
+        if (auraAnimator)
         {
             auraAnimator.SetBool(talkingBoolName, false);
         }
@@ -623,7 +649,6 @@ public class TutorialController : MonoBehaviour
         }
         return anyGrabRegistered;
     }
-
     private IEnumerator TeleportBeamFinishAfter(float t)
     {
         yield return new WaitForSeconds(t);
@@ -637,7 +662,6 @@ public class TutorialController : MonoBehaviour
         if (sa != null && sa.animator && !string.IsNullOrEmpty(trig))
             sa.animator.SetTrigger(trig);
     }
-
     private void TryLoadNextScene()
     {
         if (!AreAllRequiredStagesCompleted()) return;

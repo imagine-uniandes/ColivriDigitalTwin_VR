@@ -69,6 +69,11 @@ public class GameController : MonoBehaviour
     [Tooltip("componentes a activar/desactivar junto con el teleport")]
     [SerializeField] private List<MonoBehaviour> teleportScriptsToToggle = new List<MonoBehaviour>();
 
+    [Header("Animación AURA")]
+    [SerializeField, Tooltip("Animator del robot AURA para activar aplausos")]
+    private Animator auraAnimator;
+    private const string CLAPPING_TRIGGER = "clapping";
+
     [Header("Animators a controlar")]
     [SerializeField] private List<Animator> animatorsToControl = new List<Animator>();
 
@@ -348,6 +353,7 @@ public class GameController : MonoBehaviour
 
     public void OnCodeSuccess(float elapsedTimeParam)
     {
+        AuraTriggerClapping();
         PlayModelAnimatorsFromStart();
         StopSuspenseBed();
         timerDef?.StopTimer();
@@ -507,6 +513,18 @@ public class GameController : MonoBehaviour
             if (!go) continue;
             var rend = go.GetComponent<Renderer>();
             if (rend != null) rend.material.color = show ? helpColor : Color.white;
+        }
+    }
+
+    private void AuraTriggerClapping()
+    {
+        if (auraAnimator != null)
+        {
+            auraAnimator.SetTrigger(CLAPPING_TRIGGER);
+        }
+        else
+        {
+            Debug.LogWarning("Aura Animator no asignado en GameController. No se puede activar Clapping.");
         }
     }
 
