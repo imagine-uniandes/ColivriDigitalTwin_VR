@@ -78,6 +78,11 @@ public class TutorialController : MonoBehaviour
     [Header("UI Principal")]
     [SerializeField] private TMP_Text instructionText;
 
+    [Header("Animación de Aura (Robot)")]
+    [SerializeField] private Animator auraAnimator;
+    [SerializeField] private string talkingBoolName = "talking"; 
+    [SerializeField] private string clappingTriggerName = "clapping";
+
     [Header("Progreso de Etapas (Animators)")]
     [Tooltip("Lista de Animators que representan los íconos de progreso (Observación, Controladores, Teleport, Agarre) en orden.")]
     [SerializeField] private Animator[] progressAnimators;
@@ -245,7 +250,6 @@ public class TutorialController : MonoBehaviour
     {
         current = st;
 
-        // <--- NUEVA LÓGICA: Desactiva el Target Trigger al cambiar de etapa
         if (teleportTargetTrigger) teleportTargetTrigger.SetActive(false);
 
 
@@ -300,6 +304,10 @@ public class TutorialController : MonoBehaviour
             case Stage.Cierre:
                 Say("¡Excelente! Dirígete a la puerta holográfica para continuar.");
                 PlayVoice(cierreClip);
+                if (auraAnimator && !string.IsNullOrEmpty(clappingTriggerName))
+                {
+                    auraAnimator.SetTrigger(clappingTriggerName);
+                }
 
 
                 if (AreAllRequiredStagesCompleted()) EnablePortal(true);
@@ -500,21 +508,31 @@ public class TutorialController : MonoBehaviour
     {
         if (!voiceSource || !clip) return;
         voiceSource.Stop();
+        if (auraAnimator && !string.IsNullOrEmpty(talkingBoolName))
+        {
+            auraAnimator.SetBool(talkingBoolName, true);
+        }
         voiceSource.clip = clip;
         voiceSource.Play();
+        StartCoroutine(StopTalkingAfterClip(clip.length));
+    }
+    private IEnumerator StopTalkingAfterClip(float clipLength)
+    {
+        yield return new WaitForSeconds(clipLength);
+        if (auraAnimator && !string.IsNullOrEmpty(talkingBoolName))
+        {
+            auraAnimator.SetBool(talkingBoolName, false);
+        }
     }
 
-    // <--- NUEVO MÉTODO PÚBLICO PARA SER LLAMADO POR EL TARGET SIN SCRIPTS ADICIONALES
     public void NotifyTeleportTargetReached()
     {
-        // Solo completar si estamos en la etapa de Teleport y no se ha completado ya
         if (current == Stage.Teleport && !teleportTargetReached)
         {
             teleportTargetReached = true;
             CompleteCurrentStage();
         }
     }
-    // <--- FIN NUEVO MÉTODO PÚBLICO
 
 
     private void EnablePortal(bool on)
