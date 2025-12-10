@@ -2687,37 +2687,16 @@ GameObject:
   - component: {fileID: 425923459}
   - component: {fileID: 425923458}
   - component: {fileID: 425923457}
-  - component: {fileID: 425923456}
+  - component: {fileID: 425923460}
+  - component: {fileID: 425923461}
+  - component: {fileID: 425923462}
   m_Layer: 0
   m_Name: TargetPasoTP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!136 &425923456
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 425923455}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5000001
-  m_Height: 118.56099
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 37.019676, z: -0.00000011920929}
+  m_IsActive: 0
 --- !u!23 &425923457
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2783,6 +2762,66 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &425923460
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425923455}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.0000001, y: 6.7982173, z: 1.0000002}
+  m_Center: {x: 0.000000059604645, y: 2.399109, z: -0.00000011920929}
+--- !u!54 &425923461
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425923455}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &425923462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425923455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c29ff523e750b99469d6338879be1752, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &429687492
 GameObject:
   m_ObjectHideFlags: 0
@@ -3863,7 +3902,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 123ccb467e06ee344ba2cfd14f9aea23, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.459
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -6841,7 +6880,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 9fcacf2f902e58646bae1c92745b934b, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.27
+  m_Volume: 0.158
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -11839,8 +11878,7 @@ MonoBehaviour:
   rightController: {fileID: 1503727367}
   nearHighlightRadius: 1.2
   locomotionRoot: {fileID: 1205883097}
-  tutorialTeleportHotspot: {fileID: 1690295956}
-  hotspotArrivalRadius: 0.8
+  teleportTargetTrigger: {fileID: 425923455}
   requiredYaw: 300
   minAngularSpeed: 5
   grabbables:
@@ -13856,12 +13894,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3181eb930f38eb7478bc2a19f785a48f, type: 3}
---- !u!1 &1690295956 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5385430629427633694, guid: 3181eb930f38eb7478bc2a19f785a48f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1690295955}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1695199561
 GameObject:
   m_ObjectHideFlags: 0

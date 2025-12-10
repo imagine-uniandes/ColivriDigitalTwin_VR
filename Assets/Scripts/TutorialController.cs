@@ -103,7 +103,7 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private AudioClip teleportClip;
     [SerializeField] private AudioClip teleportTargetClip;
 
-  
+
 
     [Header("Portal / Salida")]
     [SerializeField] private GameObject portalRoot;
@@ -118,9 +118,10 @@ public class TutorialController : MonoBehaviour
 
     [Header("Teleport Settings")]
     [SerializeField] private GameObject locomotionRoot;
-    [SerializeField] private GameObject tutorialTeleportHotspot;
-    [SerializeField] private float hotspotArrivalRadius = 0.8f;
-    private bool teleportEnabled = false;
+    [Tooltip("El objeto Target (e.g., cilindro, círculo) que se activa y completa el paso al ser tocado por el jugador (usando un Box Collider con Is Trigger).")]
+    [SerializeField] private GameObject teleportTargetTrigger;
+    private bool teleportTargetReached = false; 
+    private bool teleportEnabled = false;
     private readonly List<Behaviour> cachedTeleportBehaviours = new List<Behaviour>();
     private bool teleportCacheBuilt = false;
 
@@ -183,10 +184,10 @@ public class TutorialController : MonoBehaviour
         EnablePortal(false);
 
         SetTeleportActive(false);
-        if (tutorialTeleportHotspot) tutorialTeleportHotspot.SetActive(false);
+        // if (tutorialTeleportHotspot) tutorialTeleportHotspot.SetActive(false); // <--- ELIMINADO
 
 
-        completedStages.Clear();
+        completedStages.Clear();
 
         GoToStage(startStage);
     }
@@ -218,13 +219,13 @@ public class TutorialController : MonoBehaviour
 
                 case Stage.Teleport:
                     UpdateTeleportLogic();
-                    if (CheckTeleportArrival())
-                    {
-                        CompleteCurrentStage();
-                    }
-                    break;
+                    // if (CheckTeleportArrival()) // <--- ELIMINADO
+                    // {
+                    //     CompleteCurrentStage();
+                    // }
+                    break; // <--- LA COMPLETACIÓN SE HACE AHORA EN NotifyTeleportTargetReached()
 
-                case Stage.Agarre:
+                case Stage.Agarre:
                     if (CheckGrabbedOnce()) CompleteCurrentStage();
                     break;
             }
@@ -243,6 +244,9 @@ public class TutorialController : MonoBehaviour
     private void GoToStage(Stage st)
     {
         current = st;
+
+        // <--- NUEVA LÓGICA: Desactiva el Target Trigger al cambiar de etapa
+        if (teleportTargetTrigger) teleportTargetTrigger.SetActive(false);
 
 
         switch (st)
@@ -276,10 +280,11 @@ public class TutorialController : MonoBehaviour
                 teleportStep = 0;
                 thumbHoldTimer = 0f;
                 hasPlayedTargetAudio = false;
+                teleportTargetReached = false; // <--- REINICIAR FLAG
 
-                if (tutorialTeleportHotspot) tutorialTeleportHotspot.SetActive(true);
+                if (teleportTargetTrigger) teleportTargetTrigger.SetActive(true); // <--- ACTIVAR NUEVO TARGET
 
-                StartCoroutine(PlayTeleportSequence());
+                StartCoroutine(PlayTeleportSequence());
                 PlayStageEnter(st);
                 SetTeleportActive(true);
                 break;
@@ -329,9 +334,9 @@ public class TutorialController : MonoBehaviour
 
         Vector2 rs = Vector2.zero;
 #if UNITY_ANDROID || UNITY_STANDALONE
-        rs = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+        rs = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
 #endif
-        if (rs.y > thumbstickForwardThreshold)
+        if (rs.y > thumbstickForwardThreshold)
         {
             thumbHoldTimer += Time.deltaTime;
 
@@ -366,22 +371,10 @@ public class TutorialController : MonoBehaviour
         }
     }
 
-    private bool CheckTeleportArrival()
-    {
-        if (!tutorialTeleportHotspot || !head) return false;
-
-        Vector3 playerPos = head.position;
-        Vector3 targetPos = tutorialTeleportHotspot.transform.position;
-
-        playerPos.y = 0;
-        targetPos.y = 0;
-
-        float distance = Vector3.Distance(playerPos, targetPos);
-        return distance < hotspotArrivalRadius;
-    }
+    // private bool CheckTeleportArrival() { ... } // <--- ELIMINADO
 
 
-    private void BuildTeleportCacheIfNeeded()
+    private void BuildTeleportCacheIfNeeded()
     {
         if (teleportCacheBuilt) return;
         teleportCacheBuilt = true;
@@ -456,7 +449,7 @@ public class TutorialController : MonoBehaviour
             var anim = progressAnimators[index];
             if (anim != null && !string.IsNullOrEmpty(progressTrigger))
             {
-                
+
                 if (!anim.gameObject.activeSelf)
                 {
                     anim.gameObject.SetActive(true);
@@ -468,9 +461,9 @@ public class TutorialController : MonoBehaviour
 
     private void CompleteCurrentStage()
     {
-        if (current == Stage.Teleport && tutorialTeleportHotspot)
+        if (current == Stage.Teleport && teleportTargetTrigger)
         {
-            tutorialTeleportHotspot.SetActive(false);
+            teleportTargetTrigger.SetActive(false);
         }
 
         if (!completedStages.Contains(current))
@@ -496,9 +489,9 @@ public class TutorialController : MonoBehaviour
     private bool AreAllRequiredStagesCompleted()
     {
         return completedStages.Contains(Stage.Observacion) &&
-               completedStages.Contains(Stage.Controladores) &&
-               completedStages.Contains(Stage.Teleport) &&
-               completedStages.Contains(Stage.Agarre);
+           completedStages.Contains(Stage.Controladores) &&
+           completedStages.Contains(Stage.Teleport) &&
+           completedStages.Contains(Stage.Agarre);
     }
 
     private void Say(string text) { if (instructionText) instructionText.text = text; }
@@ -511,7 +504,18 @@ public class TutorialController : MonoBehaviour
         voiceSource.Play();
     }
 
-   
+    // <--- NUEVO MÉTODO PÚBLICO PARA SER LLAMADO POR EL TARGET SIN SCRIPTS ADICIONALES
+    public void NotifyTeleportTargetReached()
+    {
+        // Solo completar si estamos en la etapa de Teleport y no se ha completado ya
+        if (current == Stage.Teleport && !teleportTargetReached)
+        {
+            teleportTargetReached = true;
+            CompleteCurrentStage();
+        }
+    }
+    // <--- FIN NUEVO MÉTODO PÚBLICO
+
 
     private void EnablePortal(bool on)
     {
@@ -592,9 +596,9 @@ public class TutorialController : MonoBehaviour
             var dhg = go.GetComponent<DistanceHandGrabInteractable>() ?? go.GetComponentInChildren<DistanceHandGrabInteractable>(true);
 
             if ((gi && gi.State == InteractableState.Select) ||
-                (hgi && hgi.State == InteractableState.Select) ||
-                (dgi && dgi.State == InteractableState.Select) ||
-                (dhg && dhg.State == InteractableState.Select))
+              (hgi && hgi.State == InteractableState.Select) ||
+              (dgi && dgi.State == InteractableState.Select) ||
+              (dhg && dhg.State == InteractableState.Select))
             {
                 anyGrabRegistered = true; break;
             }
