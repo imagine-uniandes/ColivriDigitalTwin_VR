@@ -25,20 +25,20 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: e4b014022a99bc941b5594a6907bc2f4, type: 2}
+  m_SubtractiveShadowColor: {r: 0.4202207, g: 0.90764385, b: 0.9811321, a: 1}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 90038f618ca22c0429c5c6bd762d33f9, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
   m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
   m_DefaultReflectionMode: 0
-  m_DefaultReflectionResolution: 128
+  m_DefaultReflectionResolution: 256
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.082886875, g: 0.21840277, b: 0.39363286, a: 1}
+  m_IndirectSpecularColor: {r: 0.28697208, g: 0.12838238, b: 0.33324605, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3776,7 +3776,7 @@ MonoBehaviour:
   normalButton: {fileID: 1328881102}
   competitiveButton: {fileID: 743913278}
   playButton: {fileID: 347317067}
-  debugMode: 1
+  debugMode: 0
   selectedDifficulty: 0
   difficultyChosen: 0
 --- !u!114 &645068881

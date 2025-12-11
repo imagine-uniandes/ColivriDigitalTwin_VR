@@ -514,14 +514,35 @@ public class TutorialController : MonoBehaviour
         const float celebrationDuration = 8.0f;
         float waitTime = celebrationDuration;
         yield return new WaitForSeconds(0.1f);
+        bool musicWasPlaying = false;
+        if (musicSource != null && musicSource.isPlaying)
+        {
+            musicWasPlaying = true;
+            musicSource.Pause();
+        }
         if (auraAnimator && !string.IsNullOrEmpty(clappingTriggerName))
         {
             auraAnimator.SetTrigger(clappingTriggerName);
         }
-        if (celebrationSource && completionCelebrationClip)
+        AudioClip clipToPlay = null;
+        if (celebrationSource != null && celebrationSource.clip != null)
+            clipToPlay = celebrationSource.clip;
+        else if (completionCelebrationClip != null)
+            clipToPlay = completionCelebrationClip;
+
+        if (celebrationSource != null && clipToPlay != null)
         {
-            celebrationSource.PlayOneShot(completionCelebrationClip);
-            waitTime = Mathf.Min(completionCelebrationClip.length, celebrationDuration);
+            if (!celebrationSource.isPlaying)
+            {
+                if (celebrationSource.clip != clipToPlay) celebrationSource.clip = clipToPlay;
+                celebrationSource.Play();
+            }
+            else
+            {
+                Debug.Log("Celebration: celebrationSource ya está sonando; no lanzo otra reproducción.");
+            }
+
+            waitTime = Mathf.Min(clipToPlay.length, celebrationDuration);
         }
 
 
@@ -530,6 +551,10 @@ public class TutorialController : MonoBehaviour
         if (celebrationSource != null && celebrationSource.isPlaying)
         {
             celebrationSource.Stop();
+        }
+        if (musicWasPlaying && musicSource != null)
+        {
+            musicSource.UnPause();
         }
         PlayStageComplete(current);
         Advance();
