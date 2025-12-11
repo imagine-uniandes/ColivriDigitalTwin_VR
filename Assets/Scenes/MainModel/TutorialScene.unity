@@ -11997,6 +11997,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stageAnimations:
+  - stage: 0
+    panel: {fileID: 1096251898}
+    animator: {fileID: 0}
+    onEnterTrigger: 
+    onCompleteTrigger: 
+    autoShowOnEnter: 1
+    autoHideOnComplete: 1
+    hideDelay: 0.2
   - stage: 1
     panel: {fileID: 2018528179}
     animator: {fileID: 2018528181}
@@ -12043,6 +12051,7 @@ MonoBehaviour:
   - {fileID: 1986026965}
   progressTrigger: Activate
   welcomePanel: {fileID: 1096251898}
+  instructionsPanel: {fileID: 1592595419}
   welcomeDuration: 6
   musicSource: {fileID: 928848640}
   musicClip: {fileID: 8300000, guid: 9fcacf2f902e58646bae1c92745b934b, type: 3}

@@ -92,6 +92,7 @@ public class TutorialController : MonoBehaviour
 
     [Header("UI Extra")]
     [SerializeField] private GameObject welcomePanel;
+    [SerializeField] private GameObject instructionsPanel;
     [SerializeField] private float welcomeDuration = 5f;
 
     [Header("Audio General")]
@@ -157,13 +158,12 @@ public class TutorialController : MonoBehaviour
 
     private float thumbHoldTimer;
     private int teleportStep;
-    private bool teleportDone;
+    //private bool teleportDone;
     private bool hasPlayedTargetAudio;
 
     private Stage current;
     private bool tutorialFinished;
     private bool _advancing = false;
-    private bool initialDelayPassed = false;
     private Coroutine currentVoiceCoroutine = null;
 
     private void Awake()
@@ -186,7 +186,9 @@ public class TutorialController : MonoBehaviour
         if (startPanelsInactive) HideAllStagePanels();
 
         if (welcomePanel) welcomePanel.SetActive(true);
+        GoToStage(startStage);
         StartCoroutine(HideWelcomeThenShowChecklist());
+
 
         EnablePortal(false);
 
@@ -195,9 +197,8 @@ public class TutorialController : MonoBehaviour
 
         completedStages.Clear();
 
-        GoToStage(startStage);
+       
     }
-
 
     private IEnumerator HideWelcomeThenShowChecklist()
     {
@@ -260,14 +261,17 @@ public class TutorialController : MonoBehaviour
                 Say("¡Bienvenido al laboratorio! Aquí aprenderás a interactuar en Realidad Virtual.");
                 PlayVoice(saludoClip);
                 var sa_saludo = GetSA(st);
-                if (sa_saludo != null && sa_saludo.panel != null) sa_saludo.panel.SetActive(false);
+                instructionsPanel.SetActive(false);
+                if (sa_saludo != null && sa_saludo.panel != null) sa_saludo.panel.SetActive(true);
                 SetTeleportActive(false);
                 break;
 
             case Stage.Observacion:
+
                 obsAccumYaw = 0f;
                 lastForwardFlat = FlatForward(head ? head.forward : Vector3.forward);
                 Say("Mira a tu alrededor para familiarizarte con el entorno.");
+                instructionsPanel.SetActive(true);
                 PlayVoice(obsClip);
                 PlayStageEnter(st);
                 SetTeleportActive(false);
@@ -276,13 +280,15 @@ public class TutorialController : MonoBehaviour
             case Stage.Controladores:
                 InitControllers();
                 Say("Mueve ambas manos para ver tus controladores virtuales.");
+                instructionsPanel.SetActive(true);
                 PlayVoice(ctrlClip);
                 PlayStageEnter(st);
                 SetTeleportActive(false);
                 break;
 
             case Stage.Teleport:
-                teleportDone = false;
+                //teleportDone = false;
+                instructionsPanel.SetActive(true);
                 teleportStep = 0;
                 thumbHoldTimer = 0f;
                 hasPlayedTargetAudio = false;
@@ -298,6 +304,7 @@ public class TutorialController : MonoBehaviour
             case Stage.Agarre:
                 InitGrab();
                 Say("Apunta al objeto y aprieta el gatillo para sujetarlo. Mantén presionado para sostenerlo y suelta para dejarlo.");
+                instructionsPanel.SetActive(true);
                 PlayVoice(agarreClip);
                 PlayStageEnter(st);
                 SetTeleportActive(true);
@@ -422,7 +429,7 @@ public class TutorialController : MonoBehaviour
         _advancing = false;
         if (current == Stage.Saludo)
         {
-            initialDelayPassed = true;
+            //initialDelayPassed = true;
         }
         Advance();
     }
@@ -430,6 +437,10 @@ public class TutorialController : MonoBehaviour
     private void Advance()
     {
         if (current == Stage.Cierre) return;
+        if (current == Stage.Saludo && welcomePanel && welcomePanel.activeSelf)
+        {
+            welcomePanel.SetActive(false);
+        }
         GoToStage(current + 1);
     }
 
@@ -589,7 +600,6 @@ public class TutorialController : MonoBehaviour
         }
     }
 
-
     private void EnablePortal(bool on)
     {
         if (portalRoot) portalRoot.SetActive(on);
@@ -608,7 +618,6 @@ public class TutorialController : MonoBehaviour
         }
         return obsAccumYaw >= requiredYaw;
     }
-
     private Vector3 FlatForward(Vector3 fwd)
     {
         fwd.y = 0f;
@@ -682,7 +691,7 @@ public class TutorialController : MonoBehaviour
     {
         yield return new WaitForSeconds(t);
         TeleportAnimTrigger("Beam");
-        teleportDone = true;
+        //teleportDone = true;
     }
 
     private void TeleportAnimTrigger(string trig)
