@@ -164,6 +164,7 @@ public class TutorialController : MonoBehaviour
     private bool tutorialFinished;
     private bool _advancing = false;
     private bool initialDelayPassed = false;
+    private Coroutine currentVoiceCoroutine = null;
 
     private void Awake()
     {
@@ -215,7 +216,7 @@ public class TutorialController : MonoBehaviour
                     break;
 
                 case Stage.Observacion:
-                    if (initialDelayPassed && CheckObservation360()) CompleteCurrentStage();
+                    if (CheckObservation360()) CompleteCurrentStage();
                     break;
 
                 case Stage.Controladores:
@@ -252,6 +253,10 @@ public class TutorialController : MonoBehaviour
         switch (st)
         {
             case Stage.Saludo:
+                if (auraAnimator && !string.IsNullOrEmpty(greetingName))
+                {
+                    auraAnimator.SetTrigger(greetingName);
+                }
                 Say("¡Bienvenido al laboratorio! Aquí aprenderás a interactuar en Realidad Virtual.");
                 PlayVoice(saludoClip);
                 var sa_saludo = GetSA(st);
@@ -439,6 +444,7 @@ public class TutorialController : MonoBehaviour
             default: return -1;
         }
     }
+
     private void ActivateProgressAnimator(Stage st)
     {
         int index = GetProgressIndexFor(st);
@@ -530,15 +536,38 @@ public class TutorialController : MonoBehaviour
 
     private void PlayVoice(AudioClip clip)
     {
-        if (!voiceSource || !clip) return;
-        voiceSource.Stop();
-        if (auraAnimator)
+        if (clip == null || voiceSource == null)
         {
-            auraAnimator.SetBool(talkingBoolName, true);
+            if (currentVoiceCoroutine != null) { StopCoroutine(currentVoiceCoroutine); currentVoiceCoroutine = null; }
+            if (auraAnimator) auraAnimator.SetBool(talkingBoolName, false);
+            return;
         }
+
+        if (currentVoiceCoroutine != null)
+        {
+            StopCoroutine(currentVoiceCoroutine);
+            currentVoiceCoroutine = null;
+        }
+        voiceSource.Stop();
+
         voiceSource.clip = clip;
         voiceSource.Play();
-        StartCoroutine(StopTalkingAfterClip(clip.length));
+
+        if (auraAnimator) auraAnimator.SetBool(talkingBoolName, true);
+
+        currentVoiceCoroutine = StartCoroutine(VoiceLifecycleCoroutine());
+    }
+    private IEnumerator VoiceLifecycleCoroutine()
+    {
+        while (voiceSource != null && voiceSource.isPlaying)
+        {
+            yield return null;
+        }
+
+        if (auraAnimator) auraAnimator.SetBool(talkingBoolName, false);
+
+        currentVoiceCoroutine = null;
+        yield break;
     }
     private IEnumerator StopTalkingAfterClip(float clipLength)
     {
