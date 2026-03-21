@@ -173,11 +173,35 @@ public class CodeManager : MonoBehaviour
         else
         {
             int good = 0, wrong = 0;
+            bool[] usadoRespuesta = new bool[3];
+            bool[] usadoInput = new bool[3];
+
+            // Primero contar posiciones correctas
             for (int i = 0; i < 3; i++)
             {
-                char c = currentInput[i];
-                if (c == respuestaActual[i]) good++;
-                else if (respuestaActual.Contains(c.ToString())) wrong++;
+                if (currentInput[i] == respuestaActual[i])
+                {
+                    good++;
+                    usadoRespuesta[i] = true;
+                    usadoInput[i] = true;
+                }
+            }
+
+            // Luego contar dígitos correctos en posición incorrecta
+            for (int i = 0; i < 3; i++)
+            {
+                if (usadoInput[i]) continue; // ya contado como correcto
+
+                for (int j = 0; j < 3; j++)
+                {
+                    if (usadoRespuesta[j]) continue; // ya usado
+                    if (currentInput[i] == respuestaActual[j])
+                    {
+                        wrong++;
+                        usadoRespuesta[j] = true;
+                        break;
+                    }
+                }
             }
             if (txtPosiciones != null) txtPosiciones.SetText("{0}", good);
             if (txtWrongPos != null)   txtWrongPos.SetText("{0}", wrong);
