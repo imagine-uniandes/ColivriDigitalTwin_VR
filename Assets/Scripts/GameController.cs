@@ -70,9 +70,10 @@ public class GameController : MonoBehaviour
     [SerializeField] private List<MonoBehaviour> teleportScriptsToToggle = new List<MonoBehaviour>();
 
     [Header("Animación AURA")]
+    //cambios aqui
     [SerializeField, Tooltip("Animator del robot AURA para activar aplausos")]
     private Animator auraAnimator;
-    private const string CLAPPING_TRIGGER = "clapping";
+    private const string baile = "baile";
 
     [Header("Animators a controlar")]
     [SerializeField] private List<Animator> animatorsToControl = new List<Animator>();
@@ -353,7 +354,7 @@ public class GameController : MonoBehaviour
 
     public void OnCodeSuccess(float elapsedTimeParam)
     {
-        AuraTriggerClapping();
+        AuraTriggerBaile();
         PlayModelAnimatorsFromStart();
         StopSuspenseBed();
         timerDef?.StopTimer();
@@ -516,15 +517,15 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void AuraTriggerClapping()
+    private void AuraTriggerBaile()
     {
         if (auraAnimator != null)
         {
-            auraAnimator.SetTrigger(CLAPPING_TRIGGER);
+            auraAnimator.SetTrigger(baile);
         }
         else
         {
-            Debug.LogWarning("Aura Animator no asignado en GameController. No se puede activar Clapping.");
+            Debug.LogWarning("Aura Animator no asignado en GameController. No se puede activar baile.");
         }
     }
 
